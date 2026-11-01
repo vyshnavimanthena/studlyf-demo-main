@@ -25,3 +25,5 @@ frontend/public/avatars/catalog.webp
 *.njsproj
 *.sln
 *.sw?
+.vercel
+.env*
