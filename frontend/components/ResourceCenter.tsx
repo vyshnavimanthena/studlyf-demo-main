@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, CheckCircle2, Instagram, Linkedin, Share2, Check } from 'lucide-react';
+import { ArrowRight, CheckCircle2, ChevronDown, Instagram, Linkedin, Share2, Check } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -84,7 +84,7 @@ const resources: ResourceItem[] = [
         type: 'CASE STUDY',
         title: 'How Agentic AI works: MCP explained',
         desc: 'A deep dive into the underlying architecture of modern agent orchestration.',
-        image: 'https://images.unsplash.com/photo-1620712943543-bcc4628c9757?auto=format&fit=crop&q=80&w=1400',
+        image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=1200',
         overview: 'As AI agents become more prevalent, the challenge of connecting them securely to enterprise data has emerged as a major bottleneck. This deep dive explores the Model Context Protocol (MCP)—the underlying architecture of modern agent orchestration. We demonstrate how standardized, secure context sharing simplifies complex business processes and allows agents to reason over proprietary data while keeping human operators firmly in control.',
         whyItMatters: [
             'Standardizes the complex integration patterns of how AI models interact with disparate, secure data sources.',
@@ -114,7 +114,10 @@ const resources: ResourceItem[] = [
 // One tag style for every resource type; data keeps its original uppercase values.
 const typeLabel = (type: string) => type.charAt(0) + type.slice(1).toLowerCase();
 
+const COLLAPSED_COUNT = 3;
+
 const ResourceCenter: React.FC = () => {
+    const [showAll, setShowAll] = useState(false);
     const [selectedResource, setSelectedResource] = useState<ResourceItem | null>(null);
     const [copiedLink, setCopiedLink] = useState(false);
 
@@ -156,7 +159,7 @@ const ResourceCenter: React.FC = () => {
     return (
         <section id="resource-center" aria-labelledby="resource-center-heading" className="studlyf-ds ds-section bg-ds-background">
             <div className="ds-container">
-                <header className="mx-auto mb-12 max-w-3xl text-center md:mb-14">
+                <header className="mx-auto mb-10 max-w-3xl text-center">
                     <p className="ds-eyebrow mb-4">Resource centre</p>
                     <h2 id="resource-center-heading" className="ds-h2 text-ds-foreground">
                         Stay ahead of what&rsquo;s <span className="ds-gradient-text">next</span>
@@ -166,11 +169,11 @@ const ResourceCenter: React.FC = () => {
                     </p>
                 </header>
 
-                <ul className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {resources.map((res) => (
-                        <li key={res.slug} className="flex">
-                            <Card className="group relative w-full overflow-hidden p-0 transition-shadow duration-200 hover:shadow-ds-md">
-                                <div className="aspect-[16/9] overflow-hidden bg-ds-muted">
+                <ul className="mx-auto flex max-w-[1120px] flex-col gap-4">
+                    {(showAll ? resources : resources.slice(0, COLLAPSED_COUNT)).map((res) => (
+                        <li key={res.slug}>
+                            <Card className="group relative flex-col gap-0 overflow-hidden p-0 transition-shadow duration-200 hover:shadow-ds-md md:min-h-[188px] md:flex-row md:items-stretch">
+                                <div className="h-44 shrink-0 overflow-hidden bg-ds-muted md:h-auto md:w-[280px]">
                                     <img
                                         src={res.image}
                                         alt=""
@@ -180,13 +183,15 @@ const ResourceCenter: React.FC = () => {
                                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transition-none"
                                     />
                                 </div>
-                                <div className="flex flex-1 flex-col gap-3 p-6">
-                                    <Badge>{typeLabel(res.type)}</Badge>
-                                    <h3 className="text-xl font-semibold leading-snug tracking-tight text-ds-foreground">{res.title}</h3>
-                                    <p className="text-[15px] leading-relaxed text-ds-muted-foreground">{res.desc}</p>
+                                <div className="flex flex-1 flex-col items-start gap-2 p-5 md:flex-row md:items-center md:gap-8 md:p-6">
+                                    <div className="min-w-0 flex-1">
+                                        <Badge>{typeLabel(res.type)}</Badge>
+                                        <h3 className="mt-2 text-xl font-semibold leading-snug tracking-tight text-ds-foreground">{res.title}</h3>
+                                        <p className="mt-1 text-[15px] leading-relaxed text-ds-muted-foreground">{res.desc}</p>
+                                    </div>
                                     <Button
                                         variant="link"
-                                        className="mt-auto w-fit gap-1.5 pt-2 after:absolute after:inset-0 after:content-['']"
+                                        className="shrink-0 gap-1.5 px-0 after:absolute after:inset-0 after:content-['']"
                                         onClick={() => setSelectedResource(res)}
                                     >
                                         Read more<span className="sr-only">: {res.title}</span>
@@ -198,12 +203,10 @@ const ResourceCenter: React.FC = () => {
                     ))}
                 </ul>
 
-                <div className="mt-12 flex justify-center">
-                    <Button variant="outline" size="lg" asChild>
-                        <a href="https://example.com/case-studies" target="_blank" rel="noreferrer">
-                            Explore all resources
-                            <ArrowRight aria-hidden="true" />
-                        </a>
+                <div className="mt-8 flex justify-center">
+                    <Button variant="outline" size="lg" onClick={() => setShowAll((v) => !v)} aria-expanded={showAll}>
+                        {showAll ? 'Show fewer' : `Show all ${resources.length} resources`}
+                        <ChevronDown className={showAll ? 'rotate-180 transition-transform' : 'transition-transform'} aria-hidden="true" />
                     </Button>
                 </div>
             </div>
