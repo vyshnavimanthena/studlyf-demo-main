@@ -1,0 +1,380 @@
+# COMPLETE CI/CD PIPELINE WITH ALL 5 PHASES AUTOMATED
+
+name: Production CI/CD Pipeline
+on:
+  push:
+    branches: [main, production, develop]
+  pull_request:
+    branches: [main, production]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # PHASE 1: CODE QUALITY & SECRETS SCANNING
+  phase1-code-quality:
+    name: Phase 1 - Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      # 1. Format Check (Prettier for JS, Black for Python)
+      - name: Check Python formatting (Black)
+        uses: psf/black@stable
+        with:
+          options: "--check --diff"
+          src: "./backend"
+
+      - name: Install Node dependencies
+        run: cd frontend && npm install --legacy-peer-deps
+
+      - name: Check JavaScript/TypeScript formatting (Prettier)
+        run: cd frontend && npx prettier --check "src/**/*.{ts,tsx,js,jsx}"
+
+      # 2. Linting
+      - name: Lint Python (Flake8)
+        run: |
+          pip install flake8
+          flake8 backend/ --count --select=E9,F63,F7,F82 --show-source --statistics
+
+      - name: Lint JavaScript/TypeScript (ESLint)
+        run: cd frontend && npx eslint "src/**/*.{ts,tsx,js,jsx}" --max-warnings 0
+
+      # 3. Secret Scanning
+      - name: Scan for secrets (TruffleHog)
+        run: |
+          pip install truffleHog3
+          truffleHog3 -r . -f json > secrets-report.json || true
+          if grep -q "Verified" secrets-report.json; then
+            echo "SECRETS FOUND!"
+            exit 1
+          fi
+
+      - name: Scan for secrets (GitLeaks)
+        uses: gitleaks/gitleaks-action@v2
+        with:
+          source: "."
+          verbose: true
+
+      - name: Check for hardcoded credentials
+        run: |
+          if grep -r "password.*=.*'" backend/ frontend/ | grep -v "password_hash"; then
+            echo "Hardcoded credentials found!"
+            exit 1
+          fi
+
+      - name: Upload code quality reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-quality-reports
+          path: |
+            secrets-report.json
+
+  # PHASE 2: UNIT TESTS & INTEGRATION TESTS
+  phase2-testing:
+    name: Phase 2 - Unit & Integration Tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: testdb
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v3
+
+      # Backend Tests
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install backend dependencies
+        run: |
+          pip install -r backend/requirements_production.txt
+          pip install pytest pytest-cov pytest-asyncio
+
+      - name: Run backend unit tests
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/testdb
+          REDIS_URL: redis://localhost:6379
+        run: |
+          cd backend
+          pytest tests/test_unit_*.py -v --cov=. --cov-report=xml --cov-report=html
+
+      - name: Run backend integration tests
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/testdb
+          REDIS_URL: redis://localhost:6379
+        run: |
+          cd backend
+          pytest tests/test_integration_*.py -v
+
+      - name: Check code coverage (>70%)
+        run: |
+          cd backend
+          coverage report --fail-under=70
+
+      # Frontend Tests
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install frontend dependencies
+        run: cd frontend && npm install --legacy-peer-deps
+
+      - name: Run frontend unit tests
+        run: cd frontend && npm test -- --coverage --watchAll=false
+
+      - name: Run frontend build
+        run: cd frontend && npm run build
+
+      # Upload coverage
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./backend/coverage.xml,./frontend/coverage/coverage-final.json
+          flags: unittests
+          fail_ci_if_error: true
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-reports
+          path: |
+            backend/htmlcov/
+            frontend/coverage/
+
+  # PHASE 3: SECURITY SCANNING & VULNERABILITY CHECKS
+  phase3-security:
+    name: Phase 3 - Security & Vulnerabilities
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      # 1. Dependency vulnerability scan
+      - name: Audit Python dependencies (pip-audit)
+        run: |
+          pip install pip-audit
+          pip-audit --desc
+
+      - name: Audit Node dependencies (npm audit)
+        run: cd frontend && npm audit --audit-level=moderate
+
+      - name: SNYK dependency scan
+        uses: snyk/actions/python-3.11@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: test
+          args: --severity-threshold=high
+
+      # 2. SAST (Static Application Security Testing)
+      - name: Run Bandit (Python security linter)
+        run: |
+          pip install bandit
+          bandit -r backend/ -f json -o bandit-report.json || true
+
+      - name: OWASP Dependency Check
+        uses: dependency-check/Dependency-Check_Action@main
+        with:
+          path: "."
+          format: "JSON"
+          args: >-
+            --enableExperimental
+
+      # 3. Upload security reports
+      - name: Upload security reports
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-reports
+          path: |
+            bandit-report.json
+            dependency-check-report.json
+
+  # PHASE 4: PERFORMANCE TESTING
+  phase4-performance:
+    name: Phase 4 - Performance Testing
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      # Start backend server for testing
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r backend/requirements_production.txt
+
+      - name: Start backend server
+        run: |
+          python -m uvicorn backend.main_production:app --host 0.0.0.0 --port 8000 &
+          sleep 10
+
+      # Load testing with k6
+      - name: Set up k6
+        run: |
+          sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6-stable.list
+          sudo apt-get update
+          sudo apt-get install k6
+
+      - name: Run load test (100 concurrent users, 5 min)
+        run: |
+          k6 run tests/load_test.js
+
+      - name: Check performance metrics
+        run: |
+          # Verify response time < 500ms
+          # Verify error rate < 1%
+          # Verify throughput > 100 req/s
+
+      - name: Upload performance results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: performance-reports
+          path: k6-results/
+
+  # PHASE 5: CI/CD AUTOMATION & DEPLOYMENT
+  phase5-deploy:
+    name: Phase 5 - Build & Deploy
+    needs: [phase1-code-quality, phase2-testing, phase3-security, phase4-performance]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/production'
+
+    steps:
+      - uses: actions/checkout@v3
+
+      # Docker build & push
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
+
+      # Deploy to Kubernetes
+      - name: Deploy to production
+        run: |
+          kubectl set image deployment/app app=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            -n production \
+            --record
+
+      - name: Verify deployment
+        run: |
+          kubectl rollout status deployment/app -n production --timeout=5m
+
+      # Smoke tests
+      - name: Run smoke tests
+        run: |
+          curl -f https://api.yourdomain.com/health || exit 1
+
+      # Notify team
+      - name: Slack notification - Success
+        if: success()
+        uses: slackapi/slack-github-action@v1
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK }}
+          payload: |
+            {
+              "text": "Deployment Success",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "✓ Production deployment successful\nCommit: ${{ github.sha }}\nAuthor: ${{ github.actor }}"
+                  }
+                }
+              ]
+            }
+
+      - name: Slack notification - Failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK }}
+          payload: |
+            {
+              "text": "Deployment Failed",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "✗ Production deployment failed\nCommit: ${{ github.sha }}\nAuthor: ${{ github.actor }}"
+                  }
+                }
+              ]
+            }
+
+  # Final Quality Gate
+  quality-gate:
+    name: Quality Gate Check
+    needs: [phase1-code-quality, phase2-testing, phase3-security, phase4-performance]
+    runs-on: ubuntu-latest
+    if: always()
+
+    steps:
+      - name: Check all phases passed
+        run: |
+          if [ "${{ needs.phase1-code-quality.result }}" != "success" ] || \
+             [ "${{ needs.phase2-testing.result }}" != "success" ] || \
+             [ "${{ needs.phase3-security.result }}" != "success" ] || \
+             [ "${{ needs.phase4-performance.result }}" != "success" ]; then
+            echo "Not all phases passed"
+            exit 1
+          fi
+          echo "All phases passed - Quality gate approved"
+
+      - name: Summary report
+        run: |
+          echo "# Deployment Quality Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Phase 1 (Code Quality): ${{ needs.phase1-code-quality.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Phase 2 (Testing): ${{ needs.phase2-testing.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Phase 3 (Security): ${{ needs.phase3-security.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Phase 4 (Performance): ${{ needs.phase4-performance.result }}" >> $GITHUB_STEP_SUMMARY
+

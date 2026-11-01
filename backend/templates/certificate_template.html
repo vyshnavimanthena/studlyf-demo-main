@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        @page { size: 297mm 210mm; margin: 0; }
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;800;900&display=swap');
+        body { font-family: 'Outfit', sans-serif; text-align: center; color: #111827; background: #f8fafc; margin: 0; }
+        .page { padding: 0; width: 100%; height: 100%; display: flex; align-items: stretch; }
+        .cert { border: 14px solid #6C3BFF; background: #ffffff; padding: 40px 56px; width: 100%; box-sizing: border-box; }
+        .eyebrow { font-size: 12px; letter-spacing: 0.25em; text-transform: uppercase; color: #6b7280; font-weight: 700; }
+        .title { font-size: 34px; letter-spacing: 0.18em; color: #111827; font-weight: 900; margin-top: 12px; }
+        .subtitle { font-size: 15px; color: #6b7280; margin-top: 8px; }
+        .presented { font-size: 18px; color: #4b5563; margin-top: 34px; }
+        .name { font-size: 50px; margin: 16px 0 10px; font-weight: 900; color: #6C3BFF; border-bottom: 2px solid #e5e7eb; display: inline-block; padding: 0 24px 10px; }
+        .event { font-size: 28px; font-weight: 800; margin: 10px 0; color: #111827; }
+        .org { font-size: 20px; font-weight: 700; margin-top: 4px; color: #374151; }
+        .body { max-width: 780px; margin: 22px auto 0; font-size: 18px; line-height: 1.8; color: #374151; }
+        .meta { margin-top: 30px; display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; }
+        .meta-item { text-align: left; font-size: 13px; color: #374151; }
+        .meta-item strong { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em; color: #6b7280; margin-bottom: 6px; }
+        .signatures { margin-top: 38px; display: flex; justify-content: space-between; gap: 24px; align-items: flex-end; }
+        .signature { width: 33%; border-top: 1px solid #111827; padding-top: 10px; font-size: 13px; color: #111827; }
+        .signature small { display: block; color: #6b7280; margin-top: 4px; }
+        .qr { width: 120px; height: 120px; }
+        .verify { font-size: 12px; color: #6b7280; word-break: break-all; margin-top: 8px; }
+        .sponsors { margin-top: 24px; text-align: center; width: 100%; }
+        .sponsors .label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em; color: #94a3b8; margin-bottom: 10px; }
+        .sponsors table { margin: 0 auto; border-collapse: collapse; }
+        .sponsors td { padding: 0 12px; vertical-align: middle; }
+        .sponsors td img { max-height: 40px; max-width: 120px; }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="cert">
+            <div class="eyebrow">Studlyf Verified Certificate</div>
+            <div class="title">CERTIFICATE OF {{ achievement_type | upper }}</div>
+            <div class="subtitle">Issued through the Studlyf platform</div>
+            <div class="presented">This certificate is proudly presented to</div>
+            <div class="name">{{ participant_name }}</div>
+            <div class="body">
+                for successfully participating in<br>
+                <span class="event">“{{ event_name }}”</span><br>
+                organized by<br>
+                <span class="org">{{ organization_name }}</span><br>
+                through the Studlyf platform on {{ event_date }}.
+                <br><br>
+                The participant demonstrated enthusiasm, commitment, and active involvement throughout the event.
+                <br><br>
+                We appreciate their participation and wish them continued success in their learning and professional journey.
+            </div>
+
+            <div class="meta">
+                <div class="meta-item">
+                    <strong>Certificate ID</strong>
+                    {{ certificate_id }}
+                </div>
+                <div class="meta-item" style="text-align:right;">
+                    <strong>Issued Date</strong>
+                    {{ issued_date }}
+                </div>
+                <div style="text-align:center;">
+                    <img class="qr" src="data:image/png;base64,{{ qr_blob }}">
+                </div>
+            </div>
+
+            {% if sponsor_logos %}
+            <div class="sponsors">
+                <div class="label">Sponsored By</div>
+                <table><tr>
+                {% for logo in sponsor_logos %}
+                    <td><img src="{{ logo }}" alt="Sponsor"></td>
+                {% endfor %}
+                </tr></table>
+            </div>
+            {% endif %}
+
+            <div class="signatures">
+                <div class="signature">Organizer Signature<small>{{ organizer_signature }}</small></div>
+                <div class="signature" style="text-align:center;">Studlyf Authorized Signature<small>{{ studlyf_signature }}</small></div>
+                <div class="signature" style="text-align:right;">Verification Seal<small>QR links to public verification</small></div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+</html>
+

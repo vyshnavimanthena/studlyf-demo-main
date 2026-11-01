@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+    @page { size: 297mm 210mm; margin: 0; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Poppins', sans-serif; background: #f8fafc; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+    .cert { width: 100%; max-width: 1000px; min-height: 600px; background: #ffffff; border: 12px solid #6c3bff; border-radius: 24px; padding: 40px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.05); text-align: center; }
+    
+    .cert-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .cert-logo { height: 80px; max-width: 150px; object-fit: contain; }
+    .header h1 { font-size: 30px; font-weight: 900; color: #1e293b; text-transform: uppercase; letter-spacing: 2px; }
+    .header .subtitle { font-size: 12px; color: #6c3bff; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; }
+    
+    .presented-to { color: #64748b; font-size: 14px; margin-top: 20px; }
+    .recipient-name { font-size: 40px; font-weight: 800; color: #0f172a; margin: 15px 0; border-bottom: 2px solid #0f172a; display: inline-block; padding: 0 20px; }
+    .event-title { font-size: 24px; font-weight: 700; color: #4f46e5; margin: 10px 0; }
+    
+    .cert-meta-section { display: flex; justify-content: space-between; align-items: center; margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 20px; text-align: left; }
+    .signatures-row { display: flex; gap: 30px; justify-content: center; flex: 1;}
+    .signature { text-align: center; }
+    .signature .line { width: 120px; height: 1px; background: #6c3bff; margin: 0 auto 5px auto; }
+    .signature .name { font-weight: 700; font-size: 12px; }
+    
+    .sponsors { margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 20px;}
+    .sponsors-logos { display: flex; justify-content: center; gap: 15px; margin-top: 10px; }
+    .sponsors-logos img { height: 40px; }
+</style>
+</head>
+<body>
+    <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+        <div class="cert">
+            <div class="cert-header">
+                <img src="{{ institution_logo }}" alt="Institution Logo" class="cert-logo">
+                <div class="header">
+                    <h1>Certificate of Participation</h1>
+                    <div class="subtitle">Studlyf</div>
+                </div>
+                <img src="{{ event_logo }}" alt="Event Logo" class="cert-logo">
+            </div>
+            
+            <div class="presented-to">This certificate is proudly presented to</div>
+            <div class="recipient-name">{{ participant_name }}</div>
+            <div class="event-title">&ldquo;{{ event_title }}&rdquo;</div>
+            
+            <div class="cert-meta-section">
+                <div class="signatures-row">
+                    <div class="signature">
+                        <div class="line"></div>
+                        <div class="name">{{ organizer_signature }}</div>
+                    </div>
+                </div>
+                <div class="footer-qr">
+                    <img src="data:image/png;base64,{{ qr_blob }}" alt="QR" style="width:60px;">
+                </div>
+            </div>
+
+            {% if sponsor_logos %}
+            <div class="sponsors">
+                <div class="sponsors-logos">
+                    {% for logo in sponsor_logos %}
+                        <img src="{{ logo }}" alt="Sponsor">
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+    </div>
+    
+    <div class="download-bar" style="margin-top: 30px; margin-bottom: 30px;">
+        <a href="{{ download_url }}" download style="display: inline-block; padding: 14px 36px; background: #6C3BFF; color: #ffffff !important; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 700; box-shadow: 0 4px 12px rgba(108, 59, 255, 0.25);">Download PDF</a>
+    </div>
+</body>
+</html>

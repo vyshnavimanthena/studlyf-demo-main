@@ -1,0 +1,905 @@
+import React, { useEffect, useMemo, useState } from 'react';
+import { Search, Filter, Briefcase, Calendar, MapPin, ChevronRight, ChevronLeft, ChevronDown, ChevronUp, X, Globe, Users, DollarSign, Star, Sparkles, Building2, ArrowRight, Clock, TrendingUp, Target, ShieldCheck, Zap, Plus, Trophy, Award } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL, authHeaders } from '../../apiConfig';
+import { useAuth } from '../../AuthContext';
+import { plainTextFromRichContent, formatOpportunityLocation, getOpportunityDeadline } from '../../utils/text';
+
+const clientSideEligible = (opp: any, user: any) => {
+    if (!opp) return true;
+    const candidateTypes = opp.candidateTypes || opp.candidate_types || [];
+    if (!candidateTypes || candidateTypes.length === 0) return true;
+    const allowed = (Array.isArray(candidateTypes) ? candidateTypes : [candidateTypes]).map((x: any) => String(x).toLowerCase());
+    if (allowed.some((a: string) => a.includes('everyone'))) return true;
+
+    // If user is not logged in or has no profile data, we can't determine eligibility — assume eligible
+    if (!user || !user.user_id) return true;
+
+    const profileType = (user?.profile_type || user?.profileType || user?.userType || '').toString().toLowerCase();
+    const userCollege = (user?.college || user?.institution || user?.college_name || '').toString().toLowerCase();
+
+    // Direct match: profile type matches an allowed type (e.g. "student" matches "College Students" because "college students".includes("student"))
+    if (profileType && allowed.some((a: string) => a.includes(profileType))) return true;
+
+    // For "college student" type: user has a college or profile type is "student"
+    if (allowed.some((a: string) => a.includes('college student')) && (userCollege || profileType === 'student')) return true;
+
+    // For "fresher" type
+    if (allowed.some((a: string) => a.includes('fresher')) && (profileType === 'fresher' || profileType === 'student')) return true;
+
+    return false;
+}
+
+const typeOptions = ['All'];
+
+const normalizeText = (value: unknown) => String(value ?? '').toLowerCase();
+
+const matchesOpportunityType = (opportunityType: unknown, selectedType: string) => {
+    if (selectedType === 'All') return true;
+
+    const type = normalizeText(opportunityType);
+    const keywordMap: Record<string, string[]> = {
+        hackathon: ['hackathon', 'coding challenge'],
+        competition: ['competition', 'case competition'],
+        challenge: ['challenge', 'ideathon'],
+        conference: ['conference', 'summit', 'expo', 'forum'],
+        workshop: ['workshop', 'bootcamp', 'masterclass'],
+        internship: ['internship', 'trainee', 'apprenticeship', 'placement'],
+        job: ['job', 'role', 'career', 'hiring']
+    };
+
+    const selected = selectedType.toLowerCase();
+    const keywords = keywordMap[selected] || [selected];
+    return keywords.some((keyword) => type.includes(keyword));
+};
+
+const matchesLocation = (location: unknown, selectedLocation: string) => {
+    if (selectedLocation === 'All') return true;
+    const text = normalizeText(location);
+    if (!text) return false;
+    if (selectedLocation === 'Remote' || selectedLocation === 'Online') return text.includes('remote') || text.includes('online') || text.includes('virtual');
+    if (selectedLocation === 'On-site' || selectedLocation === 'Offline') return text.includes('on-site') || text.includes('onsite') || text.includes('in-person') || text.includes('offline');
+    if (selectedLocation === 'Hybrid') return text.includes('hybrid');
+    return true;
+};
+
+const safeDateValue = (value: unknown) => {
+    const date = new Date(String(value ?? ''));
+    return Number.isNaN(date.getTime()) ? new Date(0) : date;
+};
+
+const FILTER_STORAGE_KEY = 'studlyf:opportunities:filters';
+
+const getStoredFilters = () => {
+    if (typeof window === 'undefined') return null;
+    try {
+        const raw = window.localStorage.getItem(FILTER_STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+    } catch {
+        return null;
+    }
+};
+
+const OpportunitiesList: React.FC = () => {
+    const storedFilters = getStoredFilters();
+    const [opportunities, setOpportunities] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState(() => typeof storedFilters?.searchQuery === 'string' ? storedFilters.searchQuery : '');
+    const [selectedType, setSelectedType] = useState(() => typeof storedFilters?.selectedType === 'string' ? storedFilters.selectedType : 'All');
+    const [selectedLocation, setSelectedLocation] = useState(() => typeof storedFilters?.selectedLocation === 'string' ? storedFilters.selectedLocation : 'All');
+    const [selectedStatus, setSelectedStatus] = useState(() => typeof storedFilters?.selectedStatus === 'string' ? storedFilters.selectedStatus : 'All');
+    const [selectedParticipation, setSelectedParticipation] = useState(() => typeof storedFilters?.selectedParticipation === 'string' ? storedFilters.selectedParticipation : 'All');
+    const [selectedTeamSize, setSelectedTeamSize] = useState(() => typeof storedFilters?.selectedTeamSize === 'string' ? storedFilters.selectedTeamSize : 'All');
+    const [selectedPayment, setSelectedPayment] = useState(() => typeof storedFilters?.selectedPayment === 'string' ? storedFilters.selectedPayment : 'All');
+    const [selectedSkills, setSelectedSkills] = useState<string[]>(() => Array.isArray(storedFilters?.selectedSkills) ? storedFilters.selectedSkills.filter((item: unknown): item is string => typeof item === 'string') : []);
+    const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
+    const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({
+        location: false, category: false, status: false, teamSize: false, participation: false, skills: false,
+    });
+    const [appliedIds, setAppliedIds] = useState<string[]>([]);
+    const [eligibilityMap, setEligibilityMap] = useState<Record<string, { eligible: boolean; reason?: string }>>({});
+    const navigate = useNavigate();
+    const { user, role } = useAuth();
+    const [ineligibleModal, setIneligibleModal] = useState<{ visible: boolean; reason?: string; eventId?: string; opp?: any }>({ visible: false });
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+        try {
+            window.localStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify({
+                searchQuery,
+                selectedType,
+                selectedLocation,
+                selectedStatus,
+                selectedParticipation,
+                selectedTeamSize,
+                selectedPayment,
+                selectedSkills,
+            }));
+        } catch {
+            // Ignore storage failures and keep the page functional.
+        }
+    }, [searchQuery, selectedType, selectedLocation, selectedStatus, selectedParticipation, selectedTeamSize, selectedPayment, selectedSkills]);
+
+    const checkEligibilityThenNavigate = (opp: any) => {
+        navigate(`/opportunities/${opp._id}`);
+    };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const oppRes = await fetch(`${API_BASE_URL}/api/opportunities`);
+                const opps = oppRes.ok ? await oppRes.json() : [];
+
+                setOpportunities(Array.isArray(opps) ? opps : []);
+
+                if (user?.user_id) {
+                    fetch(`${API_BASE_URL}/api/opportunities/user/${user.user_id}/applications`, {
+                        headers: { ...authHeaders() }
+                    })
+                        .then((res) => (res.ok ? res.json() : []))
+                        .then((apps) => {
+                            setAppliedIds(Array.isArray(apps) ? apps.map((a: any) => a.opportunity_id) : []);
+                        })
+                        .catch(() => setAppliedIds([]));
+
+                    // Fetch server-side eligibility for events
+                    const eventOpps = Array.isArray(opps) ? opps.filter((o: any) => ['Hackathon', 'Competition', 'Challenge', 'Workshop', 'Conference'].includes(o.type)) : [];
+                    if (eventOpps.length > 0) {
+                        const results: Record<string, { eligible: boolean; reason?: string }> = {};
+                        await Promise.all(eventOpps.map(async (opp: any) => {
+                            const eid = String(opp.event_link_id || opp.event_id || opp._id || '');
+                            if (!eid) return;
+                            try {
+                                const res = await fetch(`${API_BASE_URL}/api/v1/registration/events/${eid}/eligibility`, {
+                                    headers: { ...authHeaders() }
+                                });
+                                if (res.ok) {
+                                    const data = await res.json();
+                                    results[eid] = { eligible: data.eligible ?? false, reason: data.reason };
+                                }
+                            } catch { }
+                        }));
+                        setEligibilityMap(results);
+                    }
+                } else {
+                    setAppliedIds([]);
+                }
+            } catch (err) {
+                try { console.error("Fetch error:", err instanceof Error ? err.message : String(err)); } catch (_) { }
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, [user]);
+
+    const filteredOpportunities = useMemo(() => {
+        const query = normalizeText(searchQuery).trim();
+
+        const filtered = opportunities.filter((opp) => {
+            const title = normalizeText(opp.title);
+            const organization = normalizeText(opp.organization);
+            const description = normalizeText(plainTextFromRichContent(opp.description));
+            const locationLabel = normalizeText(formatOpportunityLocation(opp.location));
+            const matchesSearch = !query || title.includes(query) || organization.includes(query) || description.includes(query) || locationLabel.includes(query);
+            const matchesType = matchesOpportunityType(opp.type, selectedType);
+            const matchesSelectedLocation = matchesLocation(opp.location, selectedLocation);
+            const matchesStatus = selectedStatus === 'All' || normalizeText(opp.status ?? '').includes(normalizeText(selectedStatus));
+            const matchesParticipation = selectedParticipation === 'All' || normalizeText(opp.participation_type ?? '').includes(normalizeText(selectedParticipation));
+            const matchesTeamSize = selectedTeamSize === 'All' || (() => { try { const max = Number(opp.max_team_size); return selectedTeamSize === 'Solo' ? max <= 1 : selectedTeamSize === 'Small (2-5)' ? max >= 2 && max <= 5 : selectedTeamSize === 'Medium (6-10)' ? max >= 6 && max <= 10 : selectedTeamSize === 'Large (10+)' ? max > 10 : true; } catch { return true; } })();
+            const matchesPayment = selectedPayment === 'All' || normalizeText(opp.prize_type ?? opp.compensation_type ?? '').includes(normalizeText(selectedPayment));
+            const matchesSkills = selectedSkills.length === 0 || (opp.skills && opp.skills.some((s: string) => selectedSkills.some(sk => normalizeText(s).includes(normalizeText(sk)))));
+
+            const deadlineStr = getOpportunityDeadline(opp);
+            const isExpired = deadlineStr ? new Date(deadlineStr) < new Date() : false;
+
+            return !isExpired && matchesSearch && matchesType && matchesSelectedLocation && matchesStatus && matchesParticipation && matchesTeamSize && matchesPayment && matchesSkills;
+        });
+
+        const sorted = [...filtered].sort((a, b) => {
+            const dateA = safeDateValue(a.deadline).getTime();
+            const dateB = safeDateValue(b.deadline).getTime();
+            return dateB - dateA;
+        });
+
+        return sorted;
+    }, [appliedIds, opportunities, searchQuery, selectedLocation, selectedType, selectedStatus, selectedParticipation, selectedTeamSize, selectedPayment, selectedSkills]);
+
+    const getTypeColor = (type: string) => {
+        switch (type.toLowerCase()) {
+            case 'hackathon': return 'text-purple-600 bg-purple-50 border-purple-100';
+            case 'internship': return 'text-blue-600 bg-blue-50 border-blue-100';
+            case 'job': return 'text-green-600 bg-green-50 border-green-100';
+            case 'competition': return 'text-orange-600 bg-orange-50 border-orange-100';
+            case 'conference': return 'text-cyan-600 bg-cyan-50 border-cyan-100';
+            case 'workshop': return 'text-fuchsia-600 bg-fuchsia-50 border-fuchsia-100';
+            default: return 'text-slate-600 bg-slate-50 border-slate-100';
+        }
+    };
+
+    const resetFilters = () => {
+        setSelectedType('All');
+        setSelectedLocation('All');
+        setSelectedStatus('All');
+        setSelectedParticipation('All');
+        setSelectedTeamSize('All');
+        setSelectedPayment('All');
+        setSelectedSkills([]);
+        setSearchQuery('');
+        if (typeof window !== 'undefined') {
+            try {
+                window.localStorage.removeItem(FILTER_STORAGE_KEY);
+            } catch {
+                // Ignore storage failures.
+            }
+        }
+    };
+
+    return (
+        <div className="min-h-screen bg-[#F8FAFC] pb-20 font-sans">
+            {/* Ineligible Modal */}
+            <AnimatePresence>
+                {ineligibleModal.visible && (
+                    <motion.div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIneligibleModal({ visible: false })}>
+                        <motion.div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl p-6" initial={{ scale: 0.98, y: 8 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.98, y: 8 }} onClick={e => e.stopPropagation()}>
+                            <h3 className="text-lg font-black text-slate-900">Not eligible to apply</h3>
+                            <p className="text-sm text-slate-600 mt-2">{ineligibleModal.reason || 'You do not meet the eligibility criteria for this event.'}</p>
+
+                            <div className="mt-6 flex gap-3 justify-end">
+                                <button type="button" onClick={() => { setIneligibleModal({ visible: false }); navigate(`/opportunities/${ineligibleModal.opp?._id}`); }} className="px-4 py-2 rounded-xl bg-white border border-slate-200 text-sm font-bold hover:bg-slate-50">View details</button>
+                                {user ? (
+                                    <button type="button" onClick={() => { setIneligibleModal({ visible: false }); navigate('/my-profile'); }} className="px-4 py-2 rounded-xl bg-[#6C3BFF] text-white text-sm font-black">Update profile</button>
+                                ) : (
+                                    <button type="button" onClick={() => { setIneligibleModal({ visible: false }); navigate(`/login?next=/profile`); }} className="px-4 py-2 rounded-xl bg-[#6C3BFF] text-white text-sm font-black">Login to update</button>
+                                )}
+                                {(ineligibleModal.opp && (ineligibleModal.opp.contact_email || ineligibleModal.opp.contactEmail)) ? (
+                                    <a href={`mailto:${ineligibleModal.opp.contact_email || ineligibleModal.opp.contactEmail}`} className="px-4 py-2 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-100 text-sm font-bold">Contact host</a>
+                                ) : null}
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+            {/* Header Section */}
+            <div className="relative pt-24 sm:pt-40 pb-16 sm:pb-36 px-3 sm:px-6 overflow-hidden bg-white isolate">
+                {/* Image Background */}
+                <div
+                    className="absolute inset-0 z-[-1] opacity-10 mix-blend-multiply transition-opacity duration-1000"
+                    style={{ backgroundImage: 'url("/images/hero_bg_light.png")', backgroundSize: 'cover', backgroundPosition: 'center' }}
+                />
+                <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-purple-300/30 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/3 pointer-events-none -z-10" />
+                <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-indigo-300/30 blur-[100px] rounded-full translate-y-1/3 -translate-x-1/3 pointer-events-none -z-10" />
+
+                <div className="max-w-7xl mx-auto relative z-10">
+                    <button
+                        onClick={() => navigate('/dashboard/learner')}
+                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-500 hover:text-slate-800 transition-all font-bold text-xs mb-8 group backdrop-blur-md shadow-sm"
+                    >
+                        <ChevronLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+                        Back to Dashboard
+                    </button>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+                        {/* Left Column: Messaging & Search */}
+                        <div className="col-span-1 lg:col-span-7 space-y-8">
+                            <div>
+                                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 text-purple-600 font-black text-[10px] uppercase tracking-[0.2em] border border-purple-100 mb-6 shadow-sm">
+                                    Discovery Engine
+                                </div>
+                                <h1 className="text-3xl sm:text-5xl lg:text-7xl font-black text-slate-900 tracking-tight leading-[1.05]">
+                                    Find Opportunities. <br className="hidden sm:block" />
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600">Build Your Future.</span>
+                                </h1>
+                                <p className="text-slate-600 text-lg sm:text-xl font-medium max-w-2xl mt-6 leading-relaxed">
+                                    Connect with top-tier organizations, showcase your expertise, and discover high-value roles that propel your career forward.
+                                </p>
+                            </div>
+
+                            {/* Premium Glassmorphic Search */}
+                            <div className="relative group max-w-2xl">
+                                <div className="absolute inset-0 bg-gradient-to-r from-purple-200 to-indigo-200 rounded-2xl blur-md opacity-40 group-focus-within:opacity-70 transition duration-500"></div>
+                                <div className="relative bg-white/90 backdrop-blur-xl rounded-2xl border border-slate-200 shadow-xl flex items-center overflow-hidden transition-all focus-within:border-purple-300">
+                                    <div className="pl-6 text-slate-400">
+                                        <Search size={22} className="group-focus-within:text-purple-600 transition-colors" />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        placeholder="Search roles, companies, keywords..."
+                                        className="w-full px-5 py-5 bg-transparent outline-none text-slate-900 text-base font-bold placeholder-slate-400"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                    />
+                                    {searchQuery && (
+                                        <button onClick={() => setSearchQuery('')} className="pr-6 text-slate-400 hover:text-slate-600 transition-colors">
+                                            <X size={20} />
+                                        </button>
+                                    )}
+                                    <button className="hidden sm:flex mr-2 px-6 py-3 bg-slate-900 text-white font-black text-sm uppercase tracking-widest rounded-xl hover:bg-slate-800 transition-colors shadow-md">
+                                        Search
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Stats/Trust Bar */}
+                            <div className="flex flex-wrap items-center gap-4 sm:gap-8 pt-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center border border-purple-100">
+                                        <Zap size={18} className="text-purple-600" />
+                                    </div>
+                                    <div>
+                                        <div className="text-slate-900 font-black text-lg leading-none">500+</div>
+                                        <div className="text-slate-500 text-[10px] uppercase font-bold tracking-widest mt-1">Active Roles</div>
+                                    </div>
+                                </div>
+                                <div className="hidden sm:block w-px h-10 bg-slate-200"></div>
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center border border-indigo-100">
+                                        <Building2 size={18} className="text-indigo-600" />
+                                    </div>
+                                    <div>
+                                        <div className="text-slate-900 font-black text-lg leading-none">Top 1%</div>
+                                        <div className="text-slate-500 text-[10px] uppercase font-bold tracking-widest mt-1">Organizations</div>
+                                    </div>
+                                </div>
+                                <div className="hidden sm:block w-px h-10 bg-slate-200"></div>
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center border border-emerald-100">
+                                        <TrendingUp size={18} className="text-emerald-600" />
+                                    </div>
+                                    <div>
+                                        <div className="text-slate-900 font-black text-lg leading-none">New</div>
+                                        <div className="text-slate-500 text-[10px] uppercase font-bold tracking-widest mt-1">Added Daily</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Right Column: Visual Storytelling */}
+                        <div className="col-span-1 lg:col-span-5 relative hidden md:block">
+                            <div className="relative w-full aspect-square max-w-[500px] mx-auto">
+                                {/* Glowing backdrop for visual */}
+                                <div className="absolute inset-0 bg-gradient-to-tr from-purple-400/20 to-indigo-400/20 rounded-full blur-3xl mix-blend-multiply" />
+
+                                {/* Floating 3D-like premium cards populated with realtime data */}
+                                {opportunities.slice(0, 3).map((opp: any, idx: number) => {
+                                    const yAnims = [[0, -15, 0], [0, 15, 0], [0, -10, 0]];
+                                    const delays = [0, 1, 2];
+                                    const durations = [6, 7, 5];
+                                    const classes = [
+                                        "absolute top-[10%] right-[10%] w-64 p-5 rounded-2xl bg-white/80 backdrop-blur-xl border border-slate-200 shadow-xl z-20 cursor-pointer hover:scale-105 transition-transform",
+                                        "absolute bottom-[20%] left-[0%] w-64 p-4 rounded-2xl bg-white/90 backdrop-blur-xl border border-slate-200 shadow-xl z-30 cursor-pointer hover:scale-105 transition-transform",
+                                        "absolute top-[40%] left-[15%] w-32 h-32 rounded-full bg-white/60 backdrop-blur-md border border-slate-200 flex items-center justify-center z-10 shadow-lg cursor-pointer hover:scale-105 transition-transform"
+                                    ];
+
+                                    if (idx === 2) {
+                                        return (
+                                            <motion.div
+                                                key={opp._id}
+                                                animate={{ y: yAnims[idx] }}
+                                                transition={{ duration: durations[idx], repeat: Infinity, ease: "easeInOut", delay: delays[idx] }}
+                                                className={classes[idx]}
+                                                onClick={() => navigate(`/opportunities/${opp._id}`)}
+                                            >
+                                                <Briefcase size={32} className="text-purple-400/50" />
+                                            </motion.div>
+                                        );
+                                    }
+
+                                    return (
+                                        <motion.div
+                                            key={opp._id}
+                                            animate={{ y: yAnims[idx] }}
+                                            transition={{ duration: durations[idx], repeat: Infinity, ease: "easeInOut", delay: delays[idx] }}
+                                            className={classes[idx]}
+                                            onClick={() => navigate(`/opportunities/${opp._id}`)}
+                                        >
+                                            <div className="flex items-center gap-3 mb-3">
+                                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-100 to-purple-100 border border-purple-200 flex shrink-0 items-center justify-center overflow-hidden">
+                                                    {opp.logo_url || opp.institution_logo_url || opp.image_url ? (
+                                                        <img src={opp.logo_url || opp.institution_logo_url || opp.image_url} alt={opp.organization} className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        <div className="w-full h-full bg-purple-50 flex items-center justify-center text-purple-600 font-bold text-xs">
+                                                            {opp.organization?.charAt(0).toUpperCase()}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="truncate">
+                                                    <div className="text-xs font-black text-slate-900 truncate">{opp.title}</div>
+                                                    <div className="text-[10px] font-bold text-slate-500 truncate">{opp.organization}</div>
+                                                </div>
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <span className={`px-2 py-1 rounded border text-[9px] font-bold uppercase truncate ${getTypeColor(opp.type)}`}>
+                                                    {opp.type}
+                                                </span>
+                                                {opp.location && opp.location.toLowerCase() !== 'remote' && (
+                                                    <span className="px-2 py-1 rounded border border-slate-200 text-[9px] font-bold uppercase text-slate-600 bg-slate-50 truncate">
+                                                        {formatOpportunityLocation(opp.location)}
+                                                    </span>
+                                                )}
+                                                {(!opp.location || opp.location.toLowerCase() === 'remote') && (
+                                                    <span className="px-2 py-1 rounded border border-slate-200 text-[9px] font-bold uppercase text-slate-600 bg-slate-50 truncate">
+                                                        Remote
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </motion.div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Category filters bridging dark/light */}
+            <div className="sticky top-0 z-40 bg-white/95 backdrop-blur-xl border-b border-slate-200/60 shadow-sm transition-all pt-14 sm:pt-20">
+                <div className="max-w-7xl mx-auto px-3 sm:px-6 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 overflow-x-auto hide-scrollbar -mx-3 px-3 sm:mx-0 sm:px-0" style={{ scrollbarWidth: 'none' }}>
+                        <span className="text-xs font-black text-slate-400 uppercase tracking-widest mr-1 shrink-0">Discover:</span>
+                        {typeOptions.map((type) => (
+                            <button
+                                key={type}
+                                onClick={() => setSelectedType(type)}
+                                className={`px-3.5 py-1.5 rounded-full text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap flex-shrink-0 ${selectedType === type
+                                    ? 'bg-slate-900 text-white shadow-md shadow-slate-900/20'
+                                    : 'bg-slate-100 text-slate-600 border border-transparent hover:border-slate-300 hover:bg-slate-50'
+                                    }`}
+                            >
+                                {type}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div className="flex items-center gap-2 w-full sm:w-auto shrink-0 mt-1 sm:mt-0">
+                        <button
+                            onClick={() => setIsFilterDropdownOpen((v) => !v)}
+                            className={`flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-[11px] sm:text-xs font-black uppercase tracking-widest transition-all ${isFilterDropdownOpen
+                                ? 'bg-purple-100 text-purple-700 border border-purple-200'
+                                : 'bg-white text-slate-700 border border-slate-200 hover:border-slate-300 hover:shadow-sm'
+                                }`}
+                        >
+                            <Filter size={14} /> Advanced Filters
+                            <motion.div animate={{ rotate: isFilterDropdownOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                                <ChevronDown size={14} />
+                            </motion.div>
+                        </button>
+                        
+                        <button
+                            onClick={() => {
+                                if (user && role === 'institution') {
+                                    navigate('/institution-dashboard?post=true');
+                                } else {
+                                    localStorage.removeItem('auth_token');
+                                    window.location.href = '/login?role=institution&next=' + encodeURIComponent('/institution-dashboard?post=true');
+                                }
+                            }}
+                            className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-[11px] sm:text-xs font-black uppercase tracking-widest bg-slate-900 text-white border border-slate-900 hover:bg-slate-800 transition-all shadow-sm"
+                        >
+                            <Plus size={14} /> Post Opportunity
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Filter Dropdown Mega Menu */}
+            <AnimatePresence>
+                {isFilterDropdownOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -10, scale: 0.98 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -10, scale: 0.98 }}
+                        transition={{ duration: 0.2 }}
+                        className="px-3 sm:px-6 pt-4 relative z-20"
+                    >
+                        <div className="max-w-7xl mx-auto bg-white/95 backdrop-blur-xl border border-slate-200 rounded-[24px] shadow-2xl shadow-slate-900/5 p-4 sm:p-8 space-y-6 sm:space-y-8 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-purple-400/10 rounded-full blur-[80px] pointer-events-none" />
+                            <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-400/10 rounded-full blur-[80px] pointer-events-none" />
+
+                            <div className="relative z-10">
+                                <AdvancedFilterPanel
+                                    selectedType={selectedType}
+                                    setSelectedType={setSelectedType}
+                                    selectedLocation={selectedLocation}
+                                    setSelectedLocation={setSelectedLocation}
+                                    selectedStatus={selectedStatus}
+                                    setSelectedStatus={setSelectedStatus}
+                                    selectedParticipation={selectedParticipation}
+                                    setSelectedParticipation={setSelectedParticipation}
+                                    selectedTeamSize={selectedTeamSize}
+                                    setSelectedTeamSize={setSelectedTeamSize}
+                                    selectedPayment={selectedPayment}
+                                    setSelectedPayment={setSelectedPayment}
+                                    selectedSkills={selectedSkills}
+                                    setSelectedSkills={setSelectedSkills}
+                                    collapsedSections={collapsedSections}
+                                    setCollapsedSections={setCollapsedSections}
+                                    resetFilters={resetFilters}
+                                    getTypeColor={getTypeColor}
+                                />
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Content Section */}
+            <div className="max-w-7xl mx-auto px-3 sm:px-6 mt-8">
+                {loading ? (
+                    <div className="space-y-8">
+                        {['Hackathons', 'Jobs', 'Internships'].map((section) => (
+                            <div key={section}>
+                                <div className="h-6 w-40 bg-slate-100 rounded-lg animate-pulse mb-4" />
+                                <div className="flex gap-4 overflow-hidden">
+                                    {Array.from({ length: 3 }).map((_, i) => (
+                                        <div key={i} className="w-80 shrink-0 bg-white rounded-2xl border border-slate-100 p-5 animate-pulse">
+                                            <div className="h-5 w-3/4 bg-slate-100 rounded mb-3" />
+                                            <div className="h-4 w-1/2 bg-slate-100 rounded mb-4" />
+                                            <div className="h-3 w-full bg-slate-100 rounded mb-2" />
+                                            <div className="h-3 w-2/3 bg-slate-100 rounded" />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                ) : filteredOpportunities.length > 0 ? (
+                    <div className="space-y-10">
+                        {(() => {
+                            const categoryConfig: { key: string; label: string; icon: React.ReactNode; color: string; match: (t: string) => boolean }[] = [
+                                { key: 'hackathon', label: 'Hackathons & Coding Challenges', icon: <Trophy size={20} />, color: 'text-purple-600', match: (t) => /hackathon|coding challenge|challenge/i.test(t) },
+                                { key: 'job', label: 'Jobs & Careers', icon: <Briefcase size={20} />, color: 'text-emerald-600', match: (t) => /job|role|career|hiring/i.test(t) },
+                                { key: 'internship', label: 'Internships & Training', icon: <Target size={20} />, color: 'text-blue-600', match: (t) => /internship|trainee|apprentice/i.test(t) },
+                                { key: 'competition', label: 'Competitions & Ideathons', icon: <Award size={20} />, color: 'text-orange-600', match: (t) => /competition|case competition|ideathon/i.test(t) },
+                                { key: 'workshop', label: 'Workshops & Bootcamps', icon: <Sparkles size={20} />, color: 'text-pink-600', match: (t) => /workshop|bootcamp|masterclass/i.test(t) },
+                                { key: 'conference', label: 'Conferences & Summits', icon: <Globe size={20} />, color: 'text-cyan-600', match: (t) => /conference|summit|expo|forum/i.test(t) },
+                            ];
+
+                            const grouped: Record<string, any[]> = {};
+                            const other: any[] = [];
+                            categoryConfig.forEach((c) => { grouped[c.key] = []; });
+
+                            filteredOpportunities.forEach((opp) => {
+                                const t = String(opp.type || '').toLowerCase();
+                                const matched = categoryConfig.find((c) => c.match(t));
+                                if (matched) {
+                                    grouped[matched.key].push(opp);
+                                } else {
+                                    other.push(opp);
+                                }
+                            });
+
+                            const sections = categoryConfig
+                                .map((c) => ({ ...c, items: grouped[c.key] }))
+                                .filter((s) => s.items.length > 0);
+
+                            if (other.length > 0) {
+                                sections.push({
+                                    key: 'other',
+                                    label: 'Other Opportunities',
+                                    icon: <Zap size={20} />,
+                                    color: 'text-slate-600',
+                                    match: () => false,
+                                    items: other,
+                                });
+                            }
+
+                            return sections.map((section) => (
+                                <div key={section.key}>
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+                                        <div className="flex items-center gap-3">
+                                            <div className={`w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center ${section.color} shadow-sm`}>
+                                                {section.icon}
+                                            </div>
+                                            <div>
+                                                <h2 className="text-lg font-black text-slate-900 tracking-tight">{section.label}</h2>
+                                                <p className="text-xs text-slate-400 font-semibold">{section.items.length} available</p>
+                                            </div>
+                                        </div>
+                                        <button
+                                            onClick={() => {
+                                                const typeMap: Record<string, string> = {
+                                                    hackathon: 'Hackathon', job: 'Job', internship: 'Internship',
+                                                    competition: 'Competition', workshop: 'Workshop', conference: 'Conference',
+                                                };
+                                                setSelectedType(typeMap[section.key] || 'All');
+                                                setIsFilterDropdownOpen(false);
+                                            }}
+                                            className="text-xs font-bold text-purple-600 hover:text-purple-800 transition-colors flex items-center gap-1"
+                                        >
+                                            View all <ChevronRight size={14} />
+                                        </button>
+                                    </div>
+
+                                    <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-4 -mx-3 px-3 sm:-mx-6 sm:px-6 snap-x snap-mandatory hide-scrollbar" style={{ scrollbarWidth: 'none' }}>
+                                        {section.items.map((opp: any, idx: number) => {
+                                            const isApplied = appliedIds.includes(opp._id);
+                                            const likelyEligible = clientSideEligible(opp, user);
+                                            const deadlineStr = getOpportunityDeadline(opp);
+                                            const daysLeft = deadlineStr ? Math.max(0, Math.ceil((new Date(deadlineStr).getTime() - Date.now()) / 86400000)) : null;
+
+                                            return (
+                                                <motion.div
+                                                    key={opp._id}
+                                                    initial={{ opacity: 0, y: 16 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    transition={{ delay: idx * 0.05, duration: 0.3 }}
+                                                    onClick={() => checkEligibilityThenNavigate(opp)}
+                                                    className={`w-[280px] sm:w-80 shrink-0 snap-start bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 transition-all duration-300 flex flex-col ${likelyEligible ? 'hover:shadow-lg hover:shadow-purple-900/5 hover:-translate-y-1 hover:border-purple-300/60 cursor-pointer' : 'opacity-70'}`}
+                                                >
+                                                    <div className="flex items-start justify-between mb-3">
+                                                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                                                            <div className="w-11 h-11 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 shrink-0 overflow-hidden">
+                                                                {opp.logo_url || opp.image_url || opp.institution_logo_url ? (
+                                                                    <img src={opp.logo_url || opp.image_url || opp.institution_logo_url} alt="" className="w-full h-full object-cover" />
+                                                                ) : opp.organization ? (
+                                                                    <span className="text-sm font-black text-slate-300">{opp.organization.charAt(0).toUpperCase()}</span>
+                                                                ) : (
+                                                                    <Building2 size={18} />
+                                                                )}
+                                                            </div>
+                                                            <div className="min-w-0">
+                                                                <h3 className="text-sm font-bold text-slate-900 truncate leading-tight">{opp.title}</h3>
+                                                                <p className="text-xs text-slate-500 truncate mt-0.5">{opp.organization}</p>
+                                                            </div>
+                                                        </div>
+                                                        {isApplied && (
+                                                            <span className="shrink-0 px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-slate-900 text-white">Applied</span>
+                                                        )}
+                                                    </div>
+
+                                                    <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed mb-4 flex-grow">
+                                                        {plainTextFromRichContent(opp.description)}
+                                                    </p>
+
+                                                    <div className="flex flex-wrap gap-1.5 mb-4">
+                                                        {opp.location && (
+                                                            <span className="px-2 py-0.5 rounded-md text-[9px] font-bold uppercase bg-slate-50 text-slate-600 border border-slate-100 flex items-center gap-1">
+                                                                <Globe size={10} /> {opp.location}
+                                                            </span>
+                                                        )}
+                                                        {opp.prize_pool && (
+                                                            <span className="px-2 py-0.5 rounded-md text-[9px] font-bold uppercase bg-emerald-50 text-emerald-700 border border-emerald-100 flex items-center gap-1">
+                                                                <DollarSign size={10} /> {opp.prize_pool}
+                                                            </span>
+                                                        )}
+                                                        {opp.participation_type && (
+                                                            <span className="px-2 py-0.5 rounded-md text-[9px] font-bold uppercase bg-indigo-50 text-indigo-700 border border-indigo-100 flex items-center gap-1">
+                                                                <Users size={10} /> {opp.participation_type}
+                                                            </span>
+                                                        )}
+                                                    </div>
+
+                                                    <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+                                                        <div className="text-xs font-bold text-slate-500">
+                                                            {deadlineStr ? (
+                                                                daysLeft !== null && daysLeft <= 3 ? (
+                                                                    <span className="text-red-500">{daysLeft}d left</span>
+                                                                ) : (
+                                                                    <span>{daysLeft}d left</span>
+                                                                )
+                                                            ) : 'No deadline'}
+                                                        </div>
+                                                        <ArrowRight size={16} className="text-slate-300 group-hover:text-purple-500 transition-colors" />
+                                                    </div>
+                                                </motion.div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            ));
+                        })()}
+                    </div>
+                ) : (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+                        className="bg-white rounded-[32px] p-8 sm:p-16 text-center border border-slate-200/80 shadow-sm flex flex-col items-center justify-center min-h-[400px]"
+                    >
+                        <div className="relative mb-8 group">
+                            <div className="absolute inset-0 bg-purple-200 blur-2xl rounded-full opacity-50 group-hover:opacity-70 transition duration-500"></div>
+                            <div className="w-24 h-24 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl flex items-center justify-center relative border border-purple-100 shadow-sm transform group-hover:rotate-3 transition duration-500">
+                                <Search size={40} className="text-purple-600 drop-shadow-sm" />
+                            </div>
+                        </div>
+                        <h2 className="text-xl sm:text-3xl font-black text-slate-900 mb-3 tracking-tight">No matching opportunities</h2>
+                        <p className="text-slate-500 text-lg font-medium max-w-md mb-8">
+                            We couldn't find any opportunities matching your current filters. Try adjusting your search criteria.
+                        </p>
+                        <button
+                            onClick={resetFilters}
+                            className="px-6 py-3 rounded-xl bg-slate-900 text-white font-black text-sm uppercase tracking-widest hover:bg-slate-800 hover:shadow-lg hover:shadow-slate-900/20 transition-all hover:-translate-y-0.5"
+                        >
+                            Clear All Filters
+                        </button>
+                    </motion.div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+const toggleSection = (section: string, setter: React.Dispatch<React.SetStateAction<Record<string, boolean>>>) => {
+    setter(prev => ({ ...prev, [section]: !prev[section] }));
+};
+
+interface AdvancedFilterPanelProps {
+    selectedType: string;
+    setSelectedType: React.Dispatch<React.SetStateAction<string>>;
+    selectedLocation: string;
+    setSelectedLocation: React.Dispatch<React.SetStateAction<string>>;
+    selectedStatus: string;
+    setSelectedStatus: React.Dispatch<React.SetStateAction<string>>;
+    selectedParticipation: string;
+    setSelectedParticipation: React.Dispatch<React.SetStateAction<string>>;
+    selectedTeamSize: string;
+    setSelectedTeamSize: React.Dispatch<React.SetStateAction<string>>;
+    selectedPayment: string;
+    setSelectedPayment: React.Dispatch<React.SetStateAction<string>>;
+    selectedSkills: string[];
+    setSelectedSkills: React.Dispatch<React.SetStateAction<string[]>>;
+    collapsedSections: Record<string, boolean>;
+    setCollapsedSections: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
+    resetFilters: () => void;
+    getTypeColor: (type: string) => string;
+}
+
+const CollapsibleSection: React.FC<{
+    title: string;
+    icon: React.ReactNode;
+    sectionKey: string;
+    collapsed: boolean;
+    onToggle: () => void;
+    children: React.ReactNode;
+}> = ({ title, icon, sectionKey, collapsed, onToggle, children }) => (
+    <div className="border border-slate-100 rounded-2xl overflow-hidden">
+        <button
+            onClick={onToggle}
+            className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 hover:bg-slate-100 transition-colors"
+        >
+            <div className="flex items-center gap-2">
+                {icon}
+                <span className="text-xs font-black uppercase tracking-widest text-slate-600">{title}</span>
+            </div>
+            {collapsed ? <ChevronDown size={16} className="text-slate-400" /> : <ChevronUp size={16} className="text-slate-400" />}
+        </button>
+        {!collapsed && <div className="p-4">{children}</div>}
+    </div>
+);
+
+const AdvancedFilterPanel: React.FC<AdvancedFilterPanelProps> = ({
+    selectedType, setSelectedType,
+    selectedLocation, setSelectedLocation,
+    selectedStatus, setSelectedStatus,
+    selectedParticipation, setSelectedParticipation,
+    selectedTeamSize, setSelectedTeamSize,
+    selectedPayment, setSelectedPayment,
+    selectedSkills, setSelectedSkills,
+    collapsedSections, setCollapsedSections,
+    resetFilters, getTypeColor,
+}) => {
+    const isEventCategory = ['Hackathon', 'Competition', 'Conference', 'Workshop', 'Challenge'].includes(selectedType);
+    const dynamicLocationOptions = isEventCategory
+        ? ['All', 'Online', 'Offline', 'Hybrid']
+        : ['All', 'Remote', 'On-site', 'Hybrid'];
+
+    const statusOptions = ['All', 'Live', 'Upcoming', 'Completed'];
+    const participationOptions = ['All', 'Individual', 'Team', 'Both'];
+    const teamSizeOptions = ['All', 'Solo', 'Small (2-5)', 'Medium (6-10)', 'Large (10+)'];
+    const paymentOptions = ['All', 'Paid', 'Free'];
+    const skillSuggestions = ['Python', 'JavaScript', 'React', 'Node.js', 'AI/ML', 'Data Science', 'UI/UX', 'Blockchain', 'Cloud', 'DevOps', 'Mobile', 'Web'];
+
+    return (
+        <>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
+                <div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-purple-500">Filters</p>
+                    <h2 className="text-lg font-black text-slate-900 mt-1">Narrow results</h2>
+                </div>
+                <button
+                    onClick={resetFilters}
+                    className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-700 transition-colors"
+                >
+                    Reset
+                </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <CollapsibleSection
+                    title="Location" icon={<MapPin size={16} className="text-purple-500" />}
+                    sectionKey="location" collapsed={collapsedSections.location}
+                    onToggle={() => toggleSection('location', setCollapsedSections)}
+                >
+                    <div className="grid grid-cols-2 gap-2">
+                        {dynamicLocationOptions.map((loc) => (
+                            <button key={loc} onClick={() => setSelectedLocation(loc)}
+                                className={`px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${selectedLocation === loc ? 'bg-purple-600 text-white border-purple-600' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'}`}
+                            >{loc}</button>
+                        ))}
+                    </div>
+                </CollapsibleSection>
+
+                <CollapsibleSection
+                    title="Category" icon={<Briefcase size={16} className="text-purple-500" />}
+                    sectionKey="category" collapsed={collapsedSections.category}
+                    onToggle={() => toggleSection('category', setCollapsedSections)}
+                >
+                    <div className="grid grid-cols-2 gap-2">
+                        {typeOptions.map((type) => (
+                            <button key={type} onClick={() => setSelectedType(type)}
+                                className={`px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${selectedType === type ? 'bg-slate-900 text-white border-slate-900' : `bg-white border-slate-200 hover:border-slate-300 ${getTypeColor(type)}`}`}
+                            >{type}</button>
+                        ))}
+                    </div>
+                </CollapsibleSection>
+
+                <CollapsibleSection
+                    title="Status" icon={<Star size={16} className="text-purple-500" />}
+                    sectionKey="status" collapsed={collapsedSections.status}
+                    onToggle={() => toggleSection('status', setCollapsedSections)}
+                >
+                    <div className="grid grid-cols-2 gap-2">
+                        {statusOptions.map((s) => (
+                            <button key={s} onClick={() => setSelectedStatus(s)}
+                                className={`px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${selectedStatus === s ? 'bg-purple-600 text-white border-purple-600' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'}`}
+                            >{s}</button>
+                        ))}
+                    </div>
+                </CollapsibleSection>
+
+                <CollapsibleSection
+                    title="Team Size" icon={<Users size={16} className="text-purple-500" />}
+                    sectionKey="teamSize" collapsed={collapsedSections.teamSize}
+                    onToggle={() => toggleSection('teamSize', setCollapsedSections)}
+                >
+                    <div className="grid grid-cols-2 gap-2">
+                        {teamSizeOptions.map((t) => (
+                            <button key={t} onClick={() => setSelectedTeamSize(t)}
+                                className={`px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${selectedTeamSize === t ? 'bg-purple-600 text-white border-purple-600' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'}`}
+                            >{t}</button>
+                        ))}
+                    </div>
+                </CollapsibleSection>
+
+                <CollapsibleSection
+                    title="Participation" icon={<Users size={16} className="text-purple-500" />}
+                    sectionKey="participation" collapsed={collapsedSections.participation}
+                    onToggle={() => toggleSection('participation', setCollapsedSections)}
+                >
+                    <div className="grid grid-cols-2 gap-2">
+                        {participationOptions.map((p) => (
+                            <button key={p} onClick={() => setSelectedParticipation(p)}
+                                className={`px-3 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${selectedParticipation === p ? 'bg-purple-600 text-white border-purple-600' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'}`}
+                            >{p}</button>
+                        ))}
+                    </div>
+                </CollapsibleSection>
+
+                <CollapsibleSection
+                    title="Skills" icon={<Star size={16} className="text-purple-500" />}
+                    sectionKey="skills" collapsed={collapsedSections.skills}
+                    onToggle={() => toggleSection('skills', setCollapsedSections)}
+                >
+                    <div className="flex flex-wrap gap-2">
+                        {skillSuggestions.map((skill) => {
+                            const isSelected = selectedSkills.includes(skill);
+                            return (
+                                <button key={skill} onClick={() => setSelectedSkills(prev => isSelected ? prev.filter(s => s !== skill) : [...prev, skill])}
+                                    className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${isSelected ? 'bg-purple-600 text-white border-purple-600' : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'}`}
+                                >{skill}</button>
+                            );
+                        })}
+                    </div>
+                    {selectedSkills.length > 0 && (
+                        <button onClick={() => setSelectedSkills([])} className="mt-2 text-[10px] font-black uppercase tracking-widest text-purple-500 hover:text-purple-700 transition-colors">
+                            Clear all ({selectedSkills.length})
+                        </button>
+                    )}
+                </CollapsibleSection>
+            </div>
+        </>
+    );
+};
+
+export default OpportunitiesList;
+

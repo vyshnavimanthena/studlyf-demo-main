@@ -1,0 +1,164 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{calc}
+
+% Use Helvetica for that clean Swiss look (works with pdflatex)
+\usepackage[scaled]{helvet}
+\renewcommand\familydefault{\sfdefault}
+
+% Set page margins
+\geometry{
+    top=0.7in,
+    bottom=0.7in,
+    left=0.75in,
+    right=0.75in
+}
+
+% Define colors
+\definecolor{swissred}{RGB}{213,0,12} % Swiss-themed red for accents
+\definecolor{darkgray}{RGB}{51,51,51}
+
+% Remove page numbering
+\pagestyle{empty}
+
+% Remove paragraph indentation
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+
+\begin{document}
+
+% Header section
+\begin{minipage}[t]{0.55\textwidth}
+    {\Huge\bfseries \VAR{name|e}}\\[0.3em]
+    {\color{swissred}\large\bfseries \VAR{(experience[0].role if experience else "Software Engineer")|e}}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.43\textwidth}
+    \raggedleft
+    \small
+    \VAR{address|e}\\[0.3em]
+    {\color{swissred}\VAR{phone|e}}\\
+    {\color{swissred}\VAR{email|e}}\\
+    \BLOCK{ if linkedin or github }
+    {\footnotesize \BLOCK{ if linkedin }LI: \VAR{linkedin|e}\BLOCK{ endif } \BLOCK{ if github } | GH: \VAR{github|e}\BLOCK{ endif }}
+    \BLOCK{ endif }
+\end{minipage}
+
+\vspace{2em}
+
+% Summary Section
+\BLOCK{ if summary }
+\begin{minipage}[t]{0.2\textwidth}
+    \raggedright
+    {\large\bfseries\color{darkgray}Objective}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.78\textwidth}
+    \hrule
+    \vspace{0.6em}
+    \VAR{summary|e}
+\end{minipage}
+\vspace{1.5em}
+\BLOCK{ endif }
+
+% Experience Section
+\BLOCK{ if experience }
+\begin{minipage}[t]{0.2\textwidth}
+    \raggedright
+    {\large\bfseries\color{darkgray}Experience}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.78\textwidth}
+    \hrule
+    \vspace{0.6em}
+    \BLOCK{ for exp in experience }
+    \textbf{\VAR{exp.company|e}} / \VAR{exp.role|e}\\
+    {\small\textit{\VAR{exp.year|e} \BLOCK{ if exp.location }-- \VAR{exp.location|e}\BLOCK{ endif }}}\\[0.4em]
+    \VAR{exp.details|e}
+    \vspace{0.8em}
+    \BLOCK{ endfor }
+\end{minipage}
+\vspace{1.5em}
+\BLOCK{ endif }
+
+% Projects Section
+\BLOCK{ if projects }
+\begin{minipage}[t]{0.2\textwidth}
+    \raggedright
+    {\large\bfseries\color{darkgray}Projects}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.78\textwidth}
+    \hrule
+    \vspace{0.6em}
+    \BLOCK{ for proj in projects }
+    \textbf{\VAR{proj.name|e}} | \textit{\VAR{proj.technologies|e}}\\[0.2em]
+    \VAR{proj.description|e}
+    \vspace{0.8em}
+    \BLOCK{ endfor }
+\end{minipage}
+\vspace{1.5em}
+\BLOCK{ endif }
+
+% Education Section
+\BLOCK{ if education }
+\begin{minipage}[t]{0.2\textwidth}
+    \raggedright
+    {\large\bfseries\color{darkgray}Education}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.78\textwidth}
+    \hrule
+    \vspace{0.6em}
+    \BLOCK{ for edu in education }
+    \textbf{\VAR{edu.college|e}} / \VAR{edu.degree|e}\\
+    {\small\textit{\VAR{edu.year|e} \BLOCK{ if edu.location }-- \VAR{edu.location|e}\BLOCK{ endif }}}
+    \vspace{0.6em}
+    \BLOCK{ endfor }
+\end{minipage}
+\vspace{1.5em}
+\BLOCK{ endif }
+
+% Certifications Section
+\BLOCK{ if certifications }
+\begin{minipage}[t]{0.2\textwidth}
+    \raggedright
+    {\large\bfseries\color{darkgray}Licensing}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.78\textwidth}
+    \hrule
+    \vspace{0.6em}
+    \begin{itemize}[leftmargin=*, nosep]
+        \BLOCK{ for cert in certifications }
+        \item \VAR{cert|e}
+        \BLOCK{ endfor }
+    \end{itemize}
+\end{minipage}
+\vspace{1.5em}
+\BLOCK{ endif }
+
+% Skills Section
+\BLOCK{ if skills }
+\begin{minipage}[t]{0.2\textwidth}
+    \raggedright
+    {\large\bfseries\color{darkgray}Skills}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.78\textwidth}
+    \hrule
+    \vspace{0.6em}
+    \begin{itemize}[leftmargin=*, nosep]
+        \BLOCK{ for skill in skills }
+        \item \VAR{skill|e}
+        \BLOCK{ endfor }
+    \end{itemize}
+\end{minipage}
+\BLOCK{ endif }
+
+\end{document}

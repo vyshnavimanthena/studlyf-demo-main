@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{name}} - Ocean Minimal</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600&display=swap');
+
+        :root {
+            --bg: #0f172a; /* Slate 900 */
+            --surface: #1e293b; /* Slate 800 */
+            --text: #f1f5f9; /* Slate 100 */
+            --muted: #94a3b8; /* Slate 400 */
+            --border: #334155; /* Slate 700 */
+            --accent: #14b8a6; /* Ocean Teal */
+            --accent-light: rgba(20, 184, 166, 0.15);
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'Space Grotesk', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background: var(--bg);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            margin: auto;
+            padding: 0 40px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+        }
+
+        /* Navigation */
+        nav {
+            padding: 24px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--text);
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--muted);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--accent);
+        }
+
+        /* Hero */
+        .hero {
+            padding: 100px 0 80px;
+        }
+
+        .subtitle {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 18px;
+        }
+
+        h1 {
+            font-size: clamp(3rem, 7vw, 5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -1.5px;
+            color: var(--text);
+            margin-bottom: 24px;
+        }
+
+        .hero p {
+            font-size: clamp(1.1rem, 1.8vw, 1.25rem);
+            color: var(--muted);
+            max-width: 700px;
+        }
+
+        /* Subheadings */
+        h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-top: 80px;
+            margin-bottom: 32px;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        h2::after {
+            content: '';
+            flex-grow: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* Skills Layout */
+        #skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+
+        .skill-tag {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text);
+            transition: all 0.25s;
+            cursor: pointer;
+        }
+
+        .skill-tag:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        /* Grid Framework */
+        #projects-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            #projects-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        #experience-container,
+        #certifications-container {
+            display: grid;
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .project-card,
+        .timeline-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .project-card:hover,
+        .timeline-item:hover {
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(20, 184, 166, 0.05);
+        }
+
+        .project-card h3,
+        .timeline-item h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+
+        .project-card p,
+        .timeline-item p {
+            color: var(--muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .project-tech-bar {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+
+        .project-card a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text) !important;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            width: fit-content;
+            transition: all 0.3s;
+        }
+
+        .project-card a:hover {
+            background: var(--accent);
+            color: var(--bg) !important;
+            border-color: var(--accent);
+        }
+
+        /* Timeline grid elements */
+        .timeline-item {
+            display: grid;
+            grid-template-columns: 160px 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 576px) {
+            .timeline-item {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+        }
+
+        .timeline-date-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .timeline-date {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-weight: 600;
+            background: var(--accent-light);
+            padding: 4px 12px;
+            border-radius: 6px;
+            width: fit-content;
+        }
+
+        .timeline-item h3 {
+            margin: 0 0 4px;
+        }
+
+        .timeline-item h4 {
+            font-size: 0.95rem;
+            color: var(--muted);
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .verify-link {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-decoration: underline;
+            display: inline-block;
+            margin-top: 14px;
+            transition: color 0.3s;
+        }
+
+        .verify-link:hover {
+            color: var(--text);
+        }
+
+        /* Contact Section */
+        .contact-section {
+            padding: 80px 0;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+
+        .contact-section h2 {
+            border: none;
+            margin-top: 0;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 16px;
+            justify-content: center;
+        }
+
+        .contact-section p {
+            color: var(--muted);
+            max-width: 500px;
+            margin: 0 auto 30px;
+            font-size: 1.1rem;
+        }
+
+        .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 32px;
+            background: var(--accent);
+            color: var(--bg);
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(20, 184, 166, 0.3);
+        }
+
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- Navigation -->
+        <nav>
+            <div class="logo">{{name}}</div>
+            <a href="mailto:{{email}}" class="nav-link">Get In Touch</a>
+        </nav>
+    </div>
+
+    <!-- Hero Area -->
+    <header class="hero">
+        <div class="container">
+            <div class="subtitle">Ocean Minimal Resume</div>
+            <h1>Hello, I'm {{name}}.</h1>
+            <p>{{summary}}</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- SKILLS -->
+        <h2>My Skills</h2>
+        <div class="card" id="skills-container">
+            {% for skill in skills %}
+            <span class="skill-tag">{{skill}}</span>
+            {% endfor %}
+        </div>
+
+        <!-- PROJECTS -->
+        <h2>Selected Projects</h2>
+        <div id="projects-container">
+            {% for project in projects %}
+            <div class="project-card">
+                <div>
+                    <div class="project-tech-bar">{{project.technologies}}</div>
+                    <h3>{{project.name}}</h3>
+                    <p>{{project.description}}</p>
+                </div>
+                {% if project.link %}
+                <a href="{{project.link}}" target="_blank">View Project</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- EXPERIENCE -->
+        <h2>Work Experience</h2>
+        <div id="experience-container">
+            {% for exp in experience %}
+            <div class="timeline-item">
+                <div class="timeline-date-wrapper">
+                    <span class="timeline-date">{{exp.year}}</span>
+                </div>
+                <div>
+                    <h3>{{exp.role}}</h3>
+                    <h4>{{exp.company}}</h4>
+                    <p>{{exp.details}}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- CERTIFICATIONS -->
+        {% if certifications %}
+        <h2>Certifications</h2>
+        <div id="certifications-container">
+            {% for cert in certifications %}
+            <div class="timeline-item">
+                <div class="timeline-date-wrapper">
+                    <span class="timeline-date">{{cert.date}}</span>
+                </div>
+                <div>
+                    <h3>{{cert.name}}</h3>
+                    <h4>{{cert.issuer}}</h4>
+                    {% if cert.link %}
+                    <a href="{{cert.link}}" target="_blank" class="verify-link">Verify &rarr;</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Contact & Footer -->
+    <footer class="contact-section">
+        <div class="container">
+            <h2>Let's Work Together</h2>
+            <p>Feel free to reach out for collaborations, project inquiries, or just a friendly hello.</p>
+            <a href="mailto:{{email}}" class="contact-btn">Email Me</a>
+        </div>
+    </footer>
+
+
+</body>
+
+</html>

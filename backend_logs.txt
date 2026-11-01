@@ -1,0 +1,48 @@
+backend-1  | INFO:weasyprint.progress:Step 2 - Fetching and parsing CSS - CSS string
+backend-1  | INFO:weasyprint.progress:Step 2 - Fetching and parsing CSS - CSS string
+backend-1  | INFO:weasyprint.progress:Step 2 - Fetching and parsing CSS - CSS string
+backend-1  | INFO:     Started server process [1]
+backend-1  | INFO:     Waiting for application startup.
+backend-1  | INFO:db_service:Connected to MongoDB: studlyf
+backend-1  | INFO:db_service:All production indexes ensured successfully
+backend-1  | INFO:db_service:Database connected and indexes ensured
+backend-1  | INFO:main_service:Background Stage Email Queue Worker spawned successfully
+backend-1  | INFO:main_service:Application startup completed successfully
+backend-1  | INFO:email_queue_service:Email queue worker started
+backend-1  | INFO:main_service:DB diagnostics written to /db_diagnostics.txt
+backend-1  | INFO:apscheduler.scheduler:Adding job tentatively -- it will be properly scheduled when the scheduler starts
+backend-1  | INFO:apscheduler.scheduler:Adding job tentatively -- it will be properly scheduled when the scheduler starts
+backend-1  | INFO:apscheduler.scheduler:Adding job tentatively -- it will be properly scheduled when the scheduler starts
+backend-1  | INFO:apscheduler.scheduler:Adding job tentatively -- it will be properly scheduled when the scheduler starts
+backend-1  | INFO:apscheduler.scheduler:Added job "ReminderService.send_judge_reminders" to job store "default"
+backend-1  | INFO:apscheduler.scheduler:Added job "ReminderService.send_participant_reminders" to job store "default"
+backend-1  | INFO:apscheduler.scheduler:Added job "ReminderService.send_24h_participant_reminders" to job store "default"
+backend-1  | INFO:apscheduler.scheduler:Added job "ReminderService.send_1h_participant_reminders" to job store "default"
+backend-1  | INFO:apscheduler.scheduler:Scheduler started
+backend-1  | INFO:main_service:Background reminder scheduler started
+backend-1  | INFO:main_service:Certificate generation background worker started
+backend-1  | INFO:main_service:Mounted certificates directory at /app/artifacts/certs
+backend-1  | INFO:main_service:Mounted uploads directory at /app/uploads
+backend-1  | INFO:db_service:Connected to MongoDB: studlyf
+backend-1  | INFO:db_service:All production indexes ensured successfully
+backend-1  | INFO:db_service:Database connected and indexes ensured
+backend-1  | INFO:     Application startup complete.
+backend-1  | INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+backend-1  | INFO:main_service:[PERF] 162.37ms - GET /api/company-prep/progress
+backend-1  | INFO:     192.168.65.1:40112 - "GET /api/company-prep/progress?user_id=d2295ad3-05a4-4e20-a0fa-92c85c96bd61 HTTP/1.1" 200 OK
+backend-1  | INFO:main_service:[PERF] 2.03ms - POST /api/company-prep/progress
+backend-1  | INFO:main_service:[PERF] 1.20ms - POST /api/company-prep/progress
+backend-1  | INFO:     192.168.65.1:43735 - "POST /api/company-prep/progress HTTP/1.1" 200 OK
+backend-1  | INFO:     192.168.65.1:59813 - "POST /api/company-prep/progress HTTP/1.1" 200 OK
+backend-1  | INFO:main_service:[PERF] 4.60ms - GET /api/company-prep/progress
+backend-1  | INFO:     192.168.65.1:56013 - "GET /api/company-prep/progress?user_id=d2295ad3-05a4-4e20-a0fa-92c85c96bd61 HTTP/1.1" 200 OK
+backend-1  | INFO:main_service:[PERF] 6.00ms - POST /api/company-prep/progress
+backend-1  | INFO:     192.168.65.1:39670 - "POST /api/company-prep/progress HTTP/1.1" 200 OK
+backend-1  | INFO:main_service:[PERF] 4.59ms - POST /api/company-prep/progress
+backend-1  | INFO:     192.168.65.1:48719 - "POST /api/company-prep/progress HTTP/1.1" 200 OK
+backend-1  | INFO:main_service:[PERF] 4.45ms - GET /api/company-prep/progress
+backend-1  | INFO:     192.168.65.1:46904 - "GET /api/company-prep/progress?user_id=d2295ad3-05a4-4e20-a0fa-92c85c96bd61 HTTP/1.1" 200 OK
+backend-1  | INFO:main_service:[PERF] 7.25ms - POST /api/company-prep/progress
+backend-1  | INFO:     192.168.65.1:61044 - "POST /api/company-prep/progress HTTP/1.1" 200 OK
+backend-1  | INFO:main_service:[PERF] 6.78ms - POST /api/company-prep/progress
+backend-1  | INFO:     192.168.65.1:24658 - "POST /api/company-prep/progress HTTP/1.1" 200 OK

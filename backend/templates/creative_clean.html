@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{name}} - Creative</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+        :root {
+            --bg: #fdfdfb;
+            --surface: #ffffff;
+            --text: #191c1f;
+            --muted: #5e666e;
+            --border: #f0eff7;
+            --accent: #f43f5e; /* Elegant Rose */
+            --accent-light: #ffe4e6;
+            --font-display: 'Outfit', sans-serif;
+            --font-mono: 'Space Grotesk', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background: var(--bg);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 32px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+        }
+
+        /* Nav Layout */
+        nav {
+            padding: 24px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--text);
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 10px 20px;
+            border-radius: 99px;
+            background: var(--border);
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* Hero Section */
+        .header-bg {
+            padding: 100px 0 80px;
+            position: relative;
+            overflow: hidden;
+            background: radial-gradient(circle at 80% 20%, rgba(244, 63, 94, 0.05), transparent 40%);
+        }
+
+        h1 {
+            font-size: clamp(3.2rem, 8vw, 5.8rem);
+            line-height: 1.05;
+            font-weight: 900;
+            letter-spacing: -2px;
+            max-width: 900px;
+            color: var(--text);
+            margin-bottom: 24px;
+        }
+
+        .subtitle {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            color: var(--accent);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 16px;
+        }
+
+        .header-bg p {
+            font-size: clamp(1.1rem, 2vw, 1.3rem);
+            line-height: 1.6;
+            color: var(--muted);
+            max-width: 700px;
+            margin-top: 24px;
+        }
+
+        /* Structured Titles */
+        h2 {
+            margin-top: 100px;
+            margin-bottom: 40px;
+            font-size: 0.85rem;
+            font-family: 'Poppins', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--muted);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+
+        /* Skills Tag wrap */
+        #skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 60px;
+        }
+
+        .skill-tag {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 14px 22px;
+            border-radius: 99px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.01);
+        }
+
+        .skill-tag:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+            color: var(--accent);
+            box-shadow: 0 10px 20px rgba(244, 63, 94, 0.08);
+        }
+
+        /* Card Layout Grids */
+        #projects-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+            margin-bottom: 60px;
+        }
+
+        @media (max-width: 768px) {
+            #projects-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        #experience-container,
+        #certifications-container {
+            display: grid;
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        .project-card,
+        .timeline-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 28px;
+            padding: 40px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .project-card:hover,
+        .timeline-item:hover {
+            transform: translateY(-6px);
+            border-color: rgba(244, 63, 94, 0.2);
+            box-shadow: 0 20px 40px rgba(244, 63, 94, 0.05);
+        }
+
+        .project-card h3,
+        .timeline-item h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .project-card p,
+        .timeline-item p {
+            color: var(--muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .project-tech-bar {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .project-card a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            background: var(--text);
+            color: var(--surface) !important;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            width: fit-content;
+            transition: all 0.3s;
+        }
+
+        .project-card a:hover {
+            background: var(--accent);
+            transform: translateY(-1px);
+        }
+
+        /* Timeline Items (Experience & Certifications) */
+        .timeline-item {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 576px) {
+            .timeline-item {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+        }
+
+        .timeline-date-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .timeline-date {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-weight: 700;
+            background: var(--accent-light);
+            width: fit-content;
+            padding: 4px 12px;
+            border-radius: 99px;
+            margin-bottom: 8px;
+        }
+
+        .timeline-item h3 {
+            margin: 0 0 6px;
+        }
+
+        .timeline-item h4 {
+            font-size: 0.95rem;
+            color: var(--muted);
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .verify-link {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text);
+            text-decoration: underline;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 14px;
+            transition: color 0.3s;
+        }
+
+        .verify-link:hover {
+            color: var(--accent);
+        }
+
+        /* Footer / Contact CTA */
+        .contact-section {
+            margin-top: 100px;
+            padding: 80px 0;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            background: radial-gradient(circle at 50% 100%, rgba(244, 63, 94, 0.03), transparent 60%);
+        }
+
+        .contact-section h2 {
+            border: none;
+            margin-top: 0;
+            font-size: clamp(2.2rem, 5vw, 3.6rem);
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            color: var(--text);
+            margin-bottom: 16px;
+        }
+
+        .contact-section p {
+            color: var(--muted);
+            max-width: 500px;
+            margin: 0 auto 32px;
+            font-size: 1.1rem;
+        }
+
+        .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 36px;
+            background: var(--text);
+            color: var(--bg);
+            border-radius: 14px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+        }
+
+        .contact-btn:hover {
+            background: var(--accent);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(244, 63, 94, 0.2);
+        }
+
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- Navigation -->
+        <nav>
+            <div class="logo">{{name}}</div>
+            <a href="mailto:{{email}}" class="nav-link">Get In Touch</a>
+        </nav>
+    </div>
+
+    <!-- Hero Area -->
+    <header class="header-bg">
+        <div class="container">
+            <div class="subtitle">Creative Builder</div>
+            <h1>Hello, I'm {{name}}.</h1>
+            <p>{{summary}}</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- SKILLS -->
+        <h2>My Skills</h2>
+        <div class="card" id="skills-container">
+            {% for skill in skills %}
+            <span class="skill-tag">{{skill}}</span>
+            {% endfor %}
+        </div>
+
+        <!-- PROJECTS -->
+        <h2>Selected Projects</h2>
+        <div id="projects-container">
+            {% for project in projects %}
+            <div class="project-card">
+                <div>
+                    <div class="project-tech-bar">{{project.technologies}}</div>
+                    <h3>{{project.name}}</h3>
+                    <p>{{project.description}}</p>
+                </div>
+                {% if project.link %}
+                <a href="{{project.link}}" target="_blank">View Project</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- EXPERIENCE -->
+        <h2>Work Experience</h2>
+        <div id="experience-container">
+            {% for exp in experience %}
+            <div class="timeline-item">
+                <div class="timeline-date-wrapper">
+                    <span class="timeline-date">{{exp.year}}</span>
+                </div>
+                <div>
+                    <h3>{{exp.role}}</h3>
+                    <h4>{{exp.company}}</h4>
+                    <p>{{exp.details}}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- CERTIFICATIONS -->
+        {% if certifications %}
+        <h2>Certifications</h2>
+        <div id="certifications-container">
+            {% for cert in certifications %}
+            <div class="timeline-item">
+                <div class="timeline-date-wrapper">
+                    <span class="timeline-date">{{cert.date}}</span>
+                </div>
+                <div>
+                    <h3>{{cert.name}}</h3>
+                    <h4>{{cert.issuer}}</h4>
+                    {% if cert.link %}
+                    <a href="{{cert.link}}" target="_blank" class="verify-link">Verify &rarr;</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Contact & Footer -->
+    <footer class="contact-section">
+        <div class="container">
+            <h2>Let's Work Together</h2>
+            <p>Feel free to reach out for collaborations, project inquiries, or just a friendly hello.</p>
+            <a href="mailto:{{email}}" class="contact-btn">Email Me</a>
+        </div>
+    </footer>
+
+
+</body>
+
+</html>

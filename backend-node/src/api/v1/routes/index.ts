@@ -1,0 +1,46 @@
+import { Router } from 'express';
+import { authRouter } from '@modules/auth/routes/auth.routes';
+import { usersRouter } from '@modules/users/routes/users.routes';
+import { institutionsRouter } from '@modules/institutions/routes/institutions.routes';
+import { opportunitiesRouter } from '@modules/opportunities/routes/opportunities.routes';
+import { eventsRouter } from '@modules/events/routes/events.routes';
+import { teamsRouter } from '@modules/teams/routes/teams.routes';
+import { submissionsRouter } from '@modules/submissions/routes/submissions.routes';
+import { judgesRouter } from '@modules/judges/routes/judges.routes';
+import { certificatesRouter } from '@modules/certificates/routes/certificates.routes';
+import { notificationsRouter } from '@modules/notifications/routes/notifications.routes';
+import { coursesRouter } from '@modules/courses/routes/courses.routes';
+import { careerRouter } from '@modules/career/routes/career.routes';
+import { interviewsRouter } from '@modules/interviews/routes/interviews.routes';
+import { communityRouter } from '@modules/community/routes/community.routes';
+import { leaderboardRouter } from '@modules/leaderboard/routes/leaderboard.routes';
+import { gamificationRouter } from '@modules/gamification/routes/gamification.routes';
+import { sdlRouter } from '@modules/sdl/routes/sdl.routes';
+import { uploadsRouter } from '@modules/uploads/routes/uploads.routes';
+import { adminRouter } from '@modules/admin/routes/admin.routes';
+import { healthRouter } from '@modules/health/routes/health.routes';
+
+const router = Router();
+
+router.use('/auth', authRouter);
+router.use('/users', usersRouter);
+router.use('/institutions', institutionsRouter);
+router.use('/opportunities', opportunitiesRouter);
+router.use('/events', eventsRouter);
+router.use('/teams', teamsRouter);
+router.use('/submissions', submissionsRouter);
+router.use('/judges', judgesRouter);
+router.use('/certificates', certificatesRouter);
+router.use('/notifications', notificationsRouter);
+router.use('/courses', coursesRouter);
+router.use('/career', careerRouter);
+router.use('/interviews', interviewsRouter);
+router.use('/community', communityRouter);
+router.use('/leaderboard', leaderboardRouter);
+router.use('/gamification', gamificationRouter);
+router.use('/sdl', sdlRouter);
+router.use('/uploads', uploadsRouter);
+router.use('/admin', adminRouter);
+router.use('/health', healthRouter);
+
+export const v1Routes = router;

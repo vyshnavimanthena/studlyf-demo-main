@@ -1,0 +1,81 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=0.7in]{geometry}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\definecolor{headercolor}{RGB}{173,100,82}
+\titleformat{\section}
+  {\color{headercolor}\large\bfseries}
+  {}{0em}{}
+\titlespacing*{\section}{0pt}{10pt}{6pt}
+\pagestyle{empty}
+\newcommand{\header}[1]{\textbf{\color{headercolor}#1}}
+\begin{document}
+% Header
+\begin{center}
+{\fontsize{26}{30}\selectfont\bfseries\color{headercolor} \VAR{name|e}}\\[0.4em]
+\small \VAR{(address if address else "City, Country")|e} • \VAR{email|e} • \VAR{phone|e}
+\BLOCK{ if linkedin or github }
+\\ \BLOCK{ if linkedin }LinkedIn: \VAR{linkedin|e}\BLOCK{ endif } \BLOCK{ if linkedin and github } | \BLOCK{ endif } \BLOCK{ if github }GitHub: \VAR{github|e}\BLOCK{ endif }
+\BLOCK{ endif }
+\end{center}
+\noindent\rule{\textwidth}{1.5pt}
+
+\BLOCK{ if summary }
+\section*{Summary}
+\VAR{summary|e}
+\BLOCK{ endif }
+
+\BLOCK{ if experience }
+\section*{Professional Experience}
+\BLOCK{ for exp in experience }
+\noindent\header{\VAR{exp.company|e}} \hfill \textbf{\VAR{exp.year|e}}\\
+\noindent\textit{\VAR{exp.role|e}} \hfill \BLOCK{ if exp.location }\VAR{exp.location|e}\BLOCK{ endif }
+\begin{itemize}[leftmargin=1.5em, itemsep=0.1ex, topsep=0.2ex]
+  \item \VAR{exp.details|e}
+\end{itemize}
+\vspace{0.5em}
+\BLOCK{ endfor }
+\BLOCK{ endif }
+
+\BLOCK{ if education }
+\section*{Education}
+\BLOCK{ for edu in education }
+\noindent\header{\VAR{edu.college|e}} \hfill \textbf{\VAR{edu.year|e}}\\
+\noindent\textit{\VAR{edu.degree|e}} \hfill \BLOCK{ if edu.location }\VAR{edu.location|e}\BLOCK{ endif }
+\vspace{0.5em}
+\BLOCK{ endfor }
+\BLOCK{ endif }
+
+\BLOCK{ if projects }
+\section*{Projects}
+\BLOCK{ for proj in projects }
+\noindent\header{\VAR{proj.name|e}} \hfill \textit{\VAR{proj.technologies|e}}\\
+\begin{itemize}[leftmargin=1.5em, itemsep=0.1ex, topsep=0.2ex]
+  \item \VAR{proj.description|e}
+\end{itemize}
+\vspace{0.5em}
+\BLOCK{ endfor }
+\BLOCK{ endif }
+
+\BLOCK{ if certifications }
+\section*{Certifications}
+\begin{itemize}[leftmargin=1.5em, itemsep=0.1ex, topsep=0.2ex]
+  \BLOCK{ for cert in certifications }
+  \item \VAR{cert|e}
+  \BLOCK{ endfor }
+\end{itemize}
+\vspace{0.5em}
+\BLOCK{ endif }
+
+\BLOCK{ if skills }
+\section*{Skills}
+\begin{itemize}[leftmargin=1.5em, itemsep=0.1ex, topsep=0.2ex]
+  \BLOCK{ for skill in skills }
+  \item \VAR{skill|e}
+  \BLOCK{ endfor }
+\end{itemize}
+\BLOCK{ endif }
+\end{document}

@@ -1,0 +1,95 @@
+# FastAPI & Web Framework
+fastapi
+uvicorn[standard]
+starlette
+pydantic
+pydantic-core
+
+# Database & ORM
+motor
+pymongo
+python-dotenv
+
+# Security & Authentication
+PyJWT
+bcrypt
+passlib
+cryptography
+
+# Firebase
+firebase-admin
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+google-cloud-core
+google-cloud-firestore
+google-cloud-storage
+google-api-core
+
+# File Processing
+python-multipart
+pdfminer.six
+PyPDF2
+python-docx
+Pillow
+pdfplumber
+reportlab
+weasyprint
+python-magic
+groq
+
+# Email
+aiosmtplib
+
+# Data Processing
+beautifulsoup4
+lxml
+cssselect2
+
+# Async & Concurrency
+anyio
+asyncio-contextmanager
+
+# HTTP & Networking
+httpx
+requests
+h2
+hpack
+hyperframe
+
+# Utilities
+click
+colorama
+limits
+APScheduler
+qrcode
+slowapi
+certifi
+Markdown
+markdown2
+mistune
+redis
+
+# Logging & Monitoring
+sentry-sdk
+python-json-logger
+
+# Testing
+pytest
+pytest-asyncio
+pytest-cov
+httpx
+
+# Production Server
+gunicorn
+
+# Code Quality (optional, for development)
+black
+flake8
+mypy
+isort
+
+# Development
+ipython
+razorpay
+jinja2

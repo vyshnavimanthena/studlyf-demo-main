@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Participant Card</title>
+  <style>
+    :root{--accent:#6C3BFF;--bg:#f7f7fb}
+    body{font-family: 'Poppins', sans-serif; background:var(--bg); color:#111; margin:0; padding:32px}
+    header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+    .logo{height:40px;object-fit:contain}
+    .container{max-width:640px;margin:0 auto}
+    #card{background:#fff;padding:18px;border-radius:12px;box-shadow:0 6px 24px rgba(11,11,11,0.04)}
+    #downloadPoster{padding:10px 16px;border-radius:999px;background:var(--accent);color:#fff;border:none;font-weight:700;cursor:pointer}
+  </style>
+</head>
+<body>
+  <header>
+    {% if logo %}<img class="logo" src="{{ logo }}" alt="logo">{% endif %}
+    <h1 id="title">{{ title or 'Participant Card' }}</h1>
+  </header>
+  <div class="container">
+    <div id="card"></div>
+    <div style="text-align:center;margin-top:12px">
+      <button id="downloadPoster">Download Poster</button>
+    </div>
+  </div>
+  <script>
+    const eventId = new URLSearchParams(location.search).get('event') || '{{ event_id }}';
+    const backend = "{{ backend_url }}" || '';
+    const branding = {{ branding_json | safe }} || {};
+    async function load() {
+      if (!eventId) { document.getElementById('card').innerText = 'Missing event id'; return }
+      try {
+        const res = await fetch(`${backend}/api/v1/participant-card?event_id=${eventId}`);
+        if (!res.ok) { document.getElementById('card').innerText = 'No card found'; return }
+        const data = await res.json();
+        document.getElementById('title').innerText = (branding.title || data.name) || 'Participant';
+        const el = document.getElementById('card');
+        el.innerHTML = `<p><strong>Reg:</strong> ${data.regId || ''}</p><p>${data.bulletPoints || ''}</p>`;
+      } catch (e) { document.getElementById('card').innerText = 'Error fetching card'; }
+    }
+    load();
+      // wire download button using html2canvas if available
+      document.getElementById('downloadPoster')?.addEventListener('click', async () => {
+        if (typeof html2canvas === 'undefined') {
+          const s = document.createElement('script');
+          s.src = 'https://html2canvas.hertzen.com/dist/html2canvas.min.js';
+          document.body.appendChild(s);
+          s.onload = () => document.getElementById('downloadPoster')?.click();
+          return;
+        }
+        const cardEl = document.getElementById('card');
+        if (!cardEl) return;
+        const canvas = await html2canvas(cardEl, { scale: 2, backgroundColor: '#fff', useCORS: true });
+        const link = document.createElement('a');
+        link.download = `${document.getElementById('title')?.innerText || 'participant'}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+  </script>
+</body>
+</html>

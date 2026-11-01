@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Event Portal</title>
+  <style>
+    :root{--accent:#6C3BFF;--accent-2:#E32879;--bg:#f7f7fb}
+    body{font-family: 'Poppins', sans-serif; background:var(--bg); color:#111; margin:0; padding:32px}
+    .container{max-width:980px;margin:0 auto}
+    .hero{display:flex;gap:24px;align-items:center;padding:36px;border-radius:16px;background:linear-gradient(90deg,var(--accent)22,var(--accent-2)22);box-shadow:0 6px 24px rgba(18,18,18,0.04);margin-bottom:20px}
+    .hero-left{flex:1}
+    .logo{height:56px;object-fit:contain;margin-bottom:8px}
+    .title{font-size:32px;margin:0 0 6px}
+    .meta{color:#333;margin:0}
+    .cta{display:inline-block;margin-top:14px;padding:12px 20px;background:var(--accent);color:#fff;border-radius:999px;font-weight:700;text-decoration:none;box-shadow:0 6px 18px rgba(108,59,255,0.12)}
+    .hero-right{width:320px;height:160px;flex:0 0 320px;border-radius:12px;overflow:hidden;background:#fff}
+    .problems{margin-top:8px}
+    .problem{border-radius:12px;background:#fff;padding:16px;margin:10px 0;box-shadow:0 6px 18px rgba(11,11,11,0.04)}
+    @media(max-width:720px){.hero{flex-direction:column}.hero-right{width:100%;height:180px}}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <div class="hero-left">
+        {% if logo %}<img class="logo" src="{{ logo }}" alt="logo">{% endif %}
+        <h1 id="title" class="title">{{ title or 'Event Portal' }}</h1>
+        <p id="meta" class="meta">{{ description or '' }}</p>
+        <div>
+          <a id="cta" class="cta" href="{{ backend_url }}/card/{{ event_id }}">Open Participant Card</a>
+        </div>
+      </div>
+      <div class="hero-right">
+        {% if hero_url %}
+          <img src="{{ hero_url }}" style="width:100%;height:100%;object-fit:cover" alt="hero">
+        {% endif %}
+      </div>
+    </section>
+  </div>
+  <div id="problems"></div>
+
+  <script>
+    const eventId = "{{ event_id }}";
+    const backend = "{{ backend_url }}" || '';
+    const branding = {{ branding_json | safe }} || {};
+    async function load() {
+      try {
+        const res = await fetch(`${backend}/api/v1/hackathons/events/${eventId}/portal`);
+        if (!res.ok) {
+          document.getElementById('meta').innerText = 'Failed to load portal: ' + res.status;
+          return;
+        }
+        const data = await res.json();
+        document.getElementById('title').innerText = (branding.title || data.title) || ('Event ' + eventId + ' Portal');
+        document.getElementById('meta').innerText = (branding.description || data.description) || '';
+        const p = document.getElementById('problems');
+        if (data.problems && data.problems.length) {
+          data.problems.forEach(pr => {
+            const el = document.createElement('div');
+            el.className = 'problem';
+            el.innerHTML = `<strong>${pr.title || pr.id}</strong><div>${pr.description || ''}</div>`;
+            p.appendChild(el);
+          })
+        } else {
+          p.innerText = 'No problems available.';
+        }
+      } catch (e) {
+        document.getElementById('meta').innerText = 'Error loading portal.';
+      }
+    }
+    load();
+    // Apply SSR injected branding values (color, hero)
+    (function applyBranding(){
+      try{
+        if (branding.hero_url){
+          const hero = document.querySelector('section img');
+          if (hero) hero.src = branding.hero_url;
+        }
+      }catch(e){}
+    })();
+  </script>
+</body>
+</html>

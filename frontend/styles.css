@@ -1,0 +1,435 @@
+@import "tailwindcss";
+@import "./pages/CoursePlayerStyles.css";
+@import "./ds.css";
+
+@theme {
+  --font-family-sans: 'Poppins', sans-serif;
+  --font-family-serif: 'Poppins', sans-serif;
+  --font-family-display: 'Poppins', sans-serif;
+  --font-family-mono: 'Poppins', sans-serif;
+  --font-family-poppins: 'Poppins', sans-serif;
+  --font-family-syne: 'Poppins', sans-serif;
+}
+
+.glass-panel {
+  background: rgba(15, 23, 42, 0.72);
+  border: 1px solid rgba(167, 139, 250, 0.35);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.45);
+}
+
+.neon-input {
+  width: 100%;
+  border: 1px solid rgba(196, 181, 253, 0.45);
+  background: rgba(30, 27, 75, 0.55);
+  color: #f5f3ff;
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 13px;
+  outline: none;
+}
+
+.neon-input:focus {
+  border-color: rgba(139, 92, 246, 0.95);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.22);
+}
+
+.neon-button {
+  border: 1px solid rgba(139, 92, 246, 0.45);
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.95), rgba(76, 29, 149, 0.95));
+  color: #fff;
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.neon-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(124, 58, 237, 0.35);
+}
+
+/* ── Global Glow Button (shimmer + floating orbs) ─────────────────── */
+@keyframes glow-shimmer {
+  0%   { transform: translateX(-180%) skewX(-20deg); }
+  100% { transform: translateX(300%)  skewX(-20deg); }
+}
+@keyframes glow-orb1 {
+  0%,100% { transform: translate(0px, 0px) scale(1);    opacity: 0.55; }
+  40%     { transform: translate(8px,-6px)  scale(1.3);  opacity: 0.9; }
+  70%     { transform: translate(-4px,4px)  scale(0.8);  opacity: 0.4; }
+}
+@keyframes glow-orb2 {
+  0%,100% { transform: translate(0px, 0px)   scale(1);    opacity: 0.4; }
+  35%     { transform: translate(-10px,-8px) scale(1.4);  opacity: 0.85; }
+  65%     { transform: translate(6px, 5px)   scale(0.75); opacity: 0.35; }
+}
+@keyframes glow-orb3 {
+  0%,100% { transform: translate(0px,0px)  scale(1);    opacity: 0.5; }
+  50%     { transform: translate(6px,8px)  scale(1.25); opacity: 0.9; }
+}
+
+.glow-btn {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease;
+}
+
+/* glass top-sheen */
+.glow-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.16) 0%, transparent 55%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* continuous shimmer sweep */
+.glow-btn::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 40%; height: 100%;
+  background: linear-gradient(110deg, transparent 20%, rgba(255,255,255,0.24) 50%, transparent 80%);
+  animation: glow-shimmer 2.8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.glow-btn:hover {
+  transform: translateY(-3px) scale(1.03);
+}
+.glow-btn:active { transform: scale(0.97); }
+.glow-btn:disabled { opacity: 0.65; cursor: not-allowed; }
+
+/* floating orbs (add as child <span> elements with these classes) */
+.glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(7px);
+  z-index: 1;
+}
+.glow-orb-1 {
+  width: 28px; height: 28px;
+  background: radial-gradient(circle, rgba(196,168,255,0.95), transparent 70%);
+  top: -4px; left: 18px;
+  animation: glow-orb1 3.2s ease-in-out infinite;
+}
+.glow-orb-2 {
+  width: 22px; height: 22px;
+  background: radial-gradient(circle, rgba(255,255,255,0.8), transparent 70%);
+  bottom: -2px; right: 48px;
+  animation: glow-orb2 4s ease-in-out infinite;
+}
+.glow-orb-3 {
+  width: 18px; height: 18px;
+  background: radial-gradient(circle, rgba(167,139,250,0.9), transparent 70%);
+  top: 4px; right: 20px;
+  animation: glow-orb3 2.6s ease-in-out infinite;
+}
+
+/* purple variant (default) */
+.glow-btn-purple {
+  background: linear-gradient(to right, #7C3AED, #6D28D9);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(124,58,237,0.35), 0 1px 0 rgba(255,255,255,0.12) inset;
+}
+.glow-btn-purple:hover {
+  box-shadow: 0 0 0 5px rgba(139,92,246,0.15), 0 0 32px 10px rgba(139,92,246,0.4), 0 12px 30px rgba(109,40,217,0.45);
+}
+
+/* blue variant */
+.glow-btn-blue {
+  background: #2F6FD6;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(47,111,214,0.4), 0 1px 0 rgba(255,255,255,0.12) inset;
+}
+.glow-btn-blue .glow-orb-1 { background: radial-gradient(circle, rgba(160,210,255,0.95), transparent 70%); }
+.glow-btn-blue .glow-orb-3 { background: radial-gradient(circle, rgba(100,170,255,0.9),  transparent 70%); }
+.glow-btn-blue:hover {
+  box-shadow: 0 0 0 5px rgba(47,111,214,0.18), 0 0 32px 10px rgba(47,111,214,0.45), 0 12px 30px rgba(30,80,180,0.5);
+}
+
+/* label sits above orbs/shimmer */
+.glow-label { position: relative; z-index: 5; }
+
+/* ── Hide Scrollbar Utility ─────────────────── */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ── Custom Scrollbar Styling for Modal Content ─────────────────── */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.6) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.6);
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.9);
+}
+
+/* ── Smooth scroll behavior for entire page ─────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ── Modal scroll enhancement ─────────────────── */
+.modal-scrollable {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.modal-scrollable::-webkit-scrollbar {
+  width: 10px;
+}
+
+.modal-scrollable::-webkit-scrollbar-track {
+  background: rgba(30, 41, 59, 0.1);
+  border-radius: 5px;
+}
+
+.modal-scrollable::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(37, 99, 235, 0.5), rgba(59, 130, 246, 0.5));
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+.modal-scrollable::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(37, 99, 235, 0.8), rgba(59, 130, 246, 0.8));
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
+}
+
+/* ── Main Styles ─────────────────── */
+:root {
+    --brand-purple: #7C3AED;
+    --brand-dark: #111827;
+    --brand-soft-purple: #F9FAFB;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background-color: #FFFFFF;
+    color: #374151;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+.font-display {
+    font-family: 'Poppins', sans-serif;
+}
+
+.font-mono {
+    font-family: 'Poppins', sans-serif;
+}
+
+.font-syne {
+    font-family: 'Poppins', sans-serif;
+}
+
+.bg-grid-tech {
+    background-size: 50px 50px;
+    background-image:
+        linear-gradient(to right, rgba(124, 58, 237, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(124, 58, 237, 0.04) 1px, transparent 1px);
+}
+
+.grain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.02;
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjAwIDIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZmlsdGVyIGlkPSJuIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC42NSIgbnVtT2N0YXZlcz0iMyIgc3RpdGNoVGlsZXM9InN0aXRjaCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNuKSIvPjwvc3ZnPg==");
+}
+
+.curved-edge {
+    border-radius: 1rem;
+}
+
+@media (min-width: 1024px) {
+    .curved-edge {
+        border-radius: 1.5rem;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: #FFFFFF;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--brand-purple);
+    border-radius: 10px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+@keyframes shine {
+    0% {
+        left: -100%;
+    }
+
+    100% {
+        left: 100%;
+    }
+}
+
+.animate-shine {
+    animation: shine 2s infinite;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.animate-marquee {
+    display: flex;
+    width: max-content;
+    animation: marquee 40s linear infinite;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.no-scrollbar {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+/* ── Boot Screen Styling ─────────────────── */
+@keyframes boot-pulse { 0%, 100% { opacity: 0.4; transform: scale(0.98); } 50% { opacity: 1; transform: scale(1.02); } }
+@keyframes boot-spin { 100% { transform: rotate(360deg); } }
+.boot-screen {
+    position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 50% 50%, #170f1d 0%, #0d0f18 100%);
+    z-index: 999999;
+    color: white;
+}
+.boot-ring {
+    position: relative; width: 120px; height: 120px;
+    display: flex; align-items: center; justify-content: center;
+}
+.boot-ring::before {
+    content: ''; position: absolute; inset: 0; border-radius: 50%;
+    border: 2px solid rgba(124, 58, 237, 0.15);
+}
+.boot-ring::after {
+    content: ''; position: absolute; inset: -2px; border-radius: 50%;
+    border: 2px solid transparent; border-top-color: #7C3AED; border-right-color: #c084fc;
+    animation: boot-spin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+}
+.boot-logo {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: url('/stud.png') center/contain no-repeat;
+    animation: boot-pulse 2s ease-in-out infinite;
+    background-color: white;
+    box-shadow: 0 0 25px rgba(124, 58, 237, 0.4);
+}
+.boot-text {
+    position: absolute; bottom: -45px; white-space: nowrap;
+    font-family: 'Poppins', sans-serif; font-size: 10px;
+    letter-spacing: 0.4em; text-transform: uppercase;
+    color: #a78bfa; animation: boot-pulse 2s ease-in-out infinite;
+}
+
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ===== GLOBAL MOBILE RESPONSIVE LAYER ===== */
+
+/* Ensure html/body don't overflow on mobile */
+html, body, #root {
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Fix common padding pattern: px-6/px-8 → responsive */
+@media (max-width: 639px) {
+    /* All modals/dialogs get smaller padding on mobile */
+    .fixed.inset-0 {
+        padding: 8px;
+    }
+}
+
+/* Touch-friendly minimum tap targets */
+@media (pointer: coarse) {
+    button, a, [role="button"], input[type="checkbox"], input[type="radio"] {
+        min-height: 44px;
+    }
+}
+
+/* Prevent horizontal overflow on all containers */
+.overflow-hidden, .min-h-screen, [class*="min-h-"] {
+    overflow-x: clip;
+}
+
+/* Better scrolling on iOS */
+@supports (-webkit-touch-callout: none) {
+    .custom-scrollbar {
+        -webkit-overflow-scrolling: touch;
+    }
+}

@@ -1,0 +1,975 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{name}} - Portfolio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+        :root {
+            --bg: #030408;
+            --card: rgba(255, 255, 255, 0.02);
+            --card-hover: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 255, 255, 0.15);
+            --text: #f8fafc;
+            --muted: #64748b;
+            --muted-light: #94a3b8;
+            --purple: #a855f7;
+            --blue: #3b82f6;
+            --cyan: #06b6d4;
+            --accent: #a855f7;
+            --gradient-text: linear-gradient(135deg, #ffffff 20%, #c084fc 60%, #60a5fa 100%);
+            --font-display: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'Space Grotesk', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background: var(--bg);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Ambient Glow Elements */
+        .grid-overlay {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 80px 80px;
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        .ambient-blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(140px);
+            z-index: -1;
+            opacity: 0.25;
+            pointer-events: none;
+            transition: all 0.8s ease;
+        }
+
+        .blob-1 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--purple), transparent 70%);
+            top: -200px;
+            left: -150px;
+        }
+
+        .blob-2 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--cyan), transparent 70%);
+            bottom: -100px;
+            right: -100px;
+        }
+
+        .blob-3 {
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, var(--blue), transparent 70%);
+            top: 40%;
+            left: 25%;
+        }
+
+        /* Container */
+        .container {
+            width: 100%;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+        }
+
+        /* Sticky Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+        }
+
+        .nav-inner {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--muted-light);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .nav-contact-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text) !important;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .nav-contact-btn:hover {
+            background: var(--text);
+            color: var(--bg) !important;
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 120px 0 100px;
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 60px;
+            align-items: center;
+            min-height: calc(85vh - 80px);
+        }
+
+        @media (max-width: 992px) {
+            .hero {
+                grid-template-columns: 1fr;
+                padding: 80px 0 60px;
+                text-align: center;
+                gap: 40px;
+            }
+        }
+
+        .hero-content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        @media (max-width: 992px) {
+            .hero-content {
+                align-items: center;
+            }
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 999px;
+            background: rgba(168, 85, 247, 0.08);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            color: #d8b4fe;
+            font-size: 0.8rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            margin-bottom: 28px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #a855f7;
+            box-shadow: 0 0 10px #a855f7;
+            animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.9); opacity: 0.6; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.6; }
+        }
+
+        h1 {
+            font-size: clamp(3.5rem, 8vw, 6.2rem);
+            line-height: 1.05;
+            font-weight: 900;
+            letter-spacing: -2px;
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 24px;
+        }
+
+        .hero p {
+            font-size: clamp(1.1rem, 2vw, 1.35rem);
+            line-height: 1.6;
+            color: var(--muted-light);
+            max-width: 650px;
+            margin-bottom: 40px;
+            font-weight: 400;
+        }
+
+        .hero-ctas {
+            display: flex;
+            gap: 16px;
+            width: 100%;
+        }
+
+        @media (max-width: 992px) {
+            .hero-ctas {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-ctas {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 36px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--purple), var(--blue));
+            color: #fff !important;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(168, 85, 247, 0.4);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 36px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            color: var(--text) !important;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+        }
+
+        /* Hero Visual Illustration */
+        .hero-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .visual-box {
+            position: relative;
+            width: 100%;
+            max-width: 380px;
+            aspect-ratio: 1;
+            border: 1px solid var(--border);
+            border-radius: 32px;
+            background: rgba(255, 255, 255, 0.01);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .visual-box svg {
+            width: 60%;
+            height: 60%;
+            stroke: var(--muted-light);
+            opacity: 0.8;
+        }
+
+        .visual-glow {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--purple), var(--cyan));
+            filter: blur(50px);
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        /* Structured Layout Sections */
+        section {
+            padding: 100px 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .section-header {
+            display: grid;
+            grid-template-columns: 0.4fr 1.6fr;
+            margin-bottom: 60px;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .section-header {
+                grid-template-columns: 1fr;
+                margin-bottom: 40px;
+            }
+        }
+
+        .section-num {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            color: var(--purple);
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 2.75rem);
+            font-weight: 800;
+            letter-spacing: -1px;
+            background: linear-gradient(to right, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-layout {
+            display: grid;
+            grid-template-columns: 0.4fr 1.6fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .section-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .section-sidebar {
+            /* Empty or text info */
+        }
+
+        .section-content {
+            width: 100%;
+        }
+
+        /* About Section Extra Intro styling */
+        .about-text {
+            font-size: clamp(1.1rem, 2vw, 1.4rem);
+            line-height: 1.7;
+            color: var(--muted-light);
+            margin-bottom: 40px;
+        }
+
+        /* Skills Layout */
+        #skills .glass-card {
+            background: transparent;
+            border: none;
+            backdrop-filter: none;
+            box-shadow: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 14px 24px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+        }
+
+        .tag:hover {
+            transform: translateY(-3px);
+            background: rgba(168, 85, 247, 0.08);
+            border-color: rgba(168, 85, 247, 0.3);
+            color: #d8b4fe;
+            box-shadow: 0 10px 20px rgba(168, 85, 247, 0.1);
+        }
+
+        /* Featured Projects Layout */
+        #projects .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+        }
+
+        @media (max-width: 992px) {
+            #projects .grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+
+        #projects .glass-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 320px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.03);
+        }
+
+        #projects .glass-card:hover {
+            transform: translateY(-6px);
+            background: var(--card-hover);
+            border-color: var(--border-hover);
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.4),
+                inset 0 1px 1px rgba(255, 255, 255, 0.06);
+        }
+
+        #projects .glass-card h3 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+            color: var(--text);
+            transition: color 0.3s;
+        }
+
+        #projects .glass-card:hover h3 {
+            color: #fff;
+        }
+
+        #projects .glass-card p {
+            color: var(--muted-light);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            flex-grow: 1;
+        }
+
+        .project-tech {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            color: var(--cyan);
+            margin-bottom: 24px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        #projects .glass-card a {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 18px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text) !important;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            width: fit-content;
+            margin-top: 0;
+            transition: all 0.3s;
+        }
+
+        #projects .glass-card a:hover {
+            background: var(--text);
+            color: var(--bg) !important;
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        /* Experience Timeline Layout */
+        #experience-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            padding-left: 24px;
+        }
+
+        #experience-container::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            bottom: 8px;
+            width: 1px;
+            background: var(--border);
+        }
+
+        #experience-container .glass-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            position: relative;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.02);
+        }
+
+        #experience-container .glass-card::before {
+            content: '';
+            position: absolute;
+            left: -28px;
+            top: 36px;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 2px solid var(--purple);
+            transition: all 0.3s ease;
+        }
+
+        #experience-container .glass-card:hover {
+            background: var(--card-hover);
+            border-color: rgba(168, 85, 247, 0.3);
+        }
+
+        #experience-container .glass-card:hover::before {
+            background: var(--purple);
+            box-shadow: 0 0 10px var(--purple);
+            transform: scale(1.2);
+        }
+
+        .experience-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        @media (max-width: 576px) {
+            .experience-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+            }
+        }
+
+        #experience-container .glass-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        #experience-container .glass-card h4 {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--muted-light);
+            margin-bottom: 12px;
+        }
+
+        #experience-container .glass-card span {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            color: var(--purple);
+            font-weight: 600;
+            background: rgba(168, 85, 247, 0.08);
+            padding: 4px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(168, 85, 247, 0.15);
+        }
+
+        #experience-container .glass-card p {
+            font-size: 0.9rem;
+            color: var(--muted-light);
+            line-height: 1.6;
+        }
+
+        /* Certifications Layout */
+        #certifications-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        @media (max-width: 768px) {
+            #certifications-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        #certifications-container .glass-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 28px;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.02);
+        }
+
+        #certifications-container .glass-card:hover {
+            background: var(--card-hover);
+            border-color: rgba(6, 182, 212, 0.3);
+            transform: translateY(-2px);
+        }
+
+        #certifications-container .glass-card h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        #certifications-container .glass-card h4 {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--muted-light);
+            margin-bottom: 12px;
+        }
+
+        #certifications-container .glass-card span {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            color: var(--cyan);
+            background: rgba(6, 182, 212, 0.08);
+            padding: 4px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(6, 182, 212, 0.15);
+        }
+
+        #certifications-container .glass-card a {
+            display: inline-flex;
+            font-size: 0.8rem;
+            color: var(--muted-light) !important;
+            text-decoration: underline;
+            margin-top: 14px;
+            transition: color 0.3s;
+        }
+
+        #certifications-container .glass-card a:hover {
+            color: var(--cyan) !important;
+        }
+
+        /* Contact CTA Section */
+        .contact-cta {
+            padding: 120px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cta-content {
+            max-width: 750px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .contact-cta h2 {
+            font-size: clamp(2.5rem, 6vw, 4.2rem);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -2px;
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 24px;
+        }
+
+        .contact-cta p {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            color: var(--muted-light);
+            margin-bottom: 40px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Footer Section */
+        footer {
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        footer p {
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+
+    </style>
+</head>
+
+<body>
+    <!-- Ambient backgrounds -->
+    <div class="grid-overlay"></div>
+    <div class="ambient-blob blob-1"></div>
+    <div class="ambient-blob blob-2"></div>
+    <div class="ambient-blob blob-3"></div>
+
+    <div class="container">
+        <!-- 1. Navigation -->
+        <nav>
+            <div class="nav-inner">
+                <div class="logo">{{name}}</div>
+                <div class="nav-links">
+                    <a href="#about">About</a>
+                    <a href="#skills">Skills</a>
+                    <a href="#projects">Projects</a>
+                    <a href="#experience">Experience</a>
+                </div>
+                <a href="mailto:{{email}}" class="nav-contact-btn">Contact Me</a>
+            </div>
+        </nav>
+
+        <!-- 2. Hero Section -->
+        <header class="hero">
+            <div class="hero-content">
+                <div class="badge">
+                    <span class="badge-dot"></span>
+                    Available for projects
+                </div>
+                <h1>{{name}}</h1>
+                <p>{{summary}}</p>
+                <div class="hero-ctas">
+                    <a href="mailto:{{email}}" class="btn-primary">Let's Connect</a>
+                    <a href="#projects" class="btn-secondary">Explore Works</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="visual-glow"></div>
+                <div class="visual-box">
+                    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="40" fill="none" stroke-width="0.5" stroke-dasharray="2 2" />
+                        <circle cx="50" cy="50" r="30" fill="none" stroke-width="0.5" />
+                        <line x1="10" y1="50" x2="90" y2="50" stroke-width="0.5" stroke-dasharray="1 3" />
+                        <line x1="50" y1="10" x2="50" y2="90" stroke-width="0.5" stroke-dasharray="1 3" />
+                        <polygon points="50,20 80,50 50,80 20,50" fill="none" stroke-width="0.5" />
+                    </svg>
+                </div>
+            </div>
+        </header>
+
+        <!-- 3. About Section -->
+        <section id="about">
+            <div class="section-header">
+                <div class="section-num">01 // PROFILE</div>
+                <h2 class="section-title">About Me</h2>
+            </div>
+            <div class="section-layout">
+                <div class="section-sidebar"></div>
+                <div class="section-content">
+                    <p class="about-text">
+                        I am a developer driven by the pursuit of clean code and meaningful design. I bridge the gap between complex backend architectures and beautiful front-end systems, crafting solutions that scale.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Skills Section -->
+        <section id="skills">
+            <div class="section-header">
+                <div class="section-num">02 // TECH STACK</div>
+                <h2 class="section-title">Skills & Expertise</h2>
+            </div>
+            <div class="section-layout">
+                <div class="section-sidebar"></div>
+                <div class="section-content">
+                    <div class="glass-card">
+                        {% for skill in skills %}
+                        <span class="tag">{{skill}}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Featured Projects Showcase -->
+        <section id="projects">
+            <div class="section-header">
+                <div class="section-num">03 // PROJECTS</div>
+                <h2 class="section-title">Selected Works</h2>
+            </div>
+            <div class="section-layout">
+                <div class="section-sidebar"></div>
+                <div class="section-content">
+                    <div class="grid">
+                        {% for project in projects %}
+                        <div class="glass-card">
+                            <div>
+                                <div class="project-tech">{{project.technologies}}</div>
+                                <h3>{{project.name}}</h3>
+                                <p>{{project.description}}</p>
+                            </div>
+                            {% if project.link %}
+                            <a href="{{project.link}}" target="_blank">View Live ↗</a>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. Experience Timeline -->
+        <section id="experience">
+            <div class="section-header">
+                <div class="section-num">04 // EXPERIENCE</div>
+                <h2 class="section-title">Work Experience</h2>
+            </div>
+            <div class="section-layout">
+                <div class="section-sidebar"></div>
+                <div class="section-content">
+                    <div id="experience-container">
+                        {% for exp in experience %}
+                        <div class="glass-card">
+                            <div class="experience-header">
+                                <div>
+                                    <h3>{{exp.role}}</h3>
+                                    <h4>{{exp.company}}</h4>
+                                </div>
+                                <span>{{exp.year}}</span>
+                            </div>
+                            <p>{{exp.details}}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. Certifications (Conditional) -->
+        {% if certifications %}
+        <section id="certifications">
+            <div class="section-header">
+                <div class="section-num">05 // CREDENTIALS</div>
+                <h2 class="section-title">Certifications</h2>
+            </div>
+            <div class="section-layout">
+                <div class="section-sidebar"></div>
+                <div class="section-content">
+                    <div id="certifications-container">
+                        {% for cert in certifications %}
+                        <div class="glass-card">
+                            <div class="experience-header">
+                                <div>
+                                    <h3>{{cert.name}}</h3>
+                                    <h4>{{cert.issuer}}</h4>
+                                </div>
+                                <span>{{cert.date}}</span>
+                            </div>
+                            {% if cert.link %}
+                            <a href="{{cert.link}}" target="_blank">View Certificate</a>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- 8. Contact CTA Section -->
+        <section class="contact-cta" id="contact">
+            <div class="cta-content">
+                <h2>Let's build something exceptional.</h2>
+                <p>Have an idea or a project you'd like to collaborate on? Get in touch and let's make it happen.</p>
+                <a href="mailto:{{email}}" class="btn-primary">Get In Touch</a>
+            </div>
+        </section>
+
+        <!-- 9. Modern Footer -->
+        <footer>
+            <p>&copy; 2026 {{name}}. All rights reserved.</p>
+        </footer>
+    </div>
+
+
+</body>
+
+</html>

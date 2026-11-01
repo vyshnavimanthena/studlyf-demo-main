@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{name}} | CINEMATIC</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lenis@1.0.45/dist/lenis.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Italiana&family=Manrope:wght@300;400&display=swap');
+
+        :root {
+            --bg: #111111;
+            --text: #e1e1e1;
+            --accent: #d4af37;
+            /* Gold */
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: 'Poppins', sans-serif;
+            /* Elegant Serif */
+            font-weight: 400;
+        }
+
+        .scroll-container {
+            overflow: hidden;
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-title-wrapper {
+            overflow: hidden;
+        }
+
+        .hero h1 {
+            font-size: 15vw;
+            line-height: 1;
+            margin: 0;
+            text-transform: uppercase;
+            text-align: center;
+            mix-blend-mode: difference;
+            transform: translateY(100%);
+        }
+
+        .role-text {
+            font-size: 1.5rem;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            opacity: 0;
+            margin-top: 2rem;
+            color: var(--accent);
+        }
+
+        .spotlight {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .section {
+            padding: 10rem 5vw;
+        }
+
+        .section-header {
+            font-size: 5vw;
+            margin-bottom: 5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .section-number {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+
+        /* Projects - Huge Hover Effect */
+        .project-item {
+            padding: 4rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: 0.5s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .project-item:hover {
+            padding-left: 5vw;
+        }
+
+        .project-item:hover h3 {
+            color: var(--accent);
+        }
+
+        .project-item h3 {
+            font-size: 6vw;
+            margin: 0;
+            transition: color 0.3s;
+        }
+
+        .project-desc {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-top: 2rem;
+            opacity: 0.6;
+        }
+
+        .project-tags {
+            position: absolute;
+            top: 4rem;
+            right: 0;
+            text-align: right;
+            opacity: 0;
+            transition: 0.5s;
+            transform: translateX(50px);
+        }
+
+        .project-item:hover .project-tags {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Skills Marquee */
+        .marquee-container {
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 5rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .marquee-content {
+            display: inline-block;
+            animation: move 30s linear infinite;
+        }
+
+        .skill-word {
+            font-family: 'Poppins', sans-serif;
+            font-size: 8rem;
+            margin: 0 4rem;
+            color: #333;
+            transition: 0.5s;
+        }
+
+        .skill-word:hover {
+            color: var(--accent);
+            -webkit-text-stroke: 1px var(--text);
+        }
+
+        @keyframes move {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* Experience */
+        .exp-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            padding: 3rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .exp-date {
+            font-size: 1.2rem;
+            opacity: 0.5;
+        }
+
+        .exp-detail h4 {
+            font-size: 3rem;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .contact-section {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .mail-link {
+            font-size: 8vw;
+            color: white;
+            text-decoration: none;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+        }
+
+        .mail-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background: var(--accent);
+            transition: 0.5s;
+        }
+
+        .mail-link:hover::after {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="spotlight"></div>
+
+    <div class="scroll-container">
+        <header class="hero">
+            <div class="hero-title-wrapper">
+                <h1>{{name.split(' ')[0]}}<br>{{name.split(' ')[1]}}</h1>
+            </div>
+            <div class="role-text">{{summary[:50]}}...</div>
+        </header>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Selected Works</h2>
+                <span class="section-number">01</span>
+            </div>
+            <div id="projects-container">
+                {% for project in projects %}
+                <div class="project-item">
+                    <h3>{{project.name}}</h3>
+                    <p class="project-desc">{{project.description}}</p>
+                    <div class="project-tags">
+                        {{project.technologies}}
+                        {% if project.link %}
+                        <br>
+                        <a href="{{project.link}}" target="_blank"
+                            style="display:inline-block; margin-top:10px; font-size:1rem; color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--accent);">Visit
+                            Site &rarr;</a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section class="section" style="padding: 0;">
+            <div class="marquee-container">
+                <div class="marquee-content" id="skills-container">
+                    {% for skill in skills %}
+                    <span class="skill-word">{{skill}}</span>
+                    {% endfor %}
+                    <!-- Duplicate -->
+                    {% for skill in skills %}
+                    <span class="skill-word">{{skill}}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Experience</h2>
+                <span class="section-number">02</span>
+            </div>
+            <div id="experience-container">
+                {% for exp in experience %}
+                <div class="exp-row">
+                    <div class="exp-date">{{exp.year}}</div>
+                    <div class="exp-detail">
+                        <h4>{{exp.company}}</h4>
+                        <p style="font-size: 1.5rem; color: var(--accent); margin: 0.5rem 0;">{{exp.role}}</p>
+                        <p style="opacity: 0.7;">{{exp.details}}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        {% if certifications %}
+        <section class="section">
+            <div class="section-header">
+                <h2>Certifications</h2>
+                <span class="section-number">03</span>
+            </div>
+            <div id="certifications-container">
+                {% for cert in certifications %}
+                <div class="exp-row" style="border-bottom: 1px dashed rgba(255,255,255,0.1);">
+                    <div class="exp-date">{{cert.date}}</div>
+                    <div class="exp-detail">
+                        <h4>{{cert.name}}</h4>
+                        <p style="font-size: 1.2rem; color: var(--accent); margin: 0.5rem 0;">{{cert.issuer}}</p>
+                        {% if cert.link %}
+                        <a href="{{cert.link}}" target="_blank"
+                            style="color: var(--text); opacity: 0.8; text-decoration: underline;">Verify Credential</a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <footer class="contact-section">
+            <a href="mailto:{{email}}" class="mail-link">Say Hello</a>
+        </footer>
+    </div>
+
+    <script>
+        // Lenis Smooth Scroll
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            gestureDirection: 'vertical',
+            smooth: true,
+            mouseMultiplier: 1,
+            smoothTouch: false,
+            touchMultiplier: 2,
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        // GSAP
+        gsap.registerPlugin(ScrollTrigger);
+
+        gsap.to(".hero h1", { y: 0, duration: 1.5, ease: "power4.out", delay: 0.2 });
+        gsap.to(".role-text", { opacity: 1, duration: 1.5, delay: 1 });
+
+
+    </script>
+</body>
+
+</html>

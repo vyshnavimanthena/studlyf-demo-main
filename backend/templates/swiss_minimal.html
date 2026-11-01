@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{name}} | Portfolio</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+        :root {
+            --bg: #f9f9f8;
+            --surface: #ffffff;
+            --text: #0d0d0d;
+            --muted: #6b6b66;
+            --line: #e3e3de;
+            --accent: #ff4500; /* International Orange accent */
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'Space Grotesk', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background: var(--bg);
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.5;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Swiss Layout */
+        .layout {
+            display: grid;
+            grid-template-columns: 460px 1fr;
+            min-height: 100vh;
+        }
+
+        @media (max-width: 1024px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Sidebar Profile */
+        .sidebar {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            padding: 80px 60px;
+            border-right: 1px solid var(--line);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: var(--bg);
+            z-index: 10;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                position: relative;
+                height: auto;
+                padding: 60px 24px;
+                border-right: none;
+                border-bottom: 1px solid var(--line);
+            }
+        }
+
+        .badge-role {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--muted);
+            margin-bottom: 24px;
+            display: inline-block;
+        }
+
+        .sidebar h1 {
+            font-size: clamp(3.2rem, 7vw, 4.8rem);
+            line-height: 0.95;
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 24px;
+        }
+
+        .hero-summary {
+            color: var(--muted);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            max-width: 340px;
+            margin-bottom: 40px;
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: fit-content;
+            padding: 16px 32px;
+            background: var(--text);
+            color: var(--bg);
+            text-decoration: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            transition: all 0.25s ease;
+            border: 1px solid var(--text);
+        }
+
+        .cta-btn:hover {
+            background: transparent;
+            color: var(--text);
+            transform: translateY(-2px);
+        }
+
+        /* Content Area */
+        .content-area {
+            padding: 80px 80px;
+            max-width: 1000px;
+        }
+
+        @media (max-width: 768px) {
+            .content-area {
+                padding: 60px 24px;
+            }
+        }
+
+        .section-block {
+            margin-bottom: 100px;
+        }
+
+        .section-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--muted);
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex-grow: 1;
+            height: 1px;
+            background: var(--line);
+        }
+
+        /* Grid Elements */
+        .glass-card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            padding: 40px;
+            border-radius: 0px; /* Swiss Style uses strict right angles */
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: none;
+        }
+
+        .glass-card:hover {
+            border-color: var(--text);
+            transform: translateY(-2px);
+        }
+
+        /* Skills Container */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .pill,
+        .skill-tag {
+            padding: 12px 20px;
+            border: 1px solid var(--line);
+            background: var(--surface);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .skill-tag:hover {
+            background: var(--text);
+            border-color: var(--text);
+            color: var(--bg);
+        }
+
+        /* Projects Layout */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+        }
+
+        @media (max-width: 768px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .projects-grid .glass-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 280px;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            gap: 16px;
+        }
+
+        .project-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.5px;
+        }
+
+        .project-link {
+            text-decoration: none;
+            color: var(--text);
+            font-size: 1.3rem;
+            font-family: 'Poppins', sans-serif;
+            transition: transform 0.2s;
+        }
+
+        .project-link:hover {
+            transform: translate(3px, -3px);
+            color: var(--accent);
+        }
+
+        .projects-grid .glass-card p {
+            color: var(--muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            flex-grow: 1;
+        }
+
+        .project-tech-tag {
+            display: inline-block;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            border-top: 1px solid var(--line);
+            padding-top: 12px;
+            width: 100%;
+        }
+
+        /* Experience Layout */
+        .exp-item {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            gap: 40px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .exp-item {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+        }
+
+        .exp-year {
+            font-family: 'Poppins', sans-serif;
+            color: var(--muted);
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding-top: 4px;
+        }
+
+        .exp-content h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .exp-content h4 {
+            color: var(--muted);
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        .exp-content p {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .verify-link {
+            display: inline-flex;
+            margin-top: 16px;
+            color: var(--text);
+            text-decoration: underline;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            transition: color 0.2s;
+        }
+
+        .verify-link:hover {
+            color: var(--accent);
+        }
+
+
+    </style>
+</head>
+
+<body>
+
+    <div class="layout">
+
+        <!-- LEFT SIDE (Sticky Profile) -->
+        <aside class="sidebar">
+            <div>
+                <div class="badge-role">
+                    {{role or "Developer"}}
+                </div>
+                <h1>{{name}}</h1>
+                <p class="hero-summary">
+                    {{summary}}
+                </p>
+            </div>
+            <a href="mailto:{{email}}" class="cta-btn">
+                Contact Me
+            </a>
+        </aside>
+
+        <!-- RIGHT SIDE (Content Blocks) -->
+        <main class="content-area">
+
+            <!-- SKILLS -->
+            <section class="section-block" id="skills">
+                <h2 class="section-title">01 // Skills</h2>
+                <div class="glass-card" id="skills-container">
+                    <div class="tags-container">
+                        {% for skill in skills %}
+                        <span class="pill skill-tag">
+                            {{skill}}
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </section>
+
+            <!-- PROJECTS -->
+            <section class="section-block" id="projects">
+                <h2 class="section-title">02 // Selected Projects</h2>
+                <div class="projects-grid" id="projects-container">
+                    {% for project in projects %}
+                    <div class="glass-card">
+                        <div class="project-header">
+                            <h3>{{project.name}}</h3>
+                            {% if project.link %}
+                            <a href="{{project.link}}" target="_blank" class="project-link">
+                                ↗
+                            </a>
+                            {% endif %}
+                        </div>
+                        <p>
+                            {{project.description}}
+                        </p>
+                        <div class="project-tech-tag">
+                            {{project.technologies}}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <!-- EXPERIENCE -->
+            <section class="section-block" id="experience">
+                <h2 class="section-title">03 // Experience</h2>
+                <div id="experience-container">
+                    {% for exp in experience %}
+                    <div class="exp-item glass-card">
+                        <div class="exp-year">
+                            {{exp.year}}
+                        </div>
+                        <div class="exp-content">
+                            <h3>{{exp.role}}</h3>
+                            <h4>{{exp.company}}</h4>
+                            <p>
+                                {{exp.details}}
+                            </p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <!-- CERTIFICATIONS -->
+            {% if certifications %}
+            <section class="section-block" id="certifications">
+                <h2 class="section-title">04 // Certifications</h2>
+                <div id="certifications-container">
+                    {% for cert in certifications %}
+                    <div class="exp-item glass-card">
+                        <div class="exp-year">
+                            {{cert.date}}
+                        </div>
+                        <div class="exp-content">
+                            <h3>{{cert.name}}</h3>
+                            <h4>{{cert.issuer}}</h4>
+                            {% if cert.link %}
+                            <a href="{{cert.link}}" target="_blank" class="verify-link">
+                                Verify Certificate
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+            {% endif %}
+
+        </main>
+
+    </div>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Sidebar Load Animation
+        gsap.from(".badge-role", { opacity: 0, y: 10, duration: 0.6 });
+        gsap.from(".sidebar h1", { opacity: 0, y: 15, duration: 0.8, delay: 0.1 });
+        gsap.from(".hero-summary", { opacity: 0, y: 15, duration: 0.8, delay: 0.2 });
+        gsap.from(".cta-btn", { opacity: 0, y: 15, duration: 0.8, delay: 0.3 });
+
+        // Scroll animations for cards
+        gsap.utils.toArray('.glass-card').forEach(card => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 90%"
+                },
+                opacity: 0,
+                y: 20,
+                duration: 0.8,
+                ease: "power2.out"
+            });
+        });
+    </script>
+</body>
+
+</html>

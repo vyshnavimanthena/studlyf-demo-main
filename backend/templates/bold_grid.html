@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{name}} - Bold Grid</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
+
+        :root {
+            --bg: #fafafa;
+            --surface: #ffffff;
+            --text: #000000;
+            --muted: #555555;
+            --border: #000000;
+            --accent: #facc15; /* Cyber Yellow Accent */
+            --accent-dark: #000000;
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
+            --font-mono: 'Space Grotesk', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background: var(--bg);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 0 40px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+        }
+
+        /* Navigation */
+        nav {
+            padding: 24px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border: 2px solid var(--border);
+            padding: 8px 16px;
+            background: var(--accent);
+            transition: transform 0.2s;
+        }
+
+        .nav-link:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0 var(--border);
+        }
+
+        /* Hero */
+        .hero {
+            padding: 100px 0;
+            border-bottom: 2px solid var(--border);
+            background: var(--surface);
+        }
+
+        .subtitle {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 18px;
+            display: inline-block;
+            background: var(--accent);
+            padding: 4px 8px;
+            border: 2px solid var(--border);
+        }
+
+        h1 {
+            font-size: clamp(3rem, 7vw, 5.5rem);
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -2px;
+            color: var(--text);
+            margin-bottom: 24px;
+        }
+
+        .hero p {
+            font-size: clamp(1.1rem, 2vw, 1.3rem);
+            color: var(--muted);
+            max-width: 800px;
+        }
+
+        /* Bento Grid Framework */
+        h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-top: 80px;
+            margin-bottom: 32px;
+            display: inline-block;
+            border-bottom: 4px solid var(--accent);
+            padding-bottom: 4px;
+        }
+
+        /* Skills bento style */
+        #skills-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .skill-tag {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            padding: 12px 24px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .skill-tag:hover {
+            background: var(--accent);
+            transform: translate(-3px, -3px);
+            box-shadow: 4px 4px 0 var(--border);
+        }
+
+        /* Bento Grid items */
+        #projects-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 768px) {
+            #projects-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        #experience-container,
+        #certifications-container {
+            display: grid;
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .project-card,
+        .timeline-item {
+            background: var(--surface);
+            border: 2px solid var(--border);
+            padding: 40px;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .project-card:hover,
+        .timeline-item:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 6px 6px 0 var(--border);
+        }
+
+        .project-card h3,
+        .timeline-item h3 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .project-card p,
+        .timeline-item p {
+            color: var(--muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .project-tech-bar {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text);
+            font-weight: 700;
+            background: var(--accent);
+            width: fit-content;
+            padding: 4px 10px;
+            border: 2px solid var(--border);
+            margin-bottom: 20px;
+        }
+
+        .project-card a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            background: var(--text);
+            color: var(--bg) !important;
+            text-decoration: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            border: 2px solid var(--border);
+            width: fit-content;
+            transition: all 0.2s;
+        }
+
+        .project-card a:hover {
+            background: var(--accent);
+            color: var(--text) !important;
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0 var(--border);
+        }
+
+        /* Timeline Bento boxes */
+        .timeline-item {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 576px) {
+            .timeline-item {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+        }
+
+        .timeline-date-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .timeline-date {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text);
+            font-weight: 700;
+            background: var(--accent);
+            border: 2px solid var(--border);
+            padding: 6px 16px;
+            width: fit-content;
+        }
+
+        .timeline-item h3 {
+            margin: 0 0 6px;
+        }
+
+        .timeline-item h4 {
+            font-size: 0.95rem;
+            color: var(--muted);
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .verify-link {
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.85rem;
+            color: var(--text);
+            text-decoration: underline;
+            font-weight: 700;
+            display: inline-block;
+            margin-top: 14px;
+            transition: color 0.3s;
+        }
+
+        .verify-link:hover {
+            color: var(--accent);
+        }
+
+        /* Contact Area */
+        .contact-section {
+            padding: 100px 0;
+            text-align: center;
+            border-top: 2px solid var(--border);
+            background: var(--surface);
+        }
+
+        .contact-section h2 {
+            border: none;
+            margin-top: 0;
+            font-size: clamp(2.2rem, 5vw, 3.6rem);
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 16px;
+        }
+
+        .contact-section p {
+            color: var(--muted);
+            max-width: 500px;
+            margin: 0 auto 32px;
+            font-size: 1.1rem;
+        }
+
+        .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 36px;
+            background: var(--accent);
+            color: var(--text);
+            border: 2px solid var(--border);
+            text-decoration: none;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .contact-btn:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: 6px 6px 0 var(--border);
+        }
+
+
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- Navigation -->
+        <nav>
+            <div class="logo">{{name}}</div>
+            <a href="mailto:{{email}}" class="nav-link">Contact</a>
+        </nav>
+    </div>
+
+    <!-- Hero Area -->
+    <header class="hero">
+        <div class="container">
+            <div class="subtitle">Structured Grid</div>
+            <h1>Hello, I'm {{name}}.</h1>
+            <p>{{summary}}</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- SKILLS -->
+        <h2>My Skills</h2>
+        <div class="card" id="skills-container">
+            {% for skill in skills %}
+            <span class="skill-tag">{{skill}}</span>
+            {% endfor %}
+        </div>
+
+        <!-- PROJECTS -->
+        <h2>Selected Projects</h2>
+        <div id="projects-container">
+            {% for project in projects %}
+            <div class="project-card">
+                <div>
+                    <div class="project-tech-bar">{{project.technologies}}</div>
+                    <h3>{{project.name}}</h3>
+                    <p>{{project.description}}</p>
+                </div>
+                {% if project.link %}
+                <a href="{{project.link}}" target="_blank">View Project</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- EXPERIENCE -->
+        <h2>Work Experience</h2>
+        <div id="experience-container">
+            {% for exp in experience %}
+            <div class="timeline-item">
+                <div class="timeline-date-wrapper">
+                    <span class="timeline-date">{{exp.year}}</span>
+                </div>
+                <div>
+                    <h3>{{exp.role}}</h3>
+                    <h4>{{exp.company}}</h4>
+                    <p>{{exp.details}}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- CERTIFICATIONS -->
+        {% if certifications %}
+        <h2>Certifications</h2>
+        <div id="certifications-container">
+            {% for cert in certifications %}
+            <div class="timeline-item">
+                <div class="timeline-date-wrapper">
+                    <span class="timeline-date">{{cert.date}}</span>
+                </div>
+                <div>
+                    <h3>{{cert.name}}</h3>
+                    <h4>{{cert.issuer}}</h4>
+                    {% if cert.link %}
+                    <a href="{{cert.link}}" target="_blank" class="verify-link">Verify &rarr;</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Contact & Footer -->
+    <footer class="contact-section">
+        <div class="container">
+            <h2>Let's Work Together</h2>
+            <p>Feel free to reach out for collaborations, project inquiries, or just a friendly hello.</p>
+            <a href="mailto:{{email}}" class="contact-btn">Email Me</a>
+        </div>
+    </footer>
+
+
+</body>
+
+</html>

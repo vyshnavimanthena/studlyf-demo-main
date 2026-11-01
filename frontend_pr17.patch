@@ -1,0 +1,2500 @@
+diff --git a/frontend/components/AIToolCard.tsx b/frontend/components/AIToolCard.tsx
+index 173c3b2..360852e 100644
+--- a/frontend/components/AIToolCard.tsx
++++ b/frontend/components/AIToolCard.tsx
+@@ -1,6 +1,6 @@
+-import React from 'react';
++import React, { useState } from 'react';
+ import { motion } from 'framer-motion';
+-import { ExternalLink } from 'lucide-react';
++import { ExternalLink, Share2, Check, Bookmark } from 'lucide-react';
+ 
+ interface Tool {
+     name: string;
+@@ -10,14 +10,28 @@ interface Tool {
+     url: string;
+ }
+ 
+-const AIToolCard: React.FC<{ tool: Tool }> = ({ tool }) => {
++const AIToolCard: React.FC<{ tool: Tool; isBookmarked: boolean; onToggleBookmark: () => void }> = ({ tool, isBookmarked, onToggleBookmark }) => {
++    const [copied, setCopied] = useState(false);
++
++    const handleShare = async (e: React.MouseEvent) => {
++        e.preventDefault();
++        e.stopPropagation();
++        try {
++            await navigator.clipboard.writeText(tool.url);
++            setCopied(true);
++            setTimeout(() => setCopied(false), 2000);
++        } catch (err) {
++            console.error('Failed to copy link: ', err);
++        }
++    };
++
+     return (
+         <motion.div
+             whileHover={{ y: -8, scale: 1.02 }}
+             transition={{ duration: 0.25, ease: "easeOut" }}
+             className="group bg-white border border-gray-100 rounded-[1.5rem] p-6 flex flex-col h-full relative overflow-hidden hover:border-[#7C3AED]/20 hover:shadow-[0_20px_40px_rgba(124,58,237,0.08)] transition-all"
+         >
+-            {/* Category Badge */}
++            {/* Category Badge & Share */}
+             <div className="flex justify-between items-start mb-6">
+                 <div className="w-14 h-14 rounded-2xl bg-[#F9FAFB] border border-gray-100 p-2 flex items-center justify-center overflow-hidden group-hover:border-[#7C3AED]/20 transition-colors">
+                     <img
+@@ -27,9 +41,29 @@ const AIToolCard: React.FC<{ tool: Tool }> = ({ tool }) => {
+                         onError={(e) => { (e.target as HTMLImageElement).src = 'https://via.placeholder.com/150?text=AI'; }}
+                     />
+                 </div>
+-                <span className="px-3 py-1 bg-[#F5F3FF] text-[#7C3AED] text-[10px] uppercase font-black tracking-widest rounded-full border border-[#7C3AED]/10">
+-                    {tool.category}
+-                </span>
++                <div className="flex items-center gap-2">
++                    <button
++                        onClick={(e) => {
++                            e.preventDefault();
++                            e.stopPropagation();
++                            onToggleBookmark();
++                        }}
++                        className="p-1.5 bg-[#F9FAFB] hover:bg-gray-100 text-gray-400 hover:text-amber-500 rounded-lg border border-gray-100 hover:border-gray-200 flex items-center justify-center transition-all duration-200"
++                        title={isBookmarked ? "Remove Bookmark" : "Bookmark Tool"}
++                    >
++                        <Bookmark className={`w-3.5 h-3.5 ${isBookmarked ? "fill-amber-400 text-amber-400" : ""}`} />
++                    </button>
++                    <button
++                        onClick={handleShare}
++                        className="p-1.5 bg-[#F9FAFB] hover:bg-gray-100 text-gray-400 hover:text-[#7C3AED] rounded-lg border border-gray-100 hover:border-gray-200 flex items-center justify-center transition-all duration-200"
++                        title="Share Tool"
++                    >
++                        {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Share2 className="w-3.5 h-3.5" />}
++                    </button>
++                    <span className="px-3 py-1 bg-[#F5F3FF] text-[#7C3AED] text-[10px] uppercase font-black tracking-widest rounded-full border border-[#7C3AED]/10">
++                        {tool.category}
++                    </span>
++                </div>
+             </div>
+ 
+             <div className="flex-grow">
+diff --git a/frontend/components/AIToolGrid.tsx b/frontend/components/AIToolGrid.tsx
+index 86fe072..fa27bd3 100644
+--- a/frontend/components/AIToolGrid.tsx
++++ b/frontend/components/AIToolGrid.tsx
+@@ -10,7 +10,13 @@ interface Tool {
+     url: string;
+ }
+ 
+-const AIToolGrid: React.FC<{ tools: Tool[] }> = ({ tools }) => {
++interface AIToolGridProps {
++    tools: Tool[];
++    bookmarkedTools: string[];
++    onToggleBookmark: (name: string) => void;
++}
++
++const AIToolGrid: React.FC<AIToolGridProps> = ({ tools, bookmarkedTools, onToggleBookmark }) => {
+     return (
+         <motion.div
+             layout
+@@ -26,7 +32,11 @@ const AIToolGrid: React.FC<{ tools: Tool[] }> = ({ tools }) => {
+                         exit={{ opacity: 0, scale: 0.9, y: -20 }}
+                         transition={{ duration: 0.45, ease: "easeOut" }}
+                     >
+-                        <AIToolCard tool={tool} />
++                        <AIToolCard 
++                            tool={tool} 
++                            isBookmarked={bookmarkedTools.includes(tool.name)} 
++                            onToggleBookmark={() => onToggleBookmark(tool.name)} 
++                        />
+                     </motion.div>
+                 ))}
+             </AnimatePresence>
+diff --git a/frontend/pages/AITools.tsx b/frontend/pages/AITools.tsx
+index f6124c7..faac580 100644
+--- a/frontend/pages/AITools.tsx
++++ b/frontend/pages/AITools.tsx
+@@ -20,6 +20,27 @@ const AITools: React.FC = () => {
+     const [loading, setLoading] = useState(true);
+     const [error, setError] = useState<string | null>(null);
+     const [searchQuery, setSearchQuery] = useState('');
++    const [bookmarkedTools, setBookmarkedTools] = useState<string[]>([]);
++    const [filterTab, setFilterTab] = useState<'all' | 'bookmarked'>('all');
++
++    useEffect(() => {
++        const saved = localStorage.getItem('studlyf_bookmarked_tools');
++        if (saved) {
++            try {
++                setBookmarkedTools(JSON.parse(saved));
++            } catch (e) {
++                console.error(e);
++            }
++        }
++    }, []);
++
++    const handleToggleBookmark = (name: string) => {
++        setBookmarkedTools(prev => {
++            const updated = prev.includes(name) ? prev.filter(t => t !== name) : [...prev, name];
++            localStorage.setItem('studlyf_bookmarked_tools', JSON.stringify(updated));
++            return updated;
++        });
++    };
+ 
+     useEffect(() => {
+         fetchTools();
+@@ -45,6 +66,10 @@ const AITools: React.FC = () => {
+     useEffect(() => {
+         let result = tools;
+ 
++        if (filterTab === 'bookmarked') {
++            result = result.filter(t => bookmarkedTools.includes(t.name));
++        }
++
+         if (searchQuery) {
+             const query = searchQuery.toLowerCase();
+             result = result.filter(tool =>
+@@ -55,7 +80,7 @@ const AITools: React.FC = () => {
+         }
+ 
+         setFilteredTools(result);
+-    }, [searchQuery, tools]);
++    }, [searchQuery, tools, filterTab, bookmarkedTools]);
+ 
+     return (
+         <div className="min-h-screen bg-white text-[#111827] pt-32 pb-20 px-6 sm:px-12 relative overflow-hidden">
+@@ -98,6 +123,30 @@ const AITools: React.FC = () => {
+                     />
+                 </motion.div>
+ 
++                {/* Custom Tab Filters */}
++                <div className="flex justify-center gap-3 mb-10 mt-8">
++                    <button
++                        onClick={() => setFilterTab('all')}
++                        className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold transition-all border ${
++                            filterTab === 'all'
++                                ? 'bg-[#1A1A1A] text-white border-[#1A1A1A] shadow-md'
++                                : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300 hover:shadow-sm hover:text-gray-800'
++                        }`}
++                    >
++                        All Tools
++                    </button>
++                    <button
++                        onClick={() => setFilterTab('bookmarked')}
++                        className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold transition-all border ${
++                            filterTab === 'bookmarked'
++                                ? 'bg-[#7C3AED] text-white border-[#7C3AED] shadow-md'
++                                : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300 hover:shadow-sm hover:text-gray-800'
++                        }`}
++                    >
++                        ⭐ Bookmarked
++                    </button>
++                </div>
++
+                 {/* Content Area */}
+                 <div className="min-h-[400px]">
+                     {loading ? (
+@@ -127,7 +176,11 @@ const AITools: React.FC = () => {
+                             <p className="text-gray-400 text-lg font-medium">No tactical protocols found in this segment.</p>
+                         </div>
+                     ) : (
+-                        <AIToolGrid tools={filteredTools} />
++                        <AIToolGrid 
++                            tools={filteredTools} 
++                            bookmarkedTools={bookmarkedTools} 
++                            onToggleBookmark={handleToggleBookmark} 
++                        />
+                     )}
+                 </div>
+ 
+diff --git a/frontend/pages/MyProfile.tsx b/frontend/pages/MyProfile.tsx
+index 05c865a..6076dcd 100644
+--- a/frontend/pages/MyProfile.tsx
++++ b/frontend/pages/MyProfile.tsx
+@@ -9,7 +9,8 @@ import {
+   User, FileText, Book, Award, Briefcase, 
+   Terminal, Share2, Settings, ShieldCheck, 
+   ChevronLeft, Plus, Save, Sparkles, Scan,
+-  Globe, MapPin, Calendar, Heart, GraduationCap, Download, Copy
++  Globe, MapPin, Calendar, Heart, GraduationCap, Download, Copy, Eye,
++  Github, Linkedin, Code
+ } from 'lucide-react';
+ import AvatarImage from '../components/AvatarImage';
+ 
+@@ -125,8 +126,9 @@ const MyProfile: React.FC = () => {
+           const data = await res.json();
+           setFormData(prev => ({
+             ...prev,
+-            firstName: data.full_name ? data.full_name.split(' ')[0] : prev.firstName,
+-            lastName: data.full_name ? data.full_name.split(' ').slice(1).join(' ') : prev.lastName,
++            firstName: data.firstName || (data.full_name ? data.full_name.split(' ')[0] : prev.firstName),
++            lastName: data.lastName || (data.full_name ? data.full_name.split(' ').slice(1).join(' ') : prev.lastName),
++            username: data.username || prev.username,
+             phone: data.phone || prev.phone,
+             gender: data.gender || prev.gender,
+             dob: data.dob || prev.dob,
+@@ -142,6 +144,7 @@ const MyProfile: React.FC = () => {
+             education: data.education || prev.education,
+             educationList: data.educationList || prev.educationList,
+             experience: data.experience || prev.experience,
++            experienceList: data.experienceList || prev.experienceList,
+             projects: data.projects || prev.projects,
+             certifications: data.certifications || prev.certifications,
+             achievements: data.achievements || prev.achievements,
+@@ -157,6 +160,8 @@ const MyProfile: React.FC = () => {
+             newsletter: data.newsletter ?? prev.newsletter,
+             isCurrentStudent: data.isCurrentStudent ?? prev.isCurrentStudent,
+             isCurrentEmployee: data.isCurrentEmployee ?? prev.isCurrentEmployee,
++            oneStrongWord: data.oneStrongWord || prev.oneStrongWord,
++            githubUsername: data.githubUsername || prev.githubUsername,
+           }));
+         } else {
+           const names = user.full_name?.split(' ') || [];
+@@ -183,24 +188,25 @@ const MyProfile: React.FC = () => {
+   }, [user]);
+ 
+   // ─── REAL: Save full profile to backend ───
+-  const handleSave = async (section: string) => {
++  const handleSave = async (section: string, customFormData?: typeof formData) => {
+     if (!user?.user_id) return;
+     setIsSaving(true);
+     setSaveStatus(null);
+ 
++    const dataToSave = customFormData || formData;
+     try {
+       const res = await fetch(`${API_BASE_URL}/api/user/${user.user_id}/update-profile`, {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({
+-          ...formData,
++          ...dataToSave,
+           // Ensure arrays and objects are clean
+-          skills: formData.skills || [],
+-          projects: formData.projects || [],
+-          certifications: formData.certifications || [],
+-          achievements: formData.achievements || [],
+-          interests: formData.interests || [],
+-          educationList: formData.educationList || [],
++          skills: dataToSave.skills || [],
++          projects: dataToSave.projects || [],
++          certifications: dataToSave.certifications || [],
++          achievements: dataToSave.achievements || [],
++          interests: dataToSave.interests || [],
++          educationList: dataToSave.educationList || [],
+         })
+       });
+ 
+@@ -235,6 +241,16 @@ const MyProfile: React.FC = () => {
+ 
+   // ─── REAL: Delete item from backend + local state ───
+   const handleDeleteItem = async (section: string, index: number, stateKey: keyof typeof formData) => {
++    // 1. Optimistically delete item from local state list
++    setFormData(prev => {
++      const list = prev[stateKey];
++      if (Array.isArray(list)) {
++        const updatedList = list.filter((_, i) => i !== index);
++        return { ...prev, [stateKey]: updatedList };
++      }
++      return prev;
++    });
++
+     if (!user?.user_id) return;
+     try {
+       const res = await fetch(
+@@ -243,14 +259,14 @@ const MyProfile: React.FC = () => {
+       );
+       if (res.ok) {
+         const updated = await res.json();
+-        setFormData(prev => ({ ...prev, [stateKey]: updated[stateKey as string] || [] }));
++        if (updated && updated[stateKey as string]) {
++          setFormData(prev => ({ ...prev, [stateKey]: updated[stateKey as string] }));
++        }
+         setSaveStatus({ type: 'success', message: 'Deleted successfully!' });
+         setTimeout(() => setSaveStatus(null), 2000);
+       }
+     } catch (err) {
+-        const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+-        setSaveStatus({ type: 'error', message: 'Delete failed: ' + errorMessage });
+-      setTimeout(() => setSaveStatus(null), 3000);
++      console.warn("Delete request failed (this is expected for unsaved local items):", err);
+     }
+   };
+ 
+@@ -275,15 +291,31 @@ const MyProfile: React.FC = () => {
+     setIsUploading(true);
+     try {
+       const form = new FormData();
+-      form.append('resume', file);
++      form.append('file', file);
+       const res = await fetch(`${API_BASE_URL}/api/user/${user?.user_id}/upload-resume`, {
+         method: 'POST',
+         body: form,
+       });
+       if (res.ok) {
+         const data = await res.json();
+-        setFormData(prev => ({ ...prev, resume: { fileName: file.name, uploadDate: new Date().toISOString(), atsScore: data.atsScore || 0, version: '1.0' } }));
+-        if (data.skills) setFormData(prev => ({ ...prev, skills: data.skills }));
++        if (data.resume) {
++          setFormData(prev => ({ ...prev, resume: data.resume }));
++        } else {
++          setFormData(prev => ({ ...prev, resume: { fileName: file.name, uploadDate: new Date().toISOString(), atsScore: data.ats_score || data.atsScore || 0, version: '1.0', filePath: '' } }));
++        }
++        if (data.skills) {
++          const formattedSkills = data.skills.map((s: string | any) => {
++            if (typeof s === 'string') {
++              return { name: s, proficiency: 'Intermediate', years: '1' };
++            }
++            return {
++              name: s.name || '',
++              proficiency: s.proficiency || 'Intermediate',
++              years: s.years || '1'
++            };
++          });
++          setFormData(prev => ({ ...prev, skills: formattedSkills }));
++        }
+         if (data.extractedSkills) setExtractedSkills(data.extractedSkills);
+         setResumeParseResult(data);
+       }
+@@ -291,6 +323,41 @@ const MyProfile: React.FC = () => {
+     setIsUploading(false);
+   };
+ 
++  const handleViewResume = () => {
++    if (!formData.resume.filePath) return;
++    const resumeUrl = formData.resume.filePath.startsWith('http')
++      ? formData.resume.filePath
++      : `${API_BASE_URL}${formData.resume.filePath}`;
++    window.open(resumeUrl, '_blank');
++  };
++
++  const handleDownloadResume = async () => {
++    if (!formData.resume.filePath) return;
++    const resumeUrl = formData.resume.filePath.startsWith('http')
++      ? formData.resume.filePath
++      : `${API_BASE_URL}${formData.resume.filePath}`;
++    try {
++      const response = await fetch(resumeUrl);
++      const blob = await response.blob();
++      const blobUrl = window.URL.createObjectURL(blob);
++      const link = document.createElement('a');
++      link.href = blobUrl;
++      link.setAttribute('download', formData.resume.fileName || 'resume.pdf');
++      document.body.appendChild(link);
++      link.click();
++      document.body.removeChild(link);
++      window.URL.revokeObjectURL(blobUrl);
++    } catch {
++      const link = document.createElement('a');
++      link.href = resumeUrl;
++      link.setAttribute('download', formData.resume.fileName || 'resume.pdf');
++      link.target = '_blank';
++      document.body.appendChild(link);
++      link.click();
++      document.body.removeChild(link);
++    }
++  };
++
+   const removeInterest = (tag: string) => {
+     setFormData(prev => ({ ...prev, interests: prev.interests.filter(t => t !== tag) }));
+   };
+@@ -323,11 +390,14 @@ const MyProfile: React.FC = () => {
+ 
+   const handleStrongWordInputBlur = () => {
+     setIsEditingStrongWord(false);
++    handleSave('One strong word');
+   };
+ 
+   const chooseStrongWord = (word: string) => {
+-    setFormData(prev => ({ ...prev, oneStrongWord: word }));
++    const updated = { ...formData, oneStrongWord: word };
++    setFormData(updated);
+     setIsEditingStrongWord(false);
++    handleSave('One strong word', updated);
+   };
+ 
+   const calculateStrength = () => {
+@@ -450,7 +520,7 @@ const MyProfile: React.FC = () => {
+   };
+   const APP_BASE_URL = (import.meta as any).env?.VITE_PUBLIC_URL || window.location.origin;
+ const publicProfileUrl = user?.user_id && typeof window !== 'undefined'
+-  ? `${APP_BASE_URL}/profile/${user.user_id}`
++  ? `${APP_BASE_URL}/#/profile/${user.user_id}`
+   : '';
+ 
+   const profileShareCaption = `${profileDisplayName} | Studlyf\n${profileRole}\n${profileHeadline}`;
+@@ -1375,10 +1445,18 @@ const publicProfileUrl = user?.user_id && typeof window !== 'undefined'
+         document.body.removeChild(textArea);
+       }
+       setCopyFeedback({ target, type: 'success', message: 'Profile link copied to clipboard.' });
+-      setTimeout(() => setCopyFeedback(current => current?.target === target ? null : current), 2500);
++      setSaveStatus({ type: 'success', message: 'Profile link copied to clipboard!' });
++      setTimeout(() => {
++        setCopyFeedback(current => current?.target === target ? null : current);
++        setSaveStatus(null);
++      }, 2500);
+     } catch {
+       setCopyFeedback({ target, type: 'error', message: 'Unable to copy the profile link.' });
+-      setTimeout(() => setCopyFeedback(current => current?.target === target ? null : current), 2500);
++      setSaveStatus({ type: 'error', message: 'Unable to copy the profile link.' });
++      setTimeout(() => {
++        setCopyFeedback(current => current?.target === target ? null : current);
++        setSaveStatus(null);
++      }, 2500);
+     }
+   };
+ 
+@@ -1879,7 +1957,7 @@ const publicProfileUrl = user?.user_id && typeof window !== 'undefined'
+                 <div key={`edu-${i}`} className="bg-white border border-gray-100 rounded-[2.5rem] p-8 relative group hover:border-[#7C3AED]/30 transition-all shadow-sm">
+                   <button
+                     onClick={() => handleDeleteItem('education', i, 'educationList')}
+-                    className="absolute top-6 right-6 p-2 text-gray-200 hover:text-red-400 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100"
++                    className="absolute top-3 right-3 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100 z-20"
+                   >
+                     <Plus className="w-5 h-5 rotate-45" />
+                   </button>
+@@ -1931,9 +2009,6 @@ const publicProfileUrl = user?.user_id && typeof window !== 'undefined'
+                     {isSaving ? 'Saving...' : 'Save Education'}
+                   </button>
+                 </div>
+-                {sectionStatus?.section === 'Education' && (
+-                  <div className={`text-[10px] font-bold ${sectionStatus.type === 'success' ? 'text-emerald-600' : 'text-red-500'}`}>{sectionStatus.message}</div>
+-                )}
+               </div>
+             )}
+           </motion.div>
+@@ -2229,14 +2304,36 @@ const publicProfileUrl = user?.user_id && typeof window !== 'undefined'
+                     </div>
+                   </div>
+                 </div>
+-                <div className="flex items-center gap-3">
++                <div className="flex flex-wrap items-center gap-3">
+                   <button
+                     onClick={() => resumeInputRef.current?.click()}
+                     disabled={isUploading}
+-                    className="flex-1 py-3 border-2 border-dashed border-gray-200 rounded-2xl text-[10px] font-black uppercase tracking-widest text-gray-500 hover:border-[#7C3AED] hover:text-[#7C3AED] transition-all disabled:opacity-50"
++                    className="flex-1 min-w-[140px] py-3 border-2 border-dashed border-gray-200 rounded-2xl text-[10px] font-black uppercase tracking-widest text-gray-500 hover:border-[#7C3AED] hover:text-[#7C3AED] transition-all disabled:opacity-50"
+                   >
+-                    {isUploading ? 'Parsing...' : 'Re-upload Resume'}
++                    {isUploading ? 'Parsing...' : (formData.resume.fileName !== 'No resume uploaded' ? 'Re-upload Resume' : 'Upload Resume')}
+                   </button>
++
++                  {formData.resume.filePath && formData.resume.fileName !== 'No resume uploaded' && (
++                    <>
++                      <button
++                        type="button"
++                        onClick={handleViewResume}
++                        className="px-5 py-3 bg-gray-50 border border-gray-200 text-gray-700 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-100 transition-all flex items-center gap-2"
++                      >
++                        <Eye className="w-4 h-4" />
++                        View
++                      </button>
++                      <button
++                        type="button"
++                        onClick={handleDownloadResume}
++                        className="px-5 py-3 bg-gray-50 border border-gray-200 text-gray-700 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-100 transition-all flex items-center gap-2"
++                      >
++                        <Download className="w-4 h-4" />
++                        Download
++                      </button>
++                    </>
++                  )}
++
+                   <button
+                     onClick={() => handleSave('Resume')}
+                     disabled={isSaving || formData.resume.atsScore === 0}
+@@ -2343,7 +2440,7 @@ const publicProfileUrl = user?.user_id && typeof window !== 'undefined'
+                 <div key={`exp-${i}`} className="bg-white border border-gray-100 rounded-[2.5rem] p-8 relative group hover:border-[#7C3AED]/30 transition-all shadow-sm">
+                   <button
+                     onClick={() => handleDeleteItem('experience', i, 'experienceList')}
+-                    className="absolute top-6 right-6 p-2 text-gray-200 hover:text-red-400 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100"
++                    className="absolute top-3 right-3 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100 z-20"
+                   >
+                     <Plus className="w-5 h-5 rotate-45" />
+                   </button>
+@@ -2432,7 +2529,7 @@ const publicProfileUrl = user?.user_id && typeof window !== 'undefined'
+                 <div key={`proj-${i}`} className="bg-white border border-gray-100 rounded-[2.5rem] p-8 relative group hover:border-[#7C3AED]/30 transition-all shadow-sm">
+                   <button
+                     onClick={() => handleDeleteItem('project', i, 'projects')}
+-                    className="absolute top-6 right-6 p-2 text-gray-200 hover:text-red-400 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100"
++                    className="absolute top-3 right-3 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100 z-20"
+                   >
+                     <Plus className="w-5 h-5 rotate-45" />
+                   </button>
+@@ -2452,16 +2549,24 @@ const publicProfileUrl = user?.user_id && typeof window !== 'undefined'
+                       />
+                     </div>
+                     <div className="md:col-span-2 space-y-2">
+-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Description</label>
++                      <div className="flex items-center justify-between">
++                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Description</label>
++                        <span className={`text-[10px] font-bold ${proj.description?.split(/\s+/).filter(Boolean).length > 300 ? 'text-red-500' : 'text-gray-400'}`}>
++                          {proj.description?.split(/\s+/).filter(Boolean).length || 0} / 300 words
++                        </span>
++                      </div>
+                       <textarea
+                         value={proj.description}
+                         onChange={e => {
+-                          const updated = [...formData.projects];
+-                          updated[i] = { ...updated[i], description: e.target.value };
+-                          setFormData(prev => ({ ...prev, projects: updated }));
++                          const words = e.target.value.split(/\s+/).filter(Boolean);
++                          if (words.length <= 300 || e.target.value.length < proj.description.length) {
++                            const updated = [...formData.projects];
++                            updated[i] = { ...updated[i], description: e.target.value };
++                            setFormData(prev => ({ ...prev, projects: updated }));
++                          }
+                         }}
+                         className="w-full px-6 py-4 bg-gray-50 border border-transparent rounded-2xl text-sm font-bold min-h-[100px] text-gray-900 focus:bg-white outline-none transition-all"
+-                        placeholder="Describe your project..."
++                        placeholder="Describe your project (max 300 words)..."
+                       />
+                     </div>
+                     <div className="space-y-2">
+@@ -2540,16 +2645,16 @@ const publicProfileUrl = user?.user_id && typeof window !== 'undefined'
+                 <div key={`cert-${i}`} className="bg-white border border-gray-100 rounded-[2.5rem] p-8 group hover:border-[#7C3AED]/30 transition-all shadow-sm relative">
+                   <button
+                     onClick={() => handleDeleteItem('certification', i, 'certifications')}
+-                    className="absolute top-5 right-5 p-2 text-gray-200 hover:text-red-400 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100"
++                    className="absolute top-3 right-3 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100 z-20"
+                   >
+                     <Plus className="w-4 h-4 rotate-45" />
+                   </button>
+                   <div className="space-y-4">
+-                    <div className="space-y-2">
+-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Certificate Name</label>
+-                      <input type="text" value={cert.name} onChange={e => { const u = [...formData.certifications]; u[i] = { ...u[i], name: e.target.value }; setFormData(prev => ({ ...prev, certifications: u })); }} className="w-full px-6 py-3 bg-gray-50 border border-transparent rounded-2xl text-sm font-bold text-gray-900 focus:bg-white outline-none transition-all" placeholder="AWS Certified Solutions Architect" />
+-                    </div>
+-                    <div className="grid grid-cols-2 gap-4">
++                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
++                      <div className="space-y-2 md:col-span-2">
++                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Certificate Name</label>
++                        <input type="text" value={cert.name} onChange={e => { const u = [...formData.certifications]; u[i] = { ...u[i], name: e.target.value }; setFormData(prev => ({ ...prev, certifications: u })); }} className="w-full px-6 py-3 bg-gray-50 border border-transparent rounded-2xl text-sm font-bold text-gray-900 focus:bg-white outline-none transition-all" placeholder="AWS Certified Solutions Architect" />
++                      </div>
+                       <div className="space-y-2">
+                         <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Issuer</label>
+                         <input type="text" value={cert.issuer} onChange={e => { const u = [...formData.certifications]; u[i] = { ...u[i], issuer: e.target.value }; setFormData(prev => ({ ...prev, certifications: u })); }} className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-xl text-xs font-bold text-gray-900 focus:bg-white outline-none transition-all" placeholder="Google Cloud" />
+@@ -2558,10 +2663,14 @@ const publicProfileUrl = user?.user_id && typeof window !== 'undefined'
+                         <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Date</label>
+                         <input type="text" value={cert.date} onChange={e => { const u = [...formData.certifications]; u[i] = { ...u[i], date: e.target.value }; setFormData(prev => ({ ...prev, certifications: u })); }} className="w-full px-4 py-3 bg-gray-50 border border-transparent rounded-xl text-xs font-bold text-gray-900 focus:bg-white outline-none transition-all" placeholder="2024" />
+                       </div>
+-                    </div>
+-                    <div className="space-y-2">
+-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Credential URL</label>
+-                      <input type="url" value={cert.link} onChange={e => { const u = [...formData.certifications]; u[i] = { ...u[i], link: e.target.value }; setFormData(prev => ({ ...prev, certifications: u })); }} className="w-full px-6 py-3 bg-gray-50 border border-transparent rounded-2xl text-sm font-bold text-gray-900 focus:bg-white outline-none transition-all" placeholder="https://..." />
++                      <div className="space-y-2 md:col-span-2">
++                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Credential ID (Optional)</label>
++                        <input type="text" value={cert.credentialId || ''} onChange={e => { const u = [...formData.certifications]; u[i] = { ...u[i], credentialId: e.target.value }; setFormData(prev => ({ ...prev, certifications: u })); }} className="w-full px-6 py-3 bg-gray-50 border border-transparent rounded-2xl text-sm font-bold text-gray-900 focus:bg-white outline-none transition-all" placeholder="e.g. AZ-900-12345" />
++                      </div>
++                      <div className="space-y-2 md:col-span-2">
++                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Credential URL</label>
++                        <input type="url" value={cert.link} onChange={e => { const u = [...formData.certifications]; u[i] = { ...u[i], link: e.target.value }; setFormData(prev => ({ ...prev, certifications: u })); }} className="w-full px-6 py-3 bg-gray-50 border border-transparent rounded-2xl text-sm font-bold text-gray-900 focus:bg-white outline-none transition-all" placeholder="https://..." />
++                      </div>
+                     </div>
+                   </div>
+                 </div>
+@@ -2624,7 +2733,7 @@ const publicProfileUrl = user?.user_id && typeof window !== 'undefined'
+                 <div key={`ach-${i}`} className="bg-white border border-gray-100 rounded-[2.5rem] p-8 relative group hover:border-[#7C3AED]/30 transition-all shadow-sm">
+                   <button
+                     onClick={() => handleDeleteItem('achievement', i, 'achievements')}
+-                    className="absolute top-6 right-6 p-2 text-gray-200 hover:text-red-400 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100"
++                    className="absolute top-3 right-3 p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all opacity-0 group-hover:opacity-100 z-20"
+                   >
+                     <Plus className="w-5 h-5 rotate-45" />
+                   </button>
+@@ -2648,8 +2757,24 @@ const publicProfileUrl = user?.user_id && typeof window !== 'undefined'
+                       <input type="url" value={ach.link} onChange={e => { const u = [...formData.achievements]; u[i] = { ...u[i], link: e.target.value }; setFormData(prev => ({ ...prev, achievements: u })); }} className="w-full px-6 py-3 bg-gray-50 border border-transparent rounded-2xl text-sm font-bold text-gray-900 focus:bg-white outline-none transition-all" placeholder="https://..." />
+                     </div>
+                     <div className="md:col-span-2 space-y-2">
+-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Description</label>
+-                      <textarea value={ach.description} onChange={e => { const u = [...formData.achievements]; u[i] = { ...u[i], description: e.target.value }; setFormData(prev => ({ ...prev, achievements: u })); }} className="w-full px-6 py-4 bg-gray-50 border border-transparent rounded-2xl text-sm font-bold min-h-[80px] text-gray-900 focus:bg-white outline-none transition-all" placeholder="Explain what you achieved..." />
++                      <div className="flex items-center justify-between">
++                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Description</label>
++                        <span className={`text-[10px] font-bold ${ach.description?.length > 100 ? 'text-red-500' : 'text-gray-400'}`}>
++                          {ach.description?.length || 0} / 100 characters
++                        </span>
++                      </div>
++                      <textarea
++                        value={ach.description}
++                        onChange={e => {
++                          if (e.target.value.length <= 100 || e.target.value.length < ach.description.length) {
++                            const u = [...formData.achievements];
++                            u[i] = { ...u[i], description: e.target.value };
++                            setFormData(prev => ({ ...prev, achievements: u }));
++                          }
++                        }}
++                        className="w-full px-6 py-4 bg-gray-50 border border-transparent rounded-2xl text-sm font-bold min-h-[80px] text-gray-900 focus:bg-white outline-none transition-all"
++                        placeholder="Explain what you achieved (max 100 characters)..."
++                      />
+                     </div>
+                   </div>
+                 </div>
+@@ -2689,9 +2814,10 @@ const publicProfileUrl = user?.user_id && typeof window !== 'undefined'
+ 
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {[
+-                 { id: 'linkedin', label: 'LinkedIn', icon: Share2, color: '#0077B5', placeholder: 'linkedin.com/in/...' },
++                 { id: 'github', label: 'GitHub', icon: Github, color: '#333333', placeholder: 'github.com/...' },
++                 { id: 'linkedin', label: 'LinkedIn', icon: Linkedin, color: '#0077B5', placeholder: 'linkedin.com/in/...' },
++                 { id: 'leetcode', label: 'LeetCode', icon: Code, color: '#FFA116', placeholder: 'leetcode.com/u/...' },
+                  { id: 'portfolio', label: 'Portfolio', icon: Globe, color: '#7C3AED', placeholder: 'yourwebsite.com' },
+-                 { id: 'hackerrank', label: 'HackerRank', icon: Book, color: '#2EC866', placeholder: 'hackerrank.com/profile/...' },
+                ].map(social => (
+                  <div key={social.label} className="space-y-3 group">
+                    <div className="flex items-center gap-3 ml-1">
+@@ -2710,6 +2836,25 @@ const publicProfileUrl = user?.user_id && typeof window !== 'undefined'
+                    />
+                  </div>
+                ))}
++               
++               {/* Custom Links Section (Added but not rendered in Public Profile) */}
++               <div className="md:col-span-2 space-y-4 pt-4 border-t border-gray-100">
++                 <div className="flex items-center justify-between">
++                   <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-1">Additional Custom Links</label>
++                   <button type="button" onClick={() => setFormData(prev => ({ ...prev, customLinks: [...(prev.customLinks || []), { title: '', url: '' }] }))} className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-gray-200 transition-all">
++                     <Plus className="w-3 h-3" /> Add Link
++                   </button>
++                 </div>
++                 {formData.customLinks?.map((link: any, idx: number) => (
++                   <div key={idx} className="flex gap-4 items-start relative group">
++                     <button onClick={() => setFormData(prev => ({ ...prev, customLinks: prev.customLinks.filter((_: any, i: number) => i !== idx) }))} className="absolute -left-3 top-4 p-1 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
++                       <Plus className="w-4 h-4 rotate-45" />
++                     </button>
++                     <input type="text" value={link.title} onChange={e => { const u = [...formData.customLinks]; u[idx].title = e.target.value; setFormData(prev => ({ ...prev, customLinks: u })) }} placeholder="Link Title (e.g. Medium)" className="w-1/3 px-4 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none" />
++                     <input type="url" value={link.url} onChange={e => { const u = [...formData.customLinks]; u[idx].url = e.target.value; setFormData(prev => ({ ...prev, customLinks: u })) }} placeholder="https://..." className="w-2/3 px-4 py-3 bg-gray-50 rounded-xl text-sm font-bold text-gray-900 outline-none" />
++                   </div>
++                 ))}
++               </div>
+             </div>
+ 
+             <div className="pt-8 flex justify-end">
+@@ -2840,17 +2985,16 @@ const publicProfileUrl = user?.user_id && typeof window !== 'undefined'
+   };
+ 
+   return (
+-    <div className="max-w-[1400px] mx-auto min-h-screen bg-white/90 backdrop-blur-sm pt-0 px-4 sm:px-8 lg:px-12 pb-12 font-sans selection:bg-[#7C3AED] selection:text-white">
+-
++    <>
+       {/* ── Global Save Toast ── */}
+       <AnimatePresence>
+         {saveStatus && (
+           <motion.div
+-            initial={{ opacity: 0, y: 24, scale: 0.98 }}
++            initial={{ opacity: 0, y: -24, scale: 0.98 }}
+             animate={{ opacity: 1, y: 0, scale: 1 }}
+-            exit={{ opacity: 0, y: 24, scale: 0.98 }}
++            exit={{ opacity: 0, y: -24, scale: 0.98 }}
+             transition={{ duration: 0.45, ease: 'easeOut' }}
+-            className={`fixed bottom-8 left-1/2 -translate-x-1/2 z-[70] px-8 py-4 rounded-2xl text-white text-sm font-bold shadow-2xl flex items-center gap-3 backdrop-blur-md pointer-events-none
++            className={`fixed top-8 left-1/2 -translate-x-1/2 z-[9999] px-8 py-4 rounded-2xl text-white text-sm font-bold shadow-2xl flex items-center gap-3 backdrop-blur-md pointer-events-none
+               ${saveStatus.type === 'success' ? 'bg-emerald-500/90' : 'bg-red-500/90'}`}
+           >
+             <span>{saveStatus.type === 'success' ? '✓' : '✗'}</span>
+@@ -2859,6 +3003,8 @@ const publicProfileUrl = user?.user_id && typeof window !== 'undefined'
+         )}
+       </AnimatePresence>
+ 
++      <div className="max-w-[1400px] mx-auto min-h-screen bg-white/90 backdrop-blur-sm pt-0 px-4 sm:px-8 lg:px-12 pb-12 font-sans selection:bg-[#7C3AED] selection:text-white">
++
+       {/* Header with Back Button */}
+       <div className="flex items-center gap-6 mb-6 pt-0 sm:pt-0 lg:pt-1">
+         <button 
+@@ -2990,6 +3136,11 @@ const publicProfileUrl = user?.user_id && typeof window !== 'undefined'
+                           value={formData.oneStrongWord}
+                           onChange={handleChange}
+                           onBlur={handleStrongWordInputBlur}
++                          onKeyDown={(e) => {
++                            if (e.key === 'Enter') {
++                              e.currentTarget.blur();
++                            }
++                          }}
+                           placeholder="Aspiring entrepreneur"
+                           className="mt-5 w-full rounded-[1.75rem] border border-gray-200 bg-white px-5 py-4 text-lg font-semibold text-gray-900 outline-none transition-all focus:border-[#7C3AED]/50 focus:ring-4 focus:ring-[#7C3AED]/10"
+                         />
+@@ -3126,11 +3277,9 @@ const publicProfileUrl = user?.user_id && typeof window !== 'undefined'
+                     whileHover={{ y: -6 }}
+                     transition={{ duration: 0.25, ease: 'easeOut' }}
+                     className="rounded-[2rem] border border-white/20 bg-white/10 p-5 shadow-xl backdrop-blur-sm"
+-                    style={{ borderImage: 'linear-gradient(135deg, rgba(255,255,255,0.45), rgba(255,255,255,0.08)) 1' }}
+                   >
+                     <div className="text-[10px] font-black uppercase tracking-[0.18em] text-white/75">{card.label}</div>
+                     <div className="mt-3 text-3xl font-black text-white">{card.value}</div>
+-                    <div className="mt-3 h-1 rounded-full bg-white/20" style={{ width: `${70 + index * 10}%` }} />
+                   </motion.div>
+                 ))}
+               </div>
+@@ -3431,6 +3580,7 @@ const publicProfileUrl = user?.user_id && typeof window !== 'undefined'
+         </div>
+       </div>
+     </div>
++    </>
+   );
+ };
+ 
+diff --git a/frontend/pages/PublicProfile.tsx b/frontend/pages/PublicProfile.tsx
+index 589da97..be0735f 100644
+--- a/frontend/pages/PublicProfile.tsx
++++ b/frontend/pages/PublicProfile.tsx
+@@ -1,7 +1,11 @@
+ import React, { useEffect, useMemo, useState } from 'react';
+ import { Link, useParams } from 'react-router-dom';
+ import { API_BASE_URL } from '../apiConfig';
+-import { ArrowLeft, Award, BadgeCheck, BookOpen, Briefcase, Calendar, Copy, Globe, MapPin, Share2, Sparkles, Star, TrendingUp, User } from 'lucide-react';
++import {
++  ArrowLeft, Award, Briefcase, Code, FileText,
++  Github, Globe, Linkedin, MapPin, Share2, Sparkles,
++  Star, Twitter, User, GraduationCap, Settings, Copy, Eye, Download, Link as LinkIcon, ShieldCheck
++} from 'lucide-react';
+ import AvatarImage from '../components/AvatarImage';
+ 
+ const PublicProfile: React.FC = () => {
+@@ -13,7 +17,7 @@ const PublicProfile: React.FC = () => {
+ 
+   const publicUrl = useMemo(() => {
+     if (!userId || typeof window === 'undefined') return '';
+-    return `${window.location.origin}/profile/${userId}`;
++    return `${window.location.origin}/#/profile/${userId}`;
+   }, [userId]);
+ 
+   useEffect(() => {
+@@ -64,49 +68,13 @@ const PublicProfile: React.FC = () => {
+     await copyLink();
+   };
+ 
+-  const skills = profile?.skills || [];
+-  const achievements = profile?.achievements || [];
+-  const projects = profile?.projects || [];
+-  const experience = profile?.experienceList || [];
+-  const certifications = profile?.certifications || [];
+-  const isVisible = profile?.profileVisible ?? true;
+-  const name = [profile?.firstName, profile?.lastName].filter(Boolean).join(' ') || profile?.full_name || 'Contributor Profile';
+-  const role = profile?.userType || profile?.role || 'Contributor';
+-  const headline = profile?.bio || profile?.careerGoal || 'Contributor profile on Studlyf';
+-
+-  const stats = [
+-    { label: 'Tests completed', value: (profile?.resume?.atsScore > 0 ? 1 : 0) + certifications.length + achievements.length, tone: 'emerald' },
+-    { label: 'Contributions', value: projects.length + experience.length, tone: 'violet' },
+-    { label: 'Skills', value: skills.length, tone: 'sky' },
+-    { label: 'Activity score', value: Math.min(100, (skills.length * 8) + (projects.length * 10) + (achievements.length * 6) + (profile?.resume?.atsScore || 0) / 2), tone: 'amber' },
+-  ];
+-
+-  const timeline = [
+-    { title: 'Profile status', detail: isVisible ? 'Public profile is enabled and ready to share.' : 'This profile is currently limited in visibility.' },
+-    { title: 'Portfolio signal', detail: `${projects.length} projects and ${experience.length} work entries are available.` },
+-    { title: 'Skill density', detail: `${skills.length} skills are listed across the profile workspace.` },
+-    { title: 'Recognition', detail: `${achievements.length} achievements and ${certifications.length} certifications are shown.` },
+-  ];
+-
+-    if (loading) {
+-        return (
+-            <div className="min-h-screen bg-[#F4F4F6] px-4 py-8 sm:px-6 lg:px-10">
+-                <div className="mx-auto max-w-7xl space-y-6">
+-                    <div className="w-32 h-10 bg-gray-200 rounded-2xl animate-pulse"></div>
+-                    <div className="grid gap-6 xl:grid-cols-[1.35fr_0.9fr]">
+-                        <div className="h-64 bg-white rounded-[3rem] p-10 animate-pulse border border-gray-100 flex gap-8">
+-                            <div className="w-24 h-24 bg-gray-100 rounded-[2rem] shrink-0"></div>
+-                            <div className="flex-1 space-y-4">
+-                                <div className="w-1/2 h-10 bg-gray-100 rounded-lg"></div>
+-                                <div className="w-1/3 h-6 bg-gray-100 rounded-lg"></div>
+-                            </div>
+-                        </div>
+-                        <div className="h-64 bg-white rounded-[3rem] p-10 animate-pulse border border-gray-100"></div>
+-                    </div>
+-                </div>
+-            </div>
+-        );
+-    }
++  if (loading) {
++    return (
++      <div className="min-h-screen bg-[#F4F4F6] px-4 py-8 sm:px-6 lg:px-10 flex items-center justify-center">
++        <div className="w-12 h-12 border-4 border-[#7C3AED]/30 border-t-[#7C3AED] rounded-full animate-spin"></div>
++      </div>
++    );
++  }
+ 
+   if (error || !profile) {
+     return (
+@@ -127,6 +95,19 @@ const PublicProfile: React.FC = () => {
+     );
+   }
+ 
++  const skills = Array.isArray(profile?.skills) ? profile.skills : [];
++  const achievements = Array.isArray(profile?.achievements) ? profile.achievements : [];
++  const projects = Array.isArray(profile?.projects) ? profile.projects : [];
++  const experience = Array.isArray(profile?.experienceList) ? profile.experienceList : [];
++  const certifications = Array.isArray(profile?.certifications) ? profile.certifications : [];
++  const education = Array.isArray(profile?.educationList) ? profile.educationList : [];
++  const isVisible = profile?.profileVisible ?? true;
++  const name = [profile?.firstName, profile?.lastName].filter(Boolean).join(' ') || profile?.full_name || 'Contributor Profile';
++  const role = profile?.userType || profile?.role || 'Contributor';
++  const headline = profile?.bio || profile?.careerGoal || 'Contributor profile on Studlyf';
++  const resume = profile?.resume;
++  const preference = profile?.preferredWork;
++
+   return (
+     <div className="min-h-screen bg-[#F4F4F6] px-4 py-8 sm:px-6 lg:px-10">
+       <div className="mx-auto max-w-7xl">
+@@ -139,149 +120,355 @@ const PublicProfile: React.FC = () => {
+           </div>
+         </div>
+ 
+-        <div className="grid gap-6 xl:grid-cols-[1.35fr_0.9fr]">
+-          <section className="relative overflow-hidden rounded-[3rem] border border-gray-100 bg-white p-8 sm:p-10 shadow-[0_20px_60px_rgba(15,23,42,0.06)]">
+-            <div className="absolute inset-0 bg-gradient-to-br from-[#7C3AED]/5 via-transparent to-[#06B6D4]/10 pointer-events-none" />
+-            <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center">
+-              <div className="flex items-start gap-5 flex-1">
+-                <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-[2rem] border border-white bg-gray-50 shadow-xl ring-4 ring-[#7C3AED]/10">
+-                  {profile.profilePhoto ? <AvatarImage src={profile.profilePhoto} alt={name} className="h-full w-full object-cover" /> : <User className="h-10 w-10 text-gray-300" />}
+-                </div>
+-                <div className="min-w-0">
+-                  <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-[#7C3AED]/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-[#7C3AED]">
+-                    <Sparkles className="h-3 w-3" /> Contributor Profile
+-                  </div>
++        {/* Hero Section */}
++        <section className="relative overflow-hidden rounded-[3rem] border border-gray-100 bg-white p-8 sm:p-10 shadow-[0_20px_60px_rgba(15,23,42,0.06)] w-full mb-8">
++          <div className="absolute inset-0 bg-gradient-to-br from-[#7C3AED]/5 via-transparent to-[#06B6D4]/10 pointer-events-none" />
++
++          <div className="relative flex flex-col gap-8 md:flex-row md:items-start md:justify-between w-full">
++            <div className="flex items-start gap-5 flex-1 w-full">
++              <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-[2rem] border border-white bg-gray-50 shadow-xl ring-4 ring-[#7C3AED]/10">
++                {profile.profilePhoto ? <AvatarImage src={profile.profilePhoto} alt={name} className="h-full w-full object-cover" /> : <User className="h-10 w-10 text-gray-300" />}
++              </div>
++              <div className="min-w-0 flex-1">
++                <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-2 flex-wrap">
+                   <h1 className="break-words text-3xl font-black tracking-tight text-gray-900 sm:text-4xl">{name}</h1>
+-                  <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-gray-500">
+-                    <span className="rounded-full border border-gray-100 bg-gray-50 px-3 py-1 font-medium text-gray-700">{role}</span>
+-                    {profile.location && <span className="inline-flex items-center gap-1"><MapPin className="h-4 w-4" /> {profile.location}</span>}
+-                    {profile.domain && <span className="rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 font-medium text-emerald-700">{profile.domain}</span>}
+-                    {!isVisible && <span className="rounded-full border border-amber-100 bg-amber-50 px-3 py-1 font-medium text-amber-700">Visibility limited</span>}
++                  {/* Social Links */}
++                  <div className="flex items-center gap-2 mt-2 sm:mt-0">
++                    {typeof profile.github === 'string' && profile.github.trim() && <a href={profile.github.startsWith('http') ? profile.github : `https://${profile.github}`} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-gray-50 hover:bg-gray-100 text-gray-600 hover:text-gray-900 transition"><Github className="w-5 h-5" /></a>}
++                    {typeof profile.linkedin === 'string' && profile.linkedin.trim() && <a href={profile.linkedin.startsWith('http') ? profile.linkedin : `https://${profile.linkedin}`} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-[#0077b5]/10 hover:bg-[#0077b5]/20 text-[#0077b5] transition"><Linkedin className="w-5 h-5" /></a>}
++                    {typeof profile.leetcode === 'string' && profile.leetcode.trim() && <a href={profile.leetcode.startsWith('http') ? profile.leetcode : `https://${profile.leetcode}`} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-[#FFA116]/10 hover:bg-[#FFA116]/20 text-[#FFA116] transition"><Code className="w-5 h-5" /></a>}
++                    {typeof profile.twitter === 'string' && profile.twitter.trim() && <a href={profile.twitter.startsWith('http') ? profile.twitter : `https://${profile.twitter}`} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-[#1DA1F2]/10 hover:bg-[#1DA1F2]/20 text-[#1DA1F2] transition"><Twitter className="w-5 h-5" /></a>}
++                    {typeof profile.portfolio === 'string' && profile.portfolio.trim() && <a href={profile.portfolio.startsWith('http') ? profile.portfolio : `https://${profile.portfolio}`} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-[#7C3AED]/10 hover:bg-[#7C3AED]/20 text-[#7C3AED] transition"><Globe className="w-5 h-5" /></a>}
+                   </div>
+-                  <p className="mt-5 max-w-3xl text-sm leading-7 text-gray-600 sm:text-base">{headline}</p>
+                 </div>
+-              </div>
+ 
+-              <div className="grid grid-cols-2 gap-3 lg:w-[280px]">
+-                <div className="rounded-3xl border border-gray-100 bg-gray-50/80 p-4">
+-                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Profile score</div>
+-                  <div className="mt-3 text-3xl font-black text-gray-900">{Math.round(Math.min(100, (skills.length * 8) + (projects.length * 10) + (achievements.length * 6)))}</div>
+-                  <div className="mt-3 h-2 rounded-full bg-gray-200 overflow-hidden">
+-                    <div className="h-full rounded-full bg-[#7C3AED]" style={{ width: `${Math.min(100, (skills.length * 8) + (projects.length * 10) + (achievements.length * 6))}%` }} />
+-                  </div>
++                <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-[#7C3AED]/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-[#7C3AED]">
++                  <Sparkles className="h-3 w-3" /> {role}
+                 </div>
+-                <div className="rounded-3xl border border-gray-100 bg-gray-50/80 p-4">
+-                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Public URL</div>
+-                  <div className="mt-3 break-all text-sm font-bold text-gray-900">{publicUrl}</div>
++
++                <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-gray-500">
++                  {profile.location && <span className="inline-flex items-center gap-1"><MapPin className="h-4 w-4" /> {profile.location}</span>}
++                  {profile.domain && <span className="rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 font-medium text-emerald-700">{profile.domain}</span>}
++                  {!isVisible && <span className="rounded-full border border-amber-100 bg-amber-50 px-3 py-1 font-medium text-amber-700">Visibility limited</span>}
+                 </div>
+-              </div>
+-            </div>
+-          </section>
+ 
+-          <aside className="rounded-[3rem] border border-gray-100 bg-white p-8 shadow-[0_20px_60px_rgba(15,23,42,0.04)]">
+-            <div className="flex items-center justify-between">
+-              <div>
+-                <h2 className="text-xl font-black uppercase tracking-tight text-gray-900">Profile Actions</h2>
+-                <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">Share and copy this profile</p>
+               </div>
+-              <Share2 className="h-5 w-5 text-[#7C3AED]" />
+             </div>
+-            <div className="mt-6 space-y-3">
+-              <button onClick={copyLink} className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-xs font-black uppercase tracking-[0.2em] text-gray-900 transition hover:border-[#7C3AED]/30">
+-                {copied ? 'Copied' : 'Copy Profile Link'}
++
++            <div className="flex flex-col gap-3 md:w-64 shrink-0">
++              <button onClick={copyLink} className="w-full flex items-center justify-center gap-2 rounded-2xl border border-gray-200 bg-white px-4 py-3 text-xs font-black uppercase tracking-[0.2em] text-gray-900 transition hover:border-[#7C3AED]/30">
++                <Copy className="h-4 w-4" /> {copied ? 'Copied' : 'Copy Link'}
+               </button>
+-              <button onClick={shareProfile} className="w-full rounded-2xl bg-[#7C3AED] px-4 py-3 text-xs font-black uppercase tracking-[0.2em] text-white shadow-lg shadow-[#7C3AED]/20 transition hover:bg-[#6D28D9]">
+-                Share Profile
++              <button onClick={shareProfile} className="w-full flex items-center justify-center gap-2 rounded-2xl bg-[#7C3AED] px-4 py-3 text-xs font-black uppercase tracking-[0.2em] text-white shadow-lg shadow-[#7C3AED]/20 transition hover:bg-[#6D28D9]">
++                <Share2 className="h-4 w-4" /> Share Profile
+               </button>
+             </div>
+-            <div className="mt-6 rounded-3xl border border-[#7C3AED]/10 bg-[#F5F3FF]/70 p-5">
+-              <div className="text-[10px] font-black uppercase tracking-[0.2em] text-[#7C3AED]">Summary</div>
+-              <p className="mt-3 text-sm leading-6 text-gray-700">A public contributor profile with project history, skill depth, and profile sharing baked in.</p>
++          </div>
++        </section>
++
++        {/* Describe Yourself Section */}
++        <section className="mb-8 rounded-[2rem] border border-gray-100 bg-white p-8 shadow-sm hover:shadow-md transition-all">
++          <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-50">
++            <div className="bg-[#7C3AED]/10 p-2 rounded-xl text-[#7C3AED]">
++              <User className="w-5 h-5" />
++            </div>
++            <h3 className="text-sm font-black uppercase tracking-wider text-gray-900">Describe yourself</h3>
++          </div>
++          <div className="space-y-6">
++            <div>
++              <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-2">Bio</h4>
++              <p className="text-sm leading-relaxed text-gray-700">{headline || <span className="text-gray-400 italic">No bio provided</span>}</p>
+             </div>
+-          </aside>
+-        </div>
+ 
+-        <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+-          {stats.map(stat => (
+-            <div key={stat.label} className="rounded-[2rem] border border-gray-100 bg-white p-5 shadow-sm hover:shadow-md transition-shadow">
+-              <div className={`inline-flex items-center rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] ${stat.tone === 'emerald' ? 'bg-emerald-50 text-emerald-700' : stat.tone === 'violet' ? 'bg-[#F5F3FF] text-[#7C3AED]' : stat.tone === 'sky' ? 'bg-sky-50 text-sky-700' : 'bg-amber-50 text-amber-700'}`}>
+-                {stat.label}
++            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-4 border-t border-gray-50">
++              <div>
++                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-2">Username</h4>
++                <p className="text-sm font-bold text-gray-900">@{profile.username || profile.login || 'User'}</p>
+               </div>
+-              <div className="mt-4 text-3xl font-black text-gray-900">{stat.value}</div>
+-              <p className="mt-2 text-xs leading-5 text-gray-500">Public metric derived from profile content.</p>
+-            </div>
+-          ))}
+-        </div>
+ 
+-        <div className="mt-6 grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+-          <section className="rounded-[3rem] border border-gray-100 bg-white p-8 shadow-[0_20px_60px_rgba(15,23,42,0.04)]">
+-            <div className="flex items-center justify-between gap-4">
+               <div>
+-                <h2 className="text-xl font-black uppercase tracking-tight text-gray-900">Activity Timeline</h2>
+-                <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">Visible milestones on the public surface</p>
++                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-2">One Strong Word</h4>
++                {profile.oneStrongWord ? (
++                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1D4ED8]/10 px-3 py-1.5 text-xs font-black uppercase tracking-[0.18em] text-[#1D4ED8]">
++                    <Sparkles className="h-3 w-3" /> {profile.oneStrongWord}
++                  </span>
++                ) : (
++                  <span className="text-xs text-gray-400 italic">None</span>
++                )}
++              </div>
++
++              <div>
++                <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-2">Career Goal</h4>
++                <p className="text-sm font-bold text-gray-900">{profile.careerGoal || <span className="text-gray-400 italic font-normal">Not specified</span>}</p>
+               </div>
+-              <Calendar className="h-5 w-5 text-gray-300" />
+             </div>
+-            <div className="mt-6 space-y-4">
+-              {timeline.map((entry, index) => (
+-                <div key={entry.title} className="flex gap-4 rounded-3xl border border-gray-100 bg-gray-50/60 p-4">
+-                  <div className="mt-2 h-3 w-3 shrink-0 rounded-full bg-[#7C3AED]" />
++          </div>
++        </section>
++
++        {/* Detailed Sections */}
++        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
++
++          {/* Left Column */}
++          <div className="space-y-8 lg:col-span-1">
++
++            {/* Resume Section */}
++            <section className="rounded-[2rem] border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md transition-all">
++              <div className="flex items-center gap-3 mb-5 pb-4 border-b border-gray-50">
++                <div className="bg-[#7C3AED]/10 p-2 rounded-xl text-[#7C3AED]">
++                  <FileText className="w-5 h-5" />
++                </div>
++                <h3 className="text-sm font-black uppercase tracking-wider text-gray-900">Resume</h3>
++              </div>
++              <div>
++                {resume?.fileName && resume.fileName !== 'No resume uploaded' ? (
+                   <div>
+-                    <div className="text-sm font-black text-gray-900">{entry.title}</div>
+-                    <div className="text-sm leading-6 text-gray-600">{entry.detail}</div>
+-                    <div className="mt-2 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">0{index + 1}</div>
++                    <p className="text-sm font-bold text-gray-900 break-words" title={resume.fileName}>{resume.fileName}</p>
++                    {resume.atsScore > 0 && <p className="text-xs text-gray-500 mt-1">ATS Score: {resume.atsScore}%</p>}
++                    <div className="flex items-center gap-3 mt-5">
++                      <a
++                        href={resume.filePath ? `${API_BASE_URL}${resume.filePath}` : '#'}
++                        target="_blank"
++                        rel="noopener noreferrer"
++                        className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-black uppercase tracking-wider rounded-xl transition border border-gray-200"
++                      >
++                        <Eye className="w-4 h-4" /> See
++                      </a>
++                      <a
++                        href={resume.filePath ? `${API_BASE_URL}${resume.filePath}` : '#'}
++                        download
++                        className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-xs font-black uppercase tracking-wider rounded-xl transition shadow-md shadow-[#7C3AED]/20"
++                      >
++                        <Download className="w-4 h-4" /> Download
++                      </a>
++                    </div>
++                  </div>
++                ) : (
++                  <div className="text-center py-4 bg-gray-50 rounded-xl border border-dashed border-gray-200">
++                    <p className="text-xs text-gray-400 font-medium">No resume available</p>
+                   </div>
++                )}
++              </div>
++            </section>
++
++            {/* Experience Section */}
++            <section className="rounded-[2rem] border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md transition-all">
++              <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-50">
++                <div className="bg-emerald-100 p-2 rounded-xl text-emerald-600">
++                  <Briefcase className="w-5 h-5" />
+                 </div>
+-              ))}
+-            </div>
+-          </section>
++                <h3 className="text-sm font-black uppercase tracking-wider text-gray-900">Experience</h3>
++              </div>
++              <div className="space-y-5">
++                {experience.length > 0 ? (
++                  experience.map((exp: any, idx: number) => (
++                    <div key={idx} className="bg-emerald-50/30 p-5 rounded-2xl border border-emerald-50">
++                      <h4 className="text-base font-black text-gray-900">{exp.role || exp.title}</h4>
++                      <p className="text-sm font-bold text-emerald-700 mt-1">{exp.company}</p>
++                      <div className="mt-2 flex flex-wrap gap-2">
++                        {exp.type && <span className="text-[10px] font-black uppercase tracking-wider bg-white px-2 py-1 rounded-md text-emerald-600 border border-emerald-100">{exp.type}</span>}
++                        {exp.location && <span className="text-[10px] font-bold text-gray-500 bg-white px-2 py-1 rounded-md border border-gray-100">{exp.location}</span>}
++                      </div>
++                      {(exp.startDate || exp.endDate) && (
++                        <p className="text-xs text-gray-500 mt-2 font-medium">
++                          {exp.startDate} {exp.endDate ? `- ${exp.endDate}` : '- Present'}
++                        </p>
++                      )}
++                      {exp.description && (
++                        <p className="text-sm text-gray-600 mt-3 leading-relaxed">{exp.description}</p>
++                      )}
++                    </div>
++                  ))
++                ) : (
++                  <p className="text-xs text-gray-400 italic">No experience listed</p>
++                )}
++              </div>
++            </section>
+ 
+-          <section className="rounded-[3rem] border border-gray-100 bg-white p-8 shadow-[0_20px_60px_rgba(15,23,42,0.04)]">
+-            <div className="flex items-center justify-between gap-4">
+-              <div>
+-                <h2 className="text-xl font-black uppercase tracking-tight text-gray-900">Highlights</h2>
+-                <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400">Badges and recent work</p>
++            {/* Skills Section */}
++            <section className="rounded-[2rem] border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md transition-all">
++              <div className="flex items-center justify-between mb-5 pb-4 border-b border-gray-50">
++                <div className="flex items-center gap-3">
++                  <div className="bg-rose-100 p-2 rounded-xl text-rose-600">
++                    <Sparkles className="w-5 h-5" />
++                  </div>
++                  <h3 className="text-sm font-black uppercase tracking-wider text-gray-900">Skills</h3>
++                </div>
++                <span className="bg-rose-50 text-rose-700 py-1 px-3 rounded-full text-[10px] font-black">{skills.length}</span>
+               </div>
+-              <Award className="h-5 w-5 text-[#7C3AED]" />
+-            </div>
+-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+-              {[
+-                { label: 'Skills', value: skills.length },
+-                { label: 'Projects', value: projects.length },
+-                { label: 'Experience', value: experience.length },
+-                { label: 'Certifications', value: certifications.length },
+-              ].map(item => (
+-                <div key={item.label} className="rounded-3xl border border-gray-100 bg-[#FAFAFA] p-4">
+-                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">{item.label}</div>
+-                  <div className="mt-2 text-2xl font-black text-gray-900">{item.value}</div>
++              <div className="flex flex-wrap gap-2">
++                {skills.length > 0 ? (
++                  skills.map((skill: any, idx: number) => (
++                    <span key={idx} className="bg-white border border-gray-200 text-gray-700 px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-sm">
++                      {skill.name || String(skill)}
++                    </span>
++                  ))
++                ) : (
++                  <p className="text-xs text-gray-400 italic w-full">No skills added</p>
++                )}
++              </div>
++            </section>
++
++          </div>
++
++          {/* Right Column */}
++          <div className="space-y-8 lg:col-span-2">
++
++            {/* Education Section */}
++            <section className="rounded-[2rem] border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md transition-all">
++              <div className="flex items-center gap-3 mb-6 pb-4 border-b border-gray-50">
++                <div className="bg-sky-100 p-2 rounded-xl text-sky-600">
++                  <GraduationCap className="w-5 h-5" />
+                 </div>
+-              ))}
+-            </div>
+-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+-              {[
+-                { label: 'Profile Builder', value: `${projects.length + experience.length} records` },
+-                { label: 'Recognition', value: `${achievements.length} achievements` },
+-                { label: 'Resume Ready', value: profile?.resume?.fileName !== 'No resume uploaded' ? 'Active' : 'Pending' },
+-                { label: 'Visibility', value: isVisible ? 'Public' : 'Limited' },
+-              ].map(badge => (
+-                <div key={badge.label} className="rounded-3xl border border-[#7C3AED]/10 bg-[#F5F3FF]/70 p-4">
+-                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-[#7C3AED]">{badge.label}</div>
+-                  <div className="mt-2 text-sm font-bold text-gray-900">{badge.value}</div>
++                <h3 className="text-sm font-black uppercase tracking-wider text-gray-900">Education</h3>
++              </div>
++              <div className="space-y-4">
++                {education.length > 0 ? (
++                  education.map((edu: any, idx: number) => (
++                    <div key={idx} className="bg-sky-50/40 p-5 rounded-2xl border border-sky-50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
++                      <div>
++                        <h4 className="text-base font-black text-gray-900">{edu.institution}</h4>
++                        <p className="text-sm font-bold text-sky-700 mt-1">{edu.degree}</p>
++                      </div>
++                      {(edu.startYear || edu.endYear) && (
++                        <div className="shrink-0 bg-white px-3 py-1.5 rounded-lg border border-sky-100 text-xs font-black text-sky-600 uppercase tracking-widest">
++                          {edu.startYear} - {edu.endYear || 'Present'}
++                        </div>
++                      )}
++                    </div>
++                  ))
++                ) : (
++                  <p className="text-xs text-gray-400 italic">No education details</p>
++                )}
++              </div>
++            </section>
++
++            {/* Projects Section */}
++            <section className="rounded-[2rem] border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md transition-all">
++              <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-50">
++                <div className="flex items-center gap-3">
++                  <div className="bg-amber-100 p-2 rounded-xl text-amber-600">
++                    <Code className="w-5 h-5" />
++                  </div>
++                  <h3 className="text-sm font-black uppercase tracking-wider text-gray-900">Projects</h3>
+                 </div>
+-              ))}
+-            </div>
+-            <div className="mt-6 rounded-3xl border border-gray-100 bg-gray-50/70 p-5">
+-              <div className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Featured Skills</div>
+-              <div className="mt-3 flex flex-wrap gap-2">
+-                {skills.slice(0, 8).map((skill: any) => (
+-                  <span key={skill.name || skill} className="rounded-full border border-gray-200 bg-white px-3 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-gray-700">
+-                    {skill.name || skill}
+-                  </span>
+-                ))}
+-                {skills.length === 0 && <span className="text-sm text-gray-400">No public skills listed yet.</span>}
++                <span className="bg-amber-50 text-amber-700 py-1 px-3 rounded-full text-[10px] font-black">{projects.length}</span>
++              </div>
++              <div className="grid grid-cols-1 gap-4">
++                {projects.length > 0 ? (
++                  projects.map((proj: any, idx: number) => (
++                    <div key={idx} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col md:flex-row md:items-start justify-between gap-4 hover:border-amber-200 transition">
++                      <div className="flex-1">
++                        <h4 className="text-base font-black text-gray-900 mb-2">{proj.title || proj.name}</h4>
++                        <p className="text-sm text-gray-600 leading-relaxed">{proj.description}</p>
++                      </div>
++                      {proj.link && (
++                        <div className="shrink-0">
++                          <a href={proj.link} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 bg-amber-50 border border-amber-100 rounded-xl text-xs font-black uppercase tracking-wider text-amber-600 hover:text-amber-700 hover:bg-amber-100 transition-colors">
++                            <LinkIcon className="w-4 h-4" /> View Link
++                          </a>
++                        </div>
++                      )}
++                    </div>
++                  ))
++                ) : (
++                  <p className="text-xs text-gray-400 italic">No projects added</p>
++                )}
+               </div>
++            </section>
++
++            {/* Two columns for Certs & Accomplishments */}
++            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
++
++              {/* Certificates Section */}
++              <section className="rounded-[2rem] border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md transition-all">
++                <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-50">
++                  <div className="flex items-center gap-3">
++                    <div className="bg-cyan-100 p-2 rounded-xl text-cyan-600">
++                      <ShieldCheck className="w-5 h-5" />
++                    </div>
++                    <h3 className="text-sm font-black uppercase tracking-wider text-gray-900">Certificates</h3>
++                  </div>
++                  <span className="bg-cyan-50 text-cyan-700 py-1 px-3 rounded-full text-[10px] font-black">{certifications.length}</span>
++                </div>
++                <div className="space-y-4">
++                  {certifications.length > 0 ? (
++                    certifications.map((cert: any, idx: number) => (
++                      <div key={idx} className="flex gap-4 items-start bg-white p-4 rounded-2xl border border-gray-50 hover:border-cyan-100 transition shadow-sm">
++                        <div className="bg-cyan-50 p-3 rounded-xl shrink-0 border border-cyan-100/50">
++                          <Award className="w-5 h-5 text-cyan-500" />
++                        </div>
++                        <div className="flex-1">
++                          <h4 className="text-sm font-black text-gray-900">{cert.title || cert.name}</h4>
++                          <div className="flex flex-wrap items-center gap-2 mt-1">
++                            <span className="text-xs font-bold text-cyan-700">{cert.issuer || cert.organization}</span>
++                            {cert.date && <span className="text-[10px] bg-gray-50 px-2 py-0.5 rounded text-gray-500 font-bold">{cert.date}</span>}
++                          </div>
++                          {cert.credentialId && <p className="text-[10px] text-gray-400 mt-2 font-mono">ID: {cert.credentialId}</p>}
++                          {cert.link && (
++                            <a href={cert.link} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-cyan-600 hover:text-cyan-700 bg-cyan-50/50 hover:bg-cyan-50 px-3 py-1.5 rounded-lg transition">
++                              <LinkIcon className="w-3 h-3" /> View Credential
++                            </a>
++                          )}
++                        </div>
++                      </div>
++                    ))
++                  ) : (
++                    <p className="text-xs text-gray-400 italic">No certificates uploaded</p>
++                  )}
++                </div>
++              </section>
++
++              {/* Accomplishments Section */}
++              <section className="rounded-[2rem] border border-gray-100 bg-white p-6 shadow-sm hover:shadow-md transition-all">
++                <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-50">
++                  <div className="flex items-center gap-3">
++                    <div className="bg-violet-100 p-2 rounded-xl text-violet-600">
++                      <Star className="w-5 h-5" />
++                    </div>
++                    <h3 className="text-sm font-black uppercase tracking-wider text-gray-900">Accomplishments</h3>
++                  </div>
++                  <span className="bg-violet-50 text-violet-700 py-1 px-3 rounded-full text-[10px] font-black">{achievements.length}</span>
++                </div>
++                <div className="space-y-4">
++                  {achievements.length > 0 ? (
++                    achievements.map((ach: any, idx: number) => (
++                      <div key={idx} className="flex gap-4 items-start bg-white p-4 rounded-2xl border border-gray-50 hover:border-violet-100 transition shadow-sm">
++                        <div className="bg-violet-50 p-3 rounded-xl shrink-0 border border-violet-100/50">
++                          <Star className="w-5 h-5 text-violet-500" />
++                        </div>
++                        <div className="flex-1">
++                          <h4 className="text-sm font-black text-gray-900">{ach.title || ach.name}</h4>
++
++                          <div className="flex flex-wrap items-center gap-2 mt-1">
++                            {ach.organization && <span className="text-xs font-bold text-violet-700">{ach.organization}</span>}
++                            {ach.category && <span className="text-[10px] bg-gray-50 px-2 py-0.5 rounded text-gray-500 font-bold">{ach.category}</span>}
++                            {(ach.month || ach.year || ach.date) && (
++                              <span className="text-[10px] text-gray-400 font-bold">
++                                {[ach.month, ach.year || ach.date].filter(Boolean).join(' ')}
++                              </span>
++                            )}
++                          </div>
++
++                          {ach.description && <p className="text-xs text-gray-600 mt-2 leading-relaxed">{ach.description}</p>}
++
++                          {ach.link && (
++                            <a href={ach.link} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-violet-600 hover:text-violet-700 bg-violet-50/50 hover:bg-violet-50 px-3 py-1.5 rounded-lg transition">
++                              <LinkIcon className="w-3 h-3" /> View Detail
++                            </a>
++                          )}
++                        </div>
++                      </div>
++                    ))
++                  ) : (
++                    <p className="text-xs text-gray-400 italic">No accomplishments to show</p>
++                  )}
++                </div>
++              </section>
++
+             </div>
+-          </section>
++
++          </div>
++
+         </div>
+       </div>
+     </div>
+@@ -289,4 +476,3 @@ const PublicProfile: React.FC = () => {
+ };
+ 
+ export default PublicProfile;
+-
+diff --git a/frontend/pages/RoadmapClone.tsx b/frontend/pages/RoadmapClone.tsx
+index 77afced..c08f3e2 100644
+--- a/frontend/pages/RoadmapClone.tsx
++++ b/frontend/pages/RoadmapClone.tsx
+@@ -8,7 +8,7 @@ import FocusPanel from '../components/roadmap/FocusPanel';
+ import { 
+   MonitorSmartphone, Database, Layers, BrainCircuit, Target, 
+   PenTool, BarChart3, CloudCog, ShieldCheck, Terminal, 
+-  ArrowLeft, CheckCircle2, ListOrdered, GraduationCap, Clock 
++  ArrowLeft, CheckCircle2, ListOrdered, GraduationCap, Clock, Share2, Check, Bookmark 
+ } from 'lucide-react';
+ 
+ // Icon Map
+@@ -31,7 +31,29 @@ const RoadmapClone: React.FC = () => {
+   // Global State (URL Driven)
+   const { roleId } = useParams<{ roleId: string }>();
+   const navigate = useNavigate();
+-  
++  const [copiedRoleId, setCopiedRoleId] = useState<string | null>(null);
++  const [bookmarkedRoleIds, setBookmarkedRoleIds] = useState<string[]>([]);
++  const [filterTab, setFilterTab] = useState<'all' | 'bookmarked'>('all');
++
++  useEffect(() => {
++    const saved = localStorage.getItem('studlyf_bookmarked_roadmaps');
++    if (saved) {
++      try {
++        setBookmarkedRoleIds(JSON.parse(saved));
++      } catch (e) {
++        console.error(e);
++      }
++    }
++  }, []);
++
++  const handleToggleBookmark = (id: string) => {
++    setBookmarkedRoleIds(prev => {
++      const updated = prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id];
++      localStorage.setItem('studlyf_bookmarked_roadmaps', JSON.stringify(updated));
++      return updated;
++    });
++  };
++
+   const selectedRole = useMemo(() => {
+     return rolesData.find(r => r.id === roleId) || null;
+   }, [roleId]);
+@@ -211,18 +233,84 @@ const RoadmapClone: React.FC = () => {
+               <h2 className="text-3xl md:text-5xl font-black text-[#1A1A1A] tracking-tight mb-4">Choose Your Track</h2>
+               <p className="text-gray-500 text-lg">Select a role to generate your personalized execution roadmap.</p>
+             </div>
++            {/* Filter Tabs */}
++            <div className="flex justify-center gap-3 mb-12">
++              <button
++                onClick={() => setFilterTab('all')}
++                className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold transition-all border ${
++                  filterTab === 'all'
++                    ? 'bg-[#1A1A1A] text-white border-[#1A1A1A] shadow-md'
++                    : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300 hover:shadow-sm hover:text-gray-800'
++                }`}
++              >
++                All Tracks
++              </button>
++              <button
++                onClick={() => setFilterTab('bookmarked')}
++                className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-bold transition-all border ${
++                  filterTab === 'bookmarked'
++                    ? 'bg-[#6C2BFF] text-white border-[#6C2BFF] shadow-md'
++                    : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300 hover:shadow-sm hover:text-gray-800'
++                }`}
++              >
++                ⭐ Bookmarked
++              </button>
++            </div>
+             
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+-              {rolesData.map((role, idx) => (
+-                <motion.div
+-                  key={role.id}
+-                  initial={{ opacity: 0, y: 20 }}
+-                  whileInView={{ opacity: 1, y: 0 }}
+-                  viewport={{ once: true }}
+-                  transition={{ delay: idx * 0.05 }}
+-                  onClick={() => handleRoleSelect(role)}
+-                  className="bg-[#F8F9FC] border border-gray-100 rounded-3xl p-6 cursor-pointer group hover:bg-white hover:shadow-[0_20px_50px_rgba(108,43,255,0.1)] hover:border-[#6C2BFF]/20 transition-all duration-300 flex flex-col"
+-                >
++              {(() => {
++                const displayedRoles = filterTab === 'all' 
++                  ? rolesData 
++                  : rolesData.filter(role => bookmarkedRoleIds.includes(role.id));
++                
++                if (displayedRoles.length === 0) {
++                  return (
++                    <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-20 bg-gray-50 rounded-3xl border border-dashed border-gray-200">
++                      <Bookmark className="w-12 h-12 text-gray-300 mx-auto mb-4" />
++                      <h3 className="text-lg font-bold text-gray-700 mb-1">No Bookmarked Tracks</h3>
++                      <p className="text-sm text-gray-400">Click the bookmark icon on any track to save it here.</p>
++                    </div>
++                  );
++                }
++
++                return displayedRoles.map((role, idx) => (
++                  <motion.div
++                    key={role.id}
++                    initial={{ opacity: 0, y: 20 }}
++                    whileInView={{ opacity: 1, y: 0 }}
++                    viewport={{ once: true }}
++                    transition={{ delay: idx * 0.05 }}
++                    onClick={() => handleRoleSelect(role)}
++                    className="bg-[#F8F9FC] border border-gray-100 rounded-3xl p-6 cursor-pointer group hover:bg-white hover:shadow-[0_20px_50px_rgba(108,43,255,0.1)] hover:border-[#6C2BFF]/20 transition-all duration-300 flex flex-col relative"
++                  >
++                    <button
++                      onClick={(e) => {
++                        e.stopPropagation();
++                        handleToggleBookmark(role.id);
++                      }}
++                      className="absolute top-6 right-16 w-8 h-8 bg-white hover:bg-gray-50 text-gray-400 hover:text-amber-500 rounded-lg border border-gray-100 hover:border-gray-200 flex items-center justify-center transition-all duration-200 shadow-sm z-10"
++                      title={bookmarkedRoleIds.includes(role.id) ? "Remove Bookmark" : "Bookmark Roadmap"}
++                    >
++                      <Bookmark className={`w-3.5 h-3.5 ${bookmarkedRoleIds.includes(role.id) ? "fill-amber-400 text-amber-400" : ""}`} />
++                    </button>
++                    <button
++                      onClick={(e) => {
++                        e.stopPropagation();
++                        const absoluteUrl = `${window.location.origin}/roadmaps/${role.id}`;
++                        navigator.clipboard.writeText(absoluteUrl).then(() => {
++                          setCopiedRoleId(role.id);
++                          setTimeout(() => setCopiedRoleId(null), 2000);
++                        });
++                      }}
++                      className="absolute top-6 right-6 w-8 h-8 bg-white hover:bg-gray-50 text-gray-400 hover:text-[#6C2BFF] rounded-lg border border-gray-100 hover:border-gray-200 flex items-center justify-center transition-all duration-200 shadow-sm z-10"
++                      title="Share Roadmap"
++                    >
++                      {copiedRoleId === role.id ? (
++                        <Check className="w-3.5 h-3.5 text-emerald-500" />
++                      ) : (
++                        <Share2 className="w-3.5 h-3.5" />
++                      )}
++                    </button>
+                   <div className="w-12 h-12 rounded-2xl bg-white border border-gray-100 flex items-center justify-center text-gray-400 group-hover:text-[#6C2BFF] group-hover:scale-110 transition-all shadow-sm mb-6">
+                     {iconMap[role.iconName] || <Terminal className="w-6 h-6" />}
+                   </div>
+@@ -243,7 +331,8 @@ const RoadmapClone: React.FC = () => {
+                     </span>
+                   </div>
+                 </motion.div>
+-              ))}
++                ));
++              })()}
+             </div>
+           </div>
+         </section>
+diff --git a/frontend/pages/StudHub.tsx b/frontend/pages/StudHub.tsx
+index 6e8d2ee..e554bd8 100644
+--- a/frontend/pages/StudHub.tsx
++++ b/frontend/pages/StudHub.tsx
+@@ -1,6 +1,6 @@
+ import React from 'react';
+ import { motion } from 'framer-motion';
+-import { BrainCircuit, Gift, Landmark, Map, ArrowRight, PlayCircle, Users, CheckCircle, TrendingUp } from 'lucide-react';
++import { BrainCircuit, Gift, Landmark, Map, ArrowRight, PlayCircle, Users, CheckCircle, TrendingUp, GraduationCap } from 'lucide-react';
+ import { useNavigate } from 'react-router-dom';
+ import DashboardFooter from '../components/DashboardFooter';
+ 
+@@ -51,6 +51,17 @@ const StudHub: React.FC = () => {
+       bg: "bg-gray-100",
+       border: "hover:border-gray-300",
+       shadow: "hover:shadow-[0_15px_30px_rgba(0,0,0,0.1)]"
++    },
++    {
++      title: "Scholarships",
++      description: "Explore 20+ verified national and international scholarships to fund your higher education.",
++      cta: "Explore Scholarships",
++      route: "/scholarships",
++      icon: GraduationCap,
++      color: "text-emerald-500",
++      bg: "bg-emerald-500/10",
++      border: "hover:border-emerald-500/30",
++      shadow: "hover:shadow-[0_15px_30px_rgba(16,185,129,0.15)]"
+     }
+   ];
+ 
+@@ -131,7 +142,7 @@ const StudHub: React.FC = () => {
+           <p className="text-lg text-gray-500 font-medium">Handpicked tools and systems to help students grow smarter and faster.</p>
+         </div>
+ 
+-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-24 text-left">
++        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24 text-left">
+           {resources.map((res, idx) => (
+             <motion.div
+               key={idx}
+diff --git a/frontend/pages/StudentDiscounts.tsx b/frontend/pages/StudentDiscounts.tsx
+index dda9cd5..c8491d9 100644
+--- a/frontend/pages/StudentDiscounts.tsx
++++ b/frontend/pages/StudentDiscounts.tsx
+@@ -2,12 +2,13 @@ import React, { useState, useMemo } from 'react';
+ import { motion, AnimatePresence } from 'framer-motion';
+ import { 
+   Code, BrainCircuit, Cloud, PenTool, CheckSquare, GraduationCap, 
+-  Music, Search, Tag, ExternalLink, ArrowLeft, Terminal, ShieldCheck 
++  Music, Search, Tag, ExternalLink, ArrowLeft, Terminal, ShieldCheck, Share2, Check, Bookmark 
+ } from 'lucide-react';
+ import { Link } from 'react-router-dom';
+ 
+ const discountCategories = [
+   { id: 'all', label: 'All Discounts', icon: Tag },
++  { id: 'bookmarked', label: 'Bookmarked', icon: Bookmark },
+   { id: 'software', label: 'Software & Dev', icon: Code },
+   { id: 'ai', label: 'AI Tools', icon: BrainCircuit },
+   { id: 'cloud', label: 'Cloud Credits', icon: Cloud },
+@@ -428,20 +429,56 @@ const allDiscounts = [
+ const StudentDiscounts: React.FC = () => {
+   const [activeCategory, setActiveCategory] = useState('all');
+   const [searchQuery, setSearchQuery] = useState('');
++  const [copiedDiscountId, setCopiedDiscountId] = useState<number | null>(null);
++  const [bookmarkedDiscountIds, setBookmarkedDiscountIds] = useState<number[]>([]);
++
++  React.useEffect(() => {
++    const saved = localStorage.getItem('studlyf_bookmarked_discounts');
++    if (saved) {
++      try {
++        setBookmarkedDiscountIds(JSON.parse(saved));
++      } catch (e) {
++        console.error(e);
++      }
++    }
++  }, []);
++
++  const handleToggleBookmark = (id: number) => {
++    setBookmarkedDiscountIds(prev => {
++      const updated = prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id];
++      localStorage.setItem('studlyf_bookmarked_discounts', JSON.stringify(updated));
++      return updated;
++    });
++  };
+ 
+   const filteredDiscounts = useMemo(() => {
+     return allDiscounts.filter(d => {
+-      const matchesCategory = activeCategory === 'all' || d.categoryId === activeCategory;
++      const matchesCategory = activeCategory === 'all' 
++        ? true 
++        : activeCategory === 'bookmarked'
++          ? bookmarkedDiscountIds.includes(d.id)
++          : d.categoryId === activeCategory;
+       const matchesSearch = d.brand.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                             d.benefit.toLowerCase().includes(searchQuery.toLowerCase());
+       return matchesCategory && matchesSearch;
+     });
+-  }, [activeCategory, searchQuery]);
++  }, [activeCategory, searchQuery, bookmarkedDiscountIds]);
+ 
+   const handleLinkClick = (url: string) => {
+     window.open(url, '_blank', 'noopener,noreferrer');
+   };
+ 
++  const handleShare = async (e: React.MouseEvent, url: string, id: number) => {
++    e.stopPropagation();
++    try {
++      await navigator.clipboard.writeText(url);
++      setCopiedDiscountId(id);
++      setTimeout(() => setCopiedDiscountId(null), 2000);
++    } catch (err) {
++      console.error('Failed to copy: ', err);
++    }
++  };
++
+   return (
+     <div className="min-h-screen bg-[#F8F9FC] text-gray-800 pt-28 font-sans selection:bg-[#6C2BFF]/20 flex flex-col">
+       <div className="max-w-7xl mx-auto px-6 pb-24 flex-grow w-full relative z-10">
+@@ -519,8 +556,31 @@ const StudentDiscounts: React.FC = () => {
+                   <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${discount.bg} group-hover:scale-110 transition-transform duration-300 shrink-0 shadow-sm`}>
+                     <discount.icon className={`w-6 h-6 ${discount.color}`} />
+                   </div>
+-                  <div className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest ${discount.color} ${discount.bg} border border-transparent group-hover:border-current transition-colors`}>
+-                    {discount.discount}
++                  <div className="flex items-center gap-2">
++                    <button
++                      onClick={(e) => {
++                        e.stopPropagation();
++                        handleToggleBookmark(discount.id);
++                      }}
++                      className="p-1.5 bg-[#F8F9FC] hover:bg-gray-100 text-gray-400 hover:text-amber-500 rounded-lg border border-gray-100 hover:border-gray-200 flex items-center justify-center transition-all duration-200"
++                      title={bookmarkedDiscountIds.includes(discount.id) ? "Remove Bookmark" : "Bookmark Discount"}
++                    >
++                      <Bookmark className={`w-3.5 h-3.5 ${bookmarkedDiscountIds.includes(discount.id) ? "fill-amber-400 text-amber-400" : ""}`} />
++                    </button>
++                    <button
++                      onClick={(e) => handleShare(e, discount.link, discount.id)}
++                      className="p-1.5 bg-[#F8F9FC] hover:bg-gray-100 text-gray-400 hover:text-[#6C2BFF] rounded-lg border border-gray-100 hover:border-gray-200 flex items-center justify-center transition-all duration-200"
++                      title="Share Discount"
++                    >
++                      {copiedDiscountId === discount.id ? (
++                        <Check className="w-3.5 h-3.5 text-emerald-500" />
++                      ) : (
++                        <Share2 className="w-3.5 h-3.5" />
++                      )}
++                    </button>
++                    <div className={`px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest ${discount.color} ${discount.bg} border border-transparent group-hover:border-current transition-colors`}>
++                      {discount.discount}
++                    </div>
+                   </div>
+                 </div>
+ 
+diff --git a/frontend/pages/StudentSchemes.tsx b/frontend/pages/StudentSchemes.tsx
+index 738d384..adae23c 100644
+--- a/frontend/pages/StudentSchemes.tsx
++++ b/frontend/pages/StudentSchemes.tsx
+@@ -1,10 +1,11 @@
+ import React, { useState } from 'react';
+ import { motion, AnimatePresence } from 'framer-motion';
+-import { GraduationCap, Landmark, Rocket, ArrowLeft, Target, Briefcase, ExternalLink, Code, Lightbulb, Users, Cloud } from 'lucide-react';
++import { GraduationCap, Landmark, Rocket, ArrowLeft, Target, Briefcase, ExternalLink, Code, Lightbulb, Users, Cloud, Share2, Check, Bookmark } from 'lucide-react';
+ import { Link } from 'react-router-dom';
+ 
+ const schemeCategories = [
+   { id: 'all', label: 'All Schemes', icon: Target },
++  { id: 'bookmarked', label: 'Bookmarked', icon: Bookmark },
+   { id: 'scholarships', label: 'Scholarships', icon: GraduationCap },
+   { id: 'internships', label: 'Internships', icon: Briefcase },
+   { id: 'support', label: 'Education Support', icon: Landmark },
+@@ -172,15 +173,49 @@ const allSchemes = [
+ 
+ const StudentSchemes: React.FC = () => {
+   const [activeCategory, setActiveCategory] = useState('all');
++  const [copiedSchemeId, setCopiedSchemeId] = useState<number | null>(null);
++  const [bookmarkedSchemeIds, setBookmarkedSchemeIds] = useState<number[]>([]);
++
++  React.useEffect(() => {
++    const saved = localStorage.getItem('studlyf_bookmarked_schemes');
++    if (saved) {
++      try {
++        setBookmarkedSchemeIds(JSON.parse(saved));
++      } catch (e) {
++        console.error(e);
++      }
++    }
++  }, []);
++
++  const handleToggleBookmark = (id: number) => {
++    setBookmarkedSchemeIds(prev => {
++      const updated = prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id];
++      localStorage.setItem('studlyf_bookmarked_schemes', JSON.stringify(updated));
++      return updated;
++    });
++  };
+ 
+   const filteredSchemes = activeCategory === 'all' 
+     ? allSchemes 
+-    : allSchemes.filter(s => s.categoryId === activeCategory);
++    : activeCategory === 'bookmarked'
++      ? allSchemes.filter(s => bookmarkedSchemeIds.includes(s.id))
++      : allSchemes.filter(s => s.categoryId === activeCategory);
+ 
+   const handleLinkClick = (url: string) => {
+     window.open(url, '_blank', 'noopener,noreferrer');
+   };
+ 
++  const handleShare = async (e: React.MouseEvent, url: string, id: number) => {
++    e.stopPropagation();
++    try {
++      await navigator.clipboard.writeText(url);
++      setCopiedSchemeId(id);
++      setTimeout(() => setCopiedSchemeId(null), 2000);
++    } catch (err) {
++      console.error('Failed to copy: ', err);
++    }
++  };
++
+   return (
+     <div className="min-h-screen bg-[#F8F9FC] text-gray-800 pt-28 font-sans selection:bg-[#EC4899]/20 flex flex-col">
+       
+@@ -242,8 +277,29 @@ const StudentSchemes: React.FC = () => {
+                 onClick={() => handleLinkClick(scheme.link)}
+                 className="bg-white border border-gray-200 rounded-[2rem] p-8 hover:shadow-[0_20px_40px_rgba(0,0,0,0.06)] hover:-translate-y-1 hover:border-[#EC4899]/30 transition-all duration-300 group flex flex-col h-full cursor-pointer relative overflow-hidden"
+               >
+-                {/* Category Badge */}
+-                <div className="absolute top-6 right-6">
++                {/* Category Badge & Share & Bookmark */}
++                <div className="absolute top-6 right-6 flex items-center gap-2 z-10">
++                  <button
++                    onClick={(e) => {
++                      e.stopPropagation();
++                      handleToggleBookmark(scheme.id);
++                    }}
++                    className="p-1.5 bg-[#F8F9FC] hover:bg-gray-100 text-gray-400 hover:text-amber-500 rounded-lg border border-gray-100 hover:border-gray-200 flex items-center justify-center transition-all duration-200"
++                    title={bookmarkedSchemeIds.includes(scheme.id) ? "Remove Bookmark" : "Bookmark Scheme"}
++                  >
++                    <Bookmark className={`w-3.5 h-3.5 ${bookmarkedSchemeIds.includes(scheme.id) ? "fill-amber-400 text-amber-400" : ""}`} />
++                  </button>
++                  <button
++                    onClick={(e) => handleShare(e, scheme.link, scheme.id)}
++                    className="p-1.5 bg-[#F8F9FC] hover:bg-gray-100 text-gray-400 hover:text-[#EC4899] rounded-lg border border-gray-100 hover:border-gray-200 flex items-center justify-center transition-all duration-200"
++                    title="Share Scheme"
++                  >
++                    {copiedSchemeId === scheme.id ? (
++                      <Check className="w-3.5 h-3.5 text-emerald-500" />
++                    ) : (
++                      <Share2 className="w-3.5 h-3.5" />
++                    )}
++                  </button>
+                   <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-gray-100 ${scheme.color} ${scheme.bg}`}>
+                     {schemeCategories.find(c => c.id === scheme.categoryId)?.label}
+                   </span>
+diff --git a/frontend/pages/institution-dashboard/SettingsPage.tsx b/frontend/pages/institution-dashboard/SettingsPage.tsx
+index 70b897b..1ca7cbf 100644
+--- a/frontend/pages/institution-dashboard/SettingsPage.tsx
++++ b/frontend/pages/institution-dashboard/SettingsPage.tsx
+@@ -87,6 +87,43 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ institutionId, onProfileUpd
+     const [packageStatusLoading, setPackageStatusLoading] = useState(false);
+     const [imgErrors, setImgErrors] = useState<{logo: boolean; banner: boolean}>({ logo: false, banner: false });
+ 
++    const [blockedEntities, setBlockedEntities] = useState<any[]>([]);
++    const [blockedLoading, setBlockedLoading] = useState(false);
++    const [blockedError, setBlockedError] = useState<string | null>(null);
++    const [blockModalOpen, setBlockModalOpen] = useState(false);
++    const [blockSubmitting, setBlockSubmitting] = useState(false);
++
++    // Form fields for block modal
++    const [blockType, setBlockType] = useState<'candidate' | 'organization'>('candidate');
++    const [blockName, setBlockName] = useState('');
++    const [blockIdentifier, setBlockIdentifier] = useState('');
++    const [blockReason, setBlockReason] = useState('');
++    const [blockFormError, setBlockFormError] = useState<string | null>(null);
++
++    // State for Custom Communications
++    const [instEvents, setInstEvents] = useState<any[]>([]);
++    const [commHistory, setCommHistory] = useState<any[]>([]);
++    const [commLoading, setCommLoading] = useState(false);
++    const [commError, setCommError] = useState<string | null>(null);
++    const [isComposeOpen, setIsComposeOpen] = useState(false);
++
++    // Form fields for message composer
++    const [compEventId, setCompEventId] = useState('');
++    const [compSegmentType, setCompSegmentType] = useState('all');
++    const [compCriteria, setCompCriteria] = useState<any>({
++        department: '',
++        year: '',
++        status: 'APPROVED',
++        min_score: 0
++    });
++    const [compSubject, setCompSubject] = useState('');
++    const [compMessage, setCompMessage] = useState('');
++    const [compChannel, setCompChannel] = useState<'email' | 'in_app' | 'both'>('both');
++    const [compTargetCount, setCompTargetCount] = useState<number | null>(null);
++    const [compEstimating, setCompEstimating] = useState(false);
++    const [compSubmitting, setCompSubmitting] = useState(false);
++    const [compFormError, setCompFormError] = useState<string | null>(null);
++
+     const prevLogoRef = useRef('');
+     const prevBannerRef = useRef('');
+ 
+@@ -201,6 +238,235 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ institutionId, onProfileUpd
+         };
+     }, [institutionId]);
+ 
++    const fetchBlockedEntities = async () => {
++        setBlockedLoading(true);
++        setBlockedError(null);
++        try {
++            const res = await fetch(`${API_BASE_URL}/api/v1/institution/blocked-entities/`, {
++                headers: authHeaders()
++            });
++            if (res.ok) {
++                const data = await res.json();
++                setBlockedEntities(data);
++            } else {
++                setBlockedError("Failed to load blocked entities");
++            }
++        } catch (err) {
++            setBlockedError("Error fetching blocked entities");
++        } finally {
++            setBlockedLoading(false);
++        }
++    };
++
++    useEffect(() => {
++        if (activeSection !== 'blocked') return;
++        fetchBlockedEntities();
++    }, [activeSection]);
++
++    const fetchCommHistory = async () => {
++        setCommLoading(true);
++        setCommError(null);
++        try {
++            const res = await fetch(`${API_BASE_URL}/api/v1/institution/communications/history`, {
++                headers: authHeaders()
++            });
++            if (res.ok) {
++                const data = await res.json();
++                setCommHistory(data);
++            } else {
++                setCommError("Failed to load communication history");
++            }
++        } catch (err) {
++            setCommError("Error fetching communication history");
++        } finally {
++            setCommLoading(false);
++        }
++    };
++
++    const fetchEvents = async () => {
++        try {
++            const res = await fetch(`${API_BASE_URL}/api/events/`, {
++                headers: authHeaders()
++            });
++            if (res.ok) {
++                const data = await res.json();
++                setInstEvents(data);
++                if (data.length > 0 && !compEventId) {
++                    setCompEventId(data[0]._id || data[0].event_id);
++                }
++            }
++        } catch (err) {
++            console.error("Error fetching events:", err);
++        }
++    };
++
++    const estimateTargetCount = async () => {
++        if (!compEventId) return;
++        setCompEstimating(true);
++        try {
++            const currentCriteria: any = {};
++            if (compSegmentType === 'by_department') {
++                currentCriteria.department = compCriteria.department;
++            } else if (compSegmentType === 'by_year') {
++                currentCriteria.year = compCriteria.year;
++            } else if (compSegmentType === 'by_status') {
++                currentCriteria.status = compCriteria.status;
++            } else if (compSegmentType === 'by_performance') {
++                currentCriteria.min_score = Number(compCriteria.min_score || 0);
++            }
++
++            const res = await fetch(`${API_BASE_URL}/api/v1/institution/communications/segment-count`, {
++                method: 'POST',
++                headers: {
++                    'Content-Type': 'application/json',
++                    ...authHeaders()
++                },
++                body: JSON.stringify({
++                    event_id: compEventId,
++                    segment_type: compSegmentType,
++                    criteria: currentCriteria
++                })
++            });
++            if (res.ok) {
++                const data = await res.json();
++                setCompTargetCount(data.count);
++            } else {
++                setCompTargetCount(0);
++            }
++        } catch (err) {
++            console.error("Error estimating target count:", err);
++            setCompTargetCount(0);
++        } finally {
++            setCompEstimating(false);
++        }
++    };
++
++    useEffect(() => {
++        if (isComposeOpen && compEventId) {
++            estimateTargetCount();
++        }
++    }, [compEventId, compSegmentType, compCriteria.department, compCriteria.year, compCriteria.status, compCriteria.min_score, isComposeOpen]);
++
++    const handleSendBroadcast = async (e: React.FormEvent) => {
++        e.preventDefault();
++        if (!compSubject.trim() || !compMessage.trim()) {
++            setCompFormError("Subject and Message body are required");
++            return;
++        }
++        if (!compEventId) {
++            setCompFormError("Please select an event");
++            return;
++        }
++        setCompSubmitting(true);
++        setCompFormError(null);
++        try {
++            const currentCriteria: any = {};
++            if (compSegmentType === 'by_department') {
++                currentCriteria.department = compCriteria.department;
++            } else if (compSegmentType === 'by_year') {
++                currentCriteria.year = compCriteria.year;
++            } else if (compSegmentType === 'by_status') {
++                currentCriteria.status = compCriteria.status;
++            } else if (compSegmentType === 'by_performance') {
++                currentCriteria.min_score = Number(compCriteria.min_score || 0);
++            }
++
++            const res = await fetch(`${API_BASE_URL}/api/v1/institution/communications/send`, {
++                method: 'POST',
++                headers: {
++                    'Content-Type': 'application/json',
++                    ...authHeaders()
++                },
++                body: JSON.stringify({
++                    event_id: compEventId,
++                    segment_type: compSegmentType,
++                    criteria: currentCriteria,
++                    subject: compSubject.trim(),
++                    message_body: compMessage.trim(),
++                    message_type: compChannel
++                })
++            });
++            if (res.ok) {
++                setCompSubject('');
++                setCompMessage('');
++                setCompFormError(null);
++                setIsComposeOpen(false);
++                fetchCommHistory();
++            } else {
++                const errorData = await res.json();
++                setCompFormError(errorData.detail || "Failed to dispatch message campaign");
++            }
++        } catch (err) {
++            setCompFormError("An error occurred during submission");
++        } finally {
++            setCompSubmitting(false);
++        }
++    };
++
++    useEffect(() => {
++        if (activeSection !== 'communications') return;
++        fetchCommHistory();
++        fetchEvents();
++    }, [activeSection]);
++
++    const handleBlockEntity = async (e: React.FormEvent) => {
++        e.preventDefault();
++        if (!blockIdentifier.trim() || !blockReason.trim()) {
++            setBlockFormError("Email/Identifier and Reason are required");
++            return;
++        }
++        setBlockSubmitting(true);
++        setBlockFormError(null);
++        try {
++            const res = await fetch(`${API_BASE_URL}/api/v1/institution/blocked-entities/`, {
++                method: 'POST',
++                headers: {
++                    'Content-Type': 'application/json',
++                    ...authHeaders()
++                },
++                body: JSON.stringify({
++                    entity_type: blockType,
++                    name: blockName.trim() || undefined,
++                    identifier: blockIdentifier.trim(),
++                    reason: blockReason.trim()
++                })
++            });
++            if (res.ok) {
++                setBlockName('');
++                setBlockIdentifier('');
++                setBlockReason('');
++                setBlockType('candidate');
++                setBlockFormError(null);
++                setBlockModalOpen(false);
++                fetchBlockedEntities();
++            } else {
++                const errorData = await res.json();
++                setBlockFormError(errorData.detail || "Failed to block entity");
++            }
++        } catch (err) {
++            setBlockFormError("An error occurred during submission");
++        } finally {
++            setBlockSubmitting(false);
++        }
++    };
++
++    const handleUnblockEntity = async (entityId: string) => {
++        if (!window.confirm("Are you sure you want to unblock this entity?")) return;
++        try {
++            const res = await fetch(`${API_BASE_URL}/api/v1/institution/blocked-entities/${entityId}`, {
++                method: 'DELETE',
++                headers: authHeaders()
++            });
++            if (res.ok) {
++                fetchBlockedEntities();
++            } else {
++                alert("Failed to unblock entity");
++            }
++        } catch (err) {
++            alert("An error occurred while unblocking");
++        }
++    };
++
+     useEffect(() => {
+         if (activeSection !== 'plan' || plansData) return;
+         const fetchPlans = async () => {
+@@ -809,16 +1075,294 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ institutionId, onProfileUpd
+             case 'communications':
+                 return (
+                     <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
+-                        <div className="flex items-center justify-between mb-4">
+-                            <h2 className="text-xl font-bold text-slate-900">Custom Communications</h2>
++                        {/* Header */}
++                        <div className="flex items-center justify-between">
++                            <div>
++                                <h2 className="text-2xl font-bold text-slate-900 font-sans">Custom Communications</h2>
++                                <p className="text-sm text-slate-500 mt-1">Create segment campaigns and message your participants via email and in-app alerts.</p>
++                            </div>
++                            <button
++                                onClick={() => setIsComposeOpen(true)}
++                                className="flex items-center gap-2 px-6 py-3 bg-[#6C3BFF] hover:bg-[#582be6] text-white font-bold text-xs tracking-wider rounded-2xl shadow-lg shadow-purple-100 transition-all uppercase"
++                            >
++                                <MessageSquare size={16} />
++                                Compose Broadcast
++                            </button>
+                         </div>
+-                        <div className="p-12 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-200 text-center">
+-                            <MessageSquare className="mx-auto text-slate-300 mb-4" size={48} />
+-                            <h3 className="text-lg font-bold text-slate-900 font-sans">Premium Feature</h3>
+-                            <p className="text-slate-500 max-w-sm mx-auto mt-2 text-sm">
+-                                Custom email templates and SMS notifications are available for Premium institutions.
+-                            </p>
++
++                        {/* Error Alert */}
++                        {commError && (
++                            <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-100 rounded-3xl text-red-700 text-sm animate-in fade-in">
++                                <span className="font-semibold">⚠️</span> {commError}
++                            </div>
++                        )}
++
++                        {/* Logs / History Table */}
++                        <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
++                            <div className="p-6 border-b border-slate-50 flex items-center justify-between">
++                                <h3 className="text-lg font-bold text-slate-900">Broadcast Campaigns</h3>
++                                <span className="text-xs font-bold text-slate-400 bg-slate-50 px-3 py-1 rounded-full uppercase tracking-wider font-sans">
++                                    {commHistory.length} sent
++                                </span>
++                            </div>
++
++                            {commLoading ? (
++                                <div className="p-16 text-center">
++                                    <div className="animate-spin rounded-full h-8 w-8 border-2 border-t-[#6C3BFF] border-slate-100 mx-auto" />
++                                    <p className="text-slate-400 text-sm mt-3 font-medium">Loading campaign records...</p>
++                                </div>
++                            ) : commHistory.length === 0 ? (
++                                <div className="p-16 text-center">
++                                    <MessageSquare className="mx-auto text-slate-200 mb-4 animate-bounce duration-1000" size={48} />
++                                    <h4 className="text-md font-bold text-slate-800 font-sans">No broadcasts dispatched yet</h4>
++                                    <p className="text-slate-400 text-sm mt-2 max-w-xs mx-auto">
++                                        Use the compose button above to target specific participant groups and broadcast updates.
++                                    </p>
++                                </div>
++                            ) : (
++                                <div className="overflow-x-auto">
++                                    <table className="w-full text-left border-collapse">
++                                        <thead>
++                                            <tr className="bg-slate-50 text-[10px] uppercase tracking-widest font-black text-slate-400 border-b border-slate-100">
++                                                <th className="py-4 px-6 font-sans">Subject</th>
++                                                <th className="py-4 px-6 font-sans">Snippet</th>
++                                                <th className="py-4 px-6 font-sans">Channel</th>
++                                                <th className="py-4 px-6 font-sans">Recipients</th>
++                                                <th className="py-4 px-6 font-sans">Date Sent</th>
++                                            </tr>
++                                        </thead>
++                                        <tbody className="divide-y divide-slate-50">
++                                            {commHistory.map((h: any) => (
++                                                <tr key={h.id} className="text-slate-700 text-sm hover:bg-slate-50/50 transition-colors">
++                                                    <td className="py-4 px-6 font-bold text-slate-900">{h.subject}</td>
++                                                    <td className="py-4 px-6 text-slate-500 max-w-xs truncate">{h.body}</td>
++                                                    <td className="py-4 px-6">
++                                                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider ${
++                                                            h.type === 'email' ? 'bg-sky-50 text-sky-700' :
++                                                            h.type === 'in_app' ? 'bg-amber-50 text-amber-700' :
++                                                            'bg-purple-50 text-purple-700'
++                                                        }`}>
++                                                            {h.type === 'both' ? 'Email + App' : h.type}
++                                                        </span>
++                                                    </td>
++                                                    <td className="py-4 px-6 font-semibold text-slate-600">
++                                                        {h.recipient_count || '1+'}
++                                                    </td>
++                                                    <td className="py-4 px-6 text-slate-400 text-xs font-medium font-sans">
++                                                        {new Date(h.created_at).toLocaleDateString()} {new Date(h.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
++                                                    </td>
++                                                </tr>
++                                            ))}
++                                        </tbody>
++                                    </table>
++                                </div>
++                            )}
+                         </div>
++
++                        {/* Compose Broadcast Drawer Modal */}
++                        {isComposeOpen && (
++                            <div className="fixed inset-0 z-50 flex items-center justify-end bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300">
++                                <div className="w-[500px] h-full bg-white shadow-2xl flex flex-col p-8 overflow-y-auto animate-in slide-in-from-right duration-300">
++                                    <div className="flex items-center justify-between pb-6 border-b border-slate-100">
++                                        <div>
++                                            <h3 className="text-xl font-bold text-slate-900 font-sans">Compose Broadcast</h3>
++                                            <p className="text-xs text-slate-400 mt-1">Target participant segments and send updates</p>
++                                        </div>
++                                        <button
++                                            onClick={() => setIsComposeOpen(false)}
++                                            className="p-2 hover:bg-slate-100 text-slate-400 hover:text-slate-600 rounded-full transition-colors"
++                                        >
++                                            ❌
++                                        </button>
++                                    </div>
++
++                                    {compFormError && (
++                                        <div className="mt-4 p-4 bg-red-50 border border-red-100 rounded-2xl text-red-600 text-xs font-semibold">
++                                            {compFormError}
++                                        </div>
++                                    )}
++
++                                    <form onSubmit={handleSendBroadcast} className="flex-1 mt-6 space-y-6">
++                                        {/* Event selection */}
++                                        <div className="space-y-2">
++                                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block font-sans">Target Event</label>
++                                            <select
++                                                value={compEventId}
++                                                onChange={(e) => setCompEventId(e.target.value)}
++                                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:border-[#6C3BFF] focus:bg-white transition-all font-sans"
++                                                required
++                                            >
++                                                <option value="" disabled>Select an Event</option>
++                                                {instEvents.map((ev: any) => (
++                                                    <option key={ev._id || ev.event_id} value={ev._id || ev.event_id}>
++                                                        {ev.title || ev.name}
++                                                    </option>
++                                                ))}
++                                            </select>
++                                        </div>
++
++                                        {/* Segment filter selection */}
++                                        <div className="space-y-2">
++                                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block font-sans">Recipient Segment</label>
++                                            <select
++                                                value={compSegmentType}
++                                                onChange={(e) => setCompSegmentType(e.target.value)}
++                                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:border-[#6C3BFF] focus:bg-white transition-all font-sans"
++                                            >
++                                                <option value="all">All Registered Students</option>
++                                                <option value="by_department">Filter by Department</option>
++                                                <option value="by_year">Filter by Academic Year</option>
++                                                <option value="by_status">Filter by Registration Status</option>
++                                                <option value="by_performance">Filter by Score / Performance</option>
++                                            </select>
++                                        </div>
++
++                                        {/* Dynamic criteria fields */}
++                                        {compSegmentType === 'by_department' && (
++                                            <div className="space-y-2 animate-in slide-in-from-top-2 duration-300">
++                                                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block font-sans">Department Name</label>
++                                                <input
++                                                    type="text"
++                                                    value={compCriteria.department}
++                                                    onChange={(e) => setCompCriteria({ ...compCriteria, department: e.target.value })}
++                                                    placeholder="e.g. Computer Science"
++                                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 focus:outline-none focus:border-[#6C3BFF] focus:bg-white transition-all font-sans"
++                                                    required
++                                                />
++                                            </div>
++                                        )}
++
++                                        {compSegmentType === 'by_year' && (
++                                            <div className="space-y-2 animate-in slide-in-from-top-2 duration-300">
++                                                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block font-sans">Year of Study</label>
++                                                <input
++                                                    type="text"
++                                                    value={compCriteria.year}
++                                                    onChange={(e) => setCompCriteria({ ...compCriteria, year: e.target.value })}
++                                                    placeholder="e.g. 3rd Year or 2026"
++                                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 focus:outline-none focus:border-[#6C3BFF] focus:bg-white transition-all font-sans"
++                                                    required
++                                                />
++                                            </div>
++                                        )}
++
++                                        {compSegmentType === 'by_status' && (
++                                            <div className="space-y-2 animate-in slide-in-from-top-2 duration-300">
++                                                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block font-sans">Registration Status</label>
++                                                <select
++                                                    value={compCriteria.status}
++                                                    onChange={(e) => setCompCriteria({ ...compCriteria, status: e.target.value })}
++                                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-800 focus:outline-none focus:border-[#6C3BFF] focus:bg-white transition-all font-sans"
++                                                >
++                                                    <option value="APPROVED">Approved / Confirmed</option>
++                                                    <option value="PENDING">Pending Approval</option>
++                                                    <option value="REJECTED">Rejected</option>
++                                                </select>
++                                            </div>
++                                        )}
++
++                                        {compSegmentType === 'by_performance' && (
++                                            <div className="space-y-2 animate-in slide-in-from-top-2 duration-300">
++                                                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block font-sans">Minimum Average Score</label>
++                                                <input
++                                                    type="number"
++                                                    min="0"
++                                                    max="100"
++                                                    value={compCriteria.min_score}
++                                                    onChange={(e) => setCompCriteria({ ...compCriteria, min_score: Number(e.target.value) })}
++                                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 focus:outline-none focus:border-[#6C3BFF] focus:bg-white transition-all font-sans"
++                                                    required
++                                                />
++                                                <p className="text-[10px] text-slate-400 font-medium font-sans">Targets candidates scoring at or above this score threshold.</p>
++                                            </div>
++                                        )}
++
++                                        {/* Estimation count indicator */}
++                                        <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between">
++                                            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-sans">Target Audience</span>
++                                            {compEstimating ? (
++                                                <span className="text-xs text-slate-400 animate-pulse font-medium font-sans">Estimating count...</span>
++                                            ) : (
++                                                <span className="text-xs font-black text-[#6C3BFF] bg-purple-50 px-3.5 py-1 rounded-full uppercase tracking-wider font-sans">
++                                                    {compTargetCount !== null ? `${compTargetCount} matching` : '0 matching'}
++                                                </span>
++                                            )}
++                                        </div>
++
++                                        {/* Messaging Channels */}
++                                        <div className="space-y-2 font-sans">
++                                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block font-sans">Communication Channels</label>
++                                            <div className="grid grid-cols-3 gap-3">
++                                                {(['email', 'in_app', 'both'] as const).map((channel) => (
++                                                    <button
++                                                        key={channel}
++                                                        type="button"
++                                                        onClick={() => setCompChannel(channel)}
++                                                        className={`p-3 border rounded-2xl text-center text-xs font-semibold transition-all font-sans ${
++                                                            compChannel === channel
++                                                                ? 'border-[#6C3BFF] bg-purple-50/40 text-[#6C3BFF] font-bold'
++                                                                : 'border-slate-200 hover:border-slate-300 text-slate-500'
++                                                        }`}
++                                                    >
++                                                        <span className="block capitalize font-sans">{channel === 'both' ? 'Both' : channel.replace('_', ' ')}</span>
++                                                    </button>
++                                                ))}
++                                            </div>
++                                        </div>
++
++                                        {/* Subject */}
++                                        <div className="space-y-2">
++                                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block font-sans">Subject Line</label>
++                                            <input
++                                                type="text"
++                                                value={compSubject}
++                                                onChange={(e) => setCompSubject(e.target.value)}
++                                                placeholder="Enter message subject"
++                                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 focus:outline-none focus:border-[#6C3BFF] focus:bg-white transition-all font-sans"
++                                                required
++                                            />
++                                        </div>
++
++                                        {/* Message Body */}
++                                        <div className="space-y-2 font-sans">
++                                            <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block font-sans">Message Body (HTML Supported)</label>
++                                            <textarea
++                                                value={compMessage}
++                                                onChange={(e) => setCompMessage(e.target.value)}
++                                                placeholder="Write your email/notification details here..."
++                                                rows={6}
++                                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-medium text-slate-800 focus:outline-none focus:border-[#6C3BFF] focus:bg-white transition-all font-sans"
++                                                required
++                                            />
++                                        </div>
++
++                                        {/* Action buttons */}
++                                        <div className="flex gap-3 pt-4 border-t border-slate-100 font-sans">
++                                            <button
++                                                type="button"
++                                                onClick={() => setIsComposeOpen(false)}
++                                                className="flex-1 py-3 border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-2xl text-xs font-black uppercase tracking-widest transition-colors font-sans"
++                                            >
++                                                Cancel
++                                            </button>
++                                            <button
++                                                type="submit"
++                                                disabled={compSubmitting || compTargetCount === 0}
++                                                className="flex-1 py-3 bg-[#6C3BFF] hover:bg-[#582be6] disabled:bg-slate-100 disabled:text-slate-400 text-white rounded-2xl text-xs font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-2 shadow-lg shadow-purple-50 font-sans"
++                                            >
++                                                {compSubmitting ? (
++                                                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-t-white border-purple-200" />
++                                                ) : (
++                                                    <>
++                                                        🚀 Send Broadcast
++                                                    </>
++                                                )}
++                                            </button>
++                                        </div>
++                                    </form>
++                                </div>
++                            </div>
++                        )}
+                     </div>
+                 );
+             case 'onboarding':
+@@ -964,13 +1508,199 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ institutionId, onProfileUpd
+                 return (
+                     <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
+                         <div className="flex items-center justify-between mb-4">
+-                            <h2 className="text-xl font-black text-slate-900 tracking-tight">Blocked Candidates & Organizations</h2>
+-                            <p className="text-sm text-slate-500">Manage entities that are restricted from your events.</p>
+-                        </div>
+-                        <div className="p-12 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-200 text-center">
+-                            <ShieldAlert size={48} className="mx-auto text-slate-200 mb-4" />
+-                            <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">No blocked entities found</p>
++                            <div>
++                                <h2 className="text-xl font-black text-slate-900 tracking-tight">Blocked Candidates & Organizations</h2>
++                                <p className="text-sm text-slate-500">Manage entities that are restricted from your events.</p>
++                            </div>
++                            <button
++                                onClick={() => setBlockModalOpen(true)}
++                                className="flex items-center gap-2 px-6 py-3 bg-[#6C3BFF] text-white text-xs font-black uppercase tracking-widest rounded-xl hover:bg-[#5A2EE5] transition-all shadow-lg shadow-purple-100"
++                            >
++                                <Plus size={16} />
++                                <span>Block Entity</span>
++                            </button>
+                         </div>
++
++                        {blockedLoading ? (
++                            <div className="flex justify-center py-24">
++                                <div className="w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
++                            </div>
++                        ) : blockedError ? (
++                            <div className="p-6 bg-rose-50 border border-rose-100 text-rose-700 rounded-[2rem] text-sm font-semibold flex items-center gap-3">
++                                <AlertCircle size={20} className="shrink-0 text-rose-500" />
++                                <span>{blockedError}</span>
++                            </div>
++                        ) : blockedEntities.length === 0 ? (
++                            <div className="p-12 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-200 text-center">
++                                <ShieldAlert size={48} className="mx-auto text-slate-200 mb-4" />
++                                <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">No blocked entities found</p>
++                            </div>
++                        ) : (
++                            <div className="bg-white border border-slate-100 rounded-[2rem] overflow-hidden shadow-sm">
++                                <div className="overflow-x-auto no-scrollbar">
++                                    <table className="w-full text-left border-collapse">
++                                        <thead>
++                                            <tr className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] bg-slate-50/50 border-b border-slate-100">
++                                                <th className="px-8 py-5">Entity Name</th>
++                                                <th className="px-8 py-5">Email/Identifier</th>
++                                                <th className="px-8 py-5">Type</th>
++                                                <th className="px-8 py-5">Reason</th>
++                                                <th className="px-8 py-5">Blocked On</th>
++                                                <th className="px-8 py-5 text-right">Action</th>
++                                            </tr>
++                                        </thead>
++                                        <tbody className="divide-y divide-slate-50">
++                                            {blockedEntities.map((entity) => (
++                                                <tr key={entity.id} className="group hover:bg-slate-50/30 transition-colors">
++                                                    <td className="px-8 py-5 text-sm font-bold text-slate-900">
++                                                        {entity.name || <span className="text-slate-400 font-normal italic">Unnamed</span>}
++                                                    </td>
++                                                    <td className="px-8 py-5 text-sm font-medium text-slate-500">
++                                                        {entity.identifier}
++                                                    </td>
++                                                    <td className="px-8 py-5 text-xs font-bold">
++                                                        <span className={`inline-flex px-3 py-1 rounded-full uppercase tracking-wider text-[9px] font-black ${
++                                                            entity.entity_type === 'candidate' 
++                                                                ? 'bg-purple-100 text-purple-700' 
++                                                                : 'bg-blue-100 text-blue-700'
++                                                        }`}>
++                                                            {entity.entity_type}
++                                                        </span>
++                                                    </td>
++                                                    <td className="px-8 py-5 text-sm font-medium text-slate-600 max-w-xs truncate" title={entity.reason}>
++                                                        {entity.reason}
++                                                    </td>
++                                                    <td className="px-8 py-5 text-sm font-medium text-slate-500">
++                                                        {new Date(entity.blocked_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
++                                                    </td>
++                                                    <td className="px-8 py-5 text-right">
++                                                        <button
++                                                            onClick={() => handleUnblockEntity(entity.id)}
++                                                            className="p-2.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
++                                                            title="Unblock Entity"
++                                                        >
++                                                            <Trash2 size={16} />
++                                                        </button>
++                                                    </td>
++                                                </tr>
++                                            ))}
++                                        </tbody>
++                                    </table>
++                                </div>
++                            </div>
++                        )}
++
++                        <AnimatePresence>
++                            {blockModalOpen && (
++                                <motion.div
++                                    initial={{ opacity: 0 }}
++                                    animate={{ opacity: 1 }}
++                                    exit={{ opacity: 0 }}
++                                    className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center px-4"
++                                >
++                                    <motion.div
++                                        initial={{ y: 24, scale: 0.98 }}
++                                        animate={{ y: 0, scale: 1 }}
++                                        exit={{ y: 24, scale: 0.98 }}
++                                        className="w-full max-w-lg bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-100"
++                                    >
++                                        <div className="p-6 md:p-8 border-b border-slate-100 bg-gradient-to-r from-red-50 to-purple-50">
++                                            <div className="flex items-start justify-between gap-4">
++                                                <div>
++                                                    <p className="text-[10px] font-black uppercase tracking-[0.25em] text-red-500">Restricted Access</p>
++                                                    <h3 className="mt-2 text-2xl font-black text-slate-900">Block Candidate / Org</h3>
++                                                    <p className="mt-2 text-sm text-slate-600">
++                                                        Restrict an individual candidate or partner organization from participating in future events.
++                                                    </p>
++                                                </div>
++                                                <button
++                                                    onClick={() => setBlockModalOpen(false)}
++                                                    className="p-2 hover:bg-slate-200/50 rounded-full transition-colors text-slate-400 hover:text-slate-600"
++                                                >
++                                                    <X size={20} />
++                                                </button>
++                                            </div>
++                                        </div>
++
++                                        <form onSubmit={handleBlockEntity} className="p-6 md:p-8 space-y-6">
++                                            {blockFormError && (
++                                                <div className="rounded-2xl border border-rose-100 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
++                                                    {blockFormError}
++                                                </div>
++                                            )}
++
++                                            <div className="space-y-4">
++                                                <div className="space-y-1">
++                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Entity Type</label>
++                                                    <select
++                                                        value={blockType}
++                                                        onChange={(e) => setBlockType(e.target.value as 'candidate' | 'organization')}
++                                                        className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:bg-white focus:ring-2 focus:ring-purple-100 outline-none transition-all text-sm font-bold"
++                                                    >
++                                                        <option value="candidate">Candidate (Student)</option>
++                                                        <option value="organization">Organization / Partner</option>
++                                                    </select>
++                                                </div>
++
++                                                <div className="space-y-1">
++                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Name (Optional)</label>
++                                                    <input
++                                                        type="text"
++                                                        value={blockName}
++                                                        onChange={(e) => setBlockName(e.target.value)}
++                                                        placeholder="e.g. John Doe / Initech"
++                                                        className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:bg-white focus:ring-2 focus:ring-purple-100 outline-none transition-all text-sm font-bold"
++                                                    />
++                                                </div>
++
++                                                <div className="space-y-1">
++                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Email / Unique Identifier</label>
++                                                    <input
++                                                        type="text"
++                                                        value={blockIdentifier}
++                                                        onChange={(e) => setBlockIdentifier(e.target.value)}
++                                                        placeholder="e.g. candidate@domain.com"
++                                                        required
++                                                        className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:bg-white focus:ring-2 focus:ring-purple-100 outline-none transition-all text-sm font-bold"
++                                                    />
++                                                </div>
++
++                                                <div className="space-y-1">
++                                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Reason for Block</label>
++                                                    <textarea
++                                                        value={blockReason}
++                                                        onChange={(e) => setBlockReason(e.target.value)}
++                                                        placeholder="e.g. Violating competition rules / Inappropriate behavior"
++                                                        required
++                                                        rows={3}
++                                                        className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:bg-white focus:ring-2 focus:ring-purple-100 outline-none transition-all text-sm font-bold resize-none"
++                                                    />
++                                                </div>
++                                            </div>
++
++                                            <div className="flex flex-col sm:flex-row gap-3 sm:justify-end">
++                                                <button
++                                                    type="button"
++                                                    onClick={() => setBlockModalOpen(false)}
++                                                    disabled={blockSubmitting}
++                                                    className="px-5 py-3 rounded-full border border-slate-200 text-slate-600 font-black uppercase tracking-widest text-xs hover:bg-slate-50 disabled:opacity-60"
++                                                >
++                                                    Cancel
++                                                </button>
++                                                <button
++                                                    type="submit"
++                                                    disabled={blockSubmitting}
++                                                    className="px-5 py-3 rounded-full bg-red-600 text-white font-black uppercase tracking-widest text-xs hover:bg-red-700 disabled:opacity-60 flex items-center justify-center gap-2 shadow-lg shadow-red-100"
++                                                >
++                                                    {blockSubmitting ? <Loader2 size={16} className="animate-spin" /> : <ShieldAlert size={16} />}
++                                                    <span>Restrict Entity</span>
++                                                </button>
++                                            </div>
++                                        </form>
++                                    </motion.div>
++                                </motion.div>
++                            )}
++                        </AnimatePresence>
+                     </div>
+                 );
+             case 'plan':

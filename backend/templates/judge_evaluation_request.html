@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluation Request</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #6C3BFF;
+        }
+        .header h1 {
+            color: #6C3BFF;
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .project-card {
+            background: #f8f9ff;
+            border: 2px solid #e1e5ff;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .project-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin: 0 0 10px 0;
+        }
+        .project-meta {
+            display: flex;
+            gap: 20px;
+            margin: 15px 0;
+            font-size: 14px;
+            color: #666;
+        }
+        .project-meta span {
+            background: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        .description {
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            border-left: 4px solid #6C3BFF;
+        }
+        .files-section {
+            margin: 20px 0;
+        }
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: white;
+            border: 1px solid #e1e5ff;
+            border-radius: 6px;
+            margin: 5px 0;
+        }
+        .cta-button {
+            display: inline-block;
+            background: #6C3BFF;
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            margin: 20px 0;
+            transition: background-color 0.3s;
+        }
+        .cta-button:hover {
+            background: #5a2fd4;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e5ff;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Evaluation Request</h1>
+            <p>You've been invited to evaluate a project submission</p>
+        </div>
+
+        <p>Hello <strong>{{judge_name}}</strong>,</p>
+        
+        <p>We'd like to request your expertise in evaluating the following project submission for <strong>{{event_name}}</strong>.</p>
+
+        <div class="project-card">
+            <h2 class="project-title">{{project_title}}</h2>
+            
+            <div class="project-meta">
+                <span>👥 {{team_name}}</span>
+                <span>📅 {{submitted_at}}</span>
+            </div>
+
+            {% if project_description %}
+            <div class="description">
+                <h3>Project Description:</h3>
+                <p>{{project_description}}</p>
+            </div>
+            {% endif %}
+
+            {% if files %}
+            <div class="files-section">
+                <h3>📎 Submitted Files:</h3>
+                {% for file in files %}
+                <div class="file-item">
+                    📄 {{file.filename}} ({{file.size}})
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if external_links %}
+            <div class="files-section">
+                <h3>🔗 External Links:</h3>
+                {% for link in external_links %}
+                <div class="file-item">
+                    🔗 {{link.title}} - {{link.url}}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div style="text-align: center;">
+            <a href="{{evaluation_url}}" class="cta-button">
+                🚀 Evaluate This Project
+            </a>
+            <p style="color: #666; font-size: 14px; margin-top: 10px;">
+                This link will expire in 7 days
+            </p>
+        </div>
+
+        <div class="footer">
+            <p>This evaluation request was sent to {{judge_email}}</p>
+            <p>If you have any questions, please contact the event administrator.</p>
+        </div>
+    </div>
+</body>
+</html>

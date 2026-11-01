@@ -1,0 +1,116 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=0.5in]{geometry}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\definecolor{headercolor}{RGB}{173,100,82}
+
+% Custom section command
+\titleformat{\section}
+  {\large\bfseries\uppercase}
+  {}{0em}{}[\titlerule]
+\titlespacing*{\section}{0pt}{*1.5}{*0.5}
+
+% Remove page numbers
+\pagenumbering{gobble}
+
+% Custom commands
+\newcommand{\name}[1]{
+  \begin{center}
+    \Huge\textbf{#1}
+  \end{center}
+  \vspace{-1em}
+  \hrule height 1pt
+  \vspace{0.5em}
+}
+\newcommand{\contact}[3]{
+  \begin{center}
+    #1 \textbullet{} #2 \textbullet{} #3
+  \end{center}
+  \vspace{-0.5em}
+  \hrule height 0.4pt
+  \vspace{0.5em}
+}
+\newcommand{\role}[4]{
+  \noindent\textbf{#1} \hfill \textbf{#2} \\
+  \noindent\textit{#3} \hfill \textit{#4} \par
+  \vspace{0.2em}
+}
+
+\begin{document}
+
+\name{\VAR{name|e}}
+\vspace{-0.5em}
+\contact{\VAR{(address if address else "City, Country")|e}}{\VAR{phone|e}}{\VAR{email|e}}
+\BLOCK{ if linkedin or github }
+\begin{center}
+    \vspace{-1em}
+    \small \BLOCK{ if linkedin }LinkedIn: \VAR{linkedin|e}\BLOCK{ endif } \BLOCK{ if linkedin and github } | \BLOCK{ endif } \BLOCK{ if github }GitHub: \VAR{github|e}\BLOCK{ endif }
+\end{center}
+\BLOCK{ endif }
+
+\BLOCK{ if summary }
+\begin{center}
+\textit{\VAR{summary|e}}
+\end{center}
+\BLOCK{ endif }
+
+\BLOCK{ if experience }
+\section{PROFESSIONAL EXPERIENCE}
+\BLOCK{ for exp in experience }
+\vspace{1em}
+\role{\VAR{exp.company|e}}{\VAR{(exp.location if exp.location else "")|e}}{\VAR{exp.role|e}}{\VAR{exp.year|e}}
+\begin{itemize}[leftmargin=*,nosep]
+  \item \VAR{exp.details|e}
+\end{itemize}
+\BLOCK{ endfor }
+\BLOCK{ endif }
+
+\BLOCK{ if education }
+\vspace{1em}
+\section{EDUCATION}
+\BLOCK{ for edu in education }
+\vspace{0.5em}
+\role{\VAR{edu.college|e}}{\VAR{(edu.location if edu.location else "")|e}}{\VAR{edu.degree|e}}{\VAR{edu.year|e}}
+\BLOCK{ endfor }
+\BLOCK{ endif }
+
+\BLOCK{ if projects }
+\vspace{1em}
+\section{PROJECTS}
+\BLOCK{ for proj in projects }
+\vspace{0.5em}
+\noindent\textbf{\VAR{proj.name|e}} \hfill \textit{\VAR{proj.technologies|e}} \par
+\vspace{0.2em}
+\begin{itemize}[leftmargin=*,nosep]
+  \item \VAR{proj.description|e}
+\end{itemize}
+\BLOCK{ endfor }
+\BLOCK{ endif }
+
+\BLOCK{ if certifications }
+\vspace{1em}
+\section{CERTIFICATIONS}
+\begin{itemize}[leftmargin=*,nosep]
+  \BLOCK{ for cert in certifications }
+  \item \VAR{cert|e}
+  \BLOCK{ endfor }
+\end{itemize}
+\BLOCK{ endif }
+
+\BLOCK{ if skills }
+\vspace{1em}
+\section{SKILLS}
+\vspace{0.5em}
+\begin{itemize}[leftmargin=*,nosep]
+  \BLOCK{ for skill in skills }
+  \item \VAR{skill|e}
+  \BLOCK{ endfor }
+\end{itemize}
+\BLOCK{ endif }
+
+\end{document}

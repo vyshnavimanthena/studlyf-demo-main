@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Event Package Admin</title>
+  <style>body{font-family: 'Poppins', sans-serif; padding:24px;} .muted{color:#666}</style>
+</head>
+<body>
+  <h1>Event Package — Admin</h1>
+  <p class="muted">You are authenticated as admin. This page is protected.</p>
+  <div id="content">Loading...</div>
+  <script>
+    async function load() {
+      try {
+        const res = await fetch('/api/v1/institution/hackathon/packages');
+        if (!res.ok) { document.getElementById('content').innerText = 'Failed to load packages: ' + res.status; return }
+        const data = await res.json();
+        const el = document.getElementById('content');
+        el.innerHTML = '<ul>' + data.map(p => `<li><strong>${p.name}</strong> — ${p.description||''}</li>`).join('') + '</ul>';
+      } catch (e) { document.getElementById('content').innerText = 'Error loading packages'; }
+    }
+    load();
+  </script>
+</body>
+</html>

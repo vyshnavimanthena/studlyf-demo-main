@@ -1,0 +1,52 @@
+# FastAPI & Web
+fastapi==0.104.1
+uvicorn==0.24.0
+python-multipart==0.0.6
+starlette==0.27.0
+
+# Database
+pymongo==4.6.0
+motor==3.3.2
+
+# Authentication & Security
+python-jose==3.3.0
+passlib==1.7.4
+bcrypt==4.1.1
+PyJWT==2.8.1
+cryptography==41.0.7
+
+# Validation & Serialization
+pydantic==2.5.2
+email-validator==2.1.0
+
+# HTTP & Requests
+requests==2.31.0
+httpx==0.25.2
+
+# Environment
+python-dotenv==1.0.0
+
+# Redis (caching)
+redis==5.0.1
+
+# Monitoring & Logging
+sentry-sdk==1.39.1
+python-json-logger==2.0.7
+
+# Security Scanning
+bandit==1.7.5
+safety==2.3.5
+
+# Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+locust==2.17.0
+
+# Development & Debugging
+black==23.12.0
+pylint==3.0.3
+isort==5.13.2
+
+# Utilities
+pytz==2023.3.post1

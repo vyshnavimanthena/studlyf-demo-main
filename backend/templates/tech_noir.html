@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{name}} | CYBER-PORTFOLIO</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syncopate:wght@400;700&display=swap');
+
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-pink: #ff00ff;
+            --bg-dark: #050505;
+            --grid-color: rgba(0, 243, 255, 0.1);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+            background-image:
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        /* Scanline Effect */
+        .scanline {
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2));
+            background-size: 100% 4px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Glitch Title */
+        .glitch-wrapper {
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            position: relative;
+            text-shadow: 2px 2px var(--neon-pink), -2px -2px var(--neon-blue);
+            margin: 0;
+        }
+
+        .role {
+            font-size: 1.5rem;
+            color: var(--neon-blue);
+            letter-spacing: 5px;
+            margin-bottom: 4rem;
+            border-right: 2px solid var(--neon-blue);
+            display: inline-block;
+            animation: blink 0.75s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                border-color: transparent
+            }
+        }
+
+        /* Cyber Cards */
+        .cyber-section {
+            margin-bottom: 6rem;
+        }
+
+        .section-header {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2rem;
+            border-bottom: 1px solid var(--neon-pink);
+            margin-bottom: 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+        }
+
+        .section-header span {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            background: var(--neon-pink);
+            color: black;
+            padding: 0.2rem 0.5rem;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .cyber-card {
+            background: rgba(10, 10, 20, 0.8);
+            border: 1px solid #333;
+            padding: 2rem;
+            position: relative;
+            transition: 0.3s;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 90% 100%, 0 100%);
+        }
+
+        .cyber-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--neon-blue);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: 0.3s;
+        }
+
+        .cyber-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.1);
+            border-color: var(--neon-blue);
+        }
+
+        .cyber-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .skill-terminal {
+            background: #000;
+            border: 1px solid #333;
+            padding: 1rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .cmd-line {
+            color: var(--neon-blue);
+        }
+
+        .skill-tag {
+            color: white;
+            margin-right: 15px;
+            display: inline-block;
+        }
+
+        .contact-btn {
+            background: transparent;
+            color: var(--neon-blue);
+            border: 2px solid var(--neon-blue);
+            padding: 1rem 3rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-decoration: none;
+            display: inline-block;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-btn:hover {
+            background: var(--neon-blue);
+            color: black;
+            box-shadow: 0 0 30px var(--neon-blue);
+        }
+
+        @media(max-width: 768px) {
+            h1 {
+                font-size: 3rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="scanline"></div>
+    <div class="container">
+        <header style="padding-top: 10vh; padding-bottom: 10vh;">
+            <div class="glitch-wrapper">
+                <h1>{{name.upper()}}</h1>
+            </div>
+            <br>
+            <!-- Assuming role might be passed roughly or we use summary start -->
+            <div class="role">SYSTEM.READY_</div>
+            <p
+                style="max-width: 600px; font-size: 1.2rem; line-height: 1.6; border-left: 2px solid var(--neon-pink); padding-left: 1rem;">
+                {{summary}}
+            </p>
+        </header>
+
+        <section id="skills" class="cyber-section">
+            <div class="section-header">
+                <h2>// SKILLSET</h2>
+                <span>V.1.0</span>
+            </div>
+            <div class="skill-terminal" id="skills-container">
+                <span class="cmd-line">root@user:~$</span> list --skills<br><br>
+                {% for skill in skills %}
+                <span class="skill-tag">> {{skill}}</span>
+                {% endfor %}
+                <span class="cursor">_</span>
+            </div>
+        </section>
+
+        <section id="projects" class="cyber-section">
+            <div class="section-header">
+                <h2>// PROJECTS</h2>
+                <span>EXECUTING...</span>
+            </div>
+            <div class="card-grid" id="projects-container">
+                {% for project in projects %}
+                <div class="cyber-card">
+                    <h3 style="color: var(--neon-pink); margin-top: 0; font-family: 'Poppins', sans-serif;">{{project.name}}</h3>
+                    <p>{{project.description}}</p>
+                    <div style="margin-top: 1rem; color: var(--neon-blue); font-size: 0.8rem;">
+                        [{{project.technologies}}]
+                    </div>
+                    {% if project.link %}
+                    <a href="{{project.link}}" target="_blank"
+                        style="display: inline-block; margin-top: 1rem; color: var(--neon-pink); text-decoration: none; border: 1px solid var(--neon-pink); padding: 5px 10px; font-size: 0.8rem; transition: 0.3s;"
+                        onmouseover="this.style.background='var(--neon-pink)'; this.style.color='black'"
+                        onmouseout="this.style.background='transparent'; this.style.color='var(--neon-pink)'">>
+                        ACCESS_SYSTEM</a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section id="experience" class="cyber-section">
+            <div class="section-header">
+                <h2>// LOGS</h2>
+                <span>HISTORY</span>
+            </div>
+            <div class="card-grid" id="experience-container">
+                {% for exp in experience %}
+                <div class="cyber-card">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--neon-blue); font-weight: bold;">{{exp.role}}</span>
+                        <span style="opacity: 0.7;">{{exp.year}}</span>
+                    </div>
+                    <h4 style="margin: 0.5rem 0;">@ {{exp.company}}</h4>
+                    <p style="font-size: 0.9rem; opacity: 0.8;">{{exp.details}}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        {% if certifications %}
+        <section id="certifications" class="cyber-section">
+            <div class="section-header">
+                <h2>// CERTIFICATES</h2>
+                <span>VERIFIED</span>
+            </div>
+            <div class="card-grid" id="certifications-container">
+                {% for cert in certifications %}
+                <div class="cyber-card">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: var(--neon-pink); font-weight: bold;">{{cert.name}}</span>
+                        <span style="opacity: 0.7; color: var(--neon-blue);">{{cert.date}}</span>
+                    </div>
+                    <h4 style="margin: 0.5rem 0;">ISSUED_BY: {{cert.issuer}}</h4>
+                    {% if cert.link %}
+                    <a href="{{cert.link}}" target="_blank"
+                        style="color: var(--neon-blue); text-decoration: none; font-size: 0.8rem;">[ VIEW CREDS ]</a>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <footer style="text-align: center; margin-top: 5rem; margin-bottom: 5rem;">
+            <a href="mailto:{{email}}" class="contact-btn">INITIATE_CONTACT</a>
+        </footer>
+    </div>
+
+    <script>
+        // Intro Animation
+        gsap.from("h1", { duration: 1, y: 50, opacity: 0, ease: "power4.out" });
+        gsap.from(".role", { duration: 1, delay: 0.5, opacity: 0 });
+        gsap.from(".cyber-section", { duration: 1, delay: 0.8, y: 50, opacity: 0, stagger: 0.2 });
+
+
+    </script>
+</body>
+
+</html>

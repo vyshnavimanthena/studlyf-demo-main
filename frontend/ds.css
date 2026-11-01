@@ -1,0 +1,217 @@
+/*
+ * STUDLYF design system (shadcn/ui tokens).
+ *
+ * Every token and utility here is namespaced with `ds-` so nothing collides
+ * with existing classes (`bg-primary`, `text-muted`, `ring-primary` etc. stay
+ * exactly as they were). Pages opt in by using `ds-*` classes or the
+ * primitives in components/ui/*. The optional `.studlyf-ds` wrapper only sets
+ * font/colour defaults for the subtree it wraps.
+ */
+
+:root {
+  --ds-primary: #6d3ff0;
+  --ds-primary-hover: #5a2fd6;
+  --ds-primary-foreground: #ffffff;
+  --ds-ink: #14102b;
+  --ds-ink-soft: #221c40;
+  --ds-ink-foreground: #ffffff;
+  --ds-coral: #ff6b5b;
+
+  --ds-background: #ffffff;
+  --ds-foreground: #14102b;
+  --ds-lavender: #f6f3ff;
+  --ds-lavender-strong: #ece6ff;
+  --ds-card: #ffffff;
+  --ds-card-foreground: #14102b;
+  --ds-muted: #f4f2fa;
+  --ds-muted-foreground: #57536b; /* 7.4:1 on white */
+  --ds-subtle-foreground: #6b6780; /* 5.4:1 on white */
+  --ds-border: #e6e1f2;
+  --ds-input: #d9d3ea;
+  --ds-ring: #6d3ff0;
+  --ds-destructive: #d92d20;
+  --ds-destructive-foreground: #ffffff;
+  --ds-success: #12805c;
+  --ds-warning: #b54708;
+
+  --ds-gradient: linear-gradient(90deg, #6d3ff0 0%, #b43fd6 55%, #ff6b5b 100%);
+}
+
+@theme inline {
+  --color-ds-primary: var(--ds-primary);
+  --color-ds-primary-hover: var(--ds-primary-hover);
+  --color-ds-primary-foreground: var(--ds-primary-foreground);
+  --color-ds-ink: var(--ds-ink);
+  --color-ds-ink-soft: var(--ds-ink-soft);
+  --color-ds-ink-foreground: var(--ds-ink-foreground);
+  --color-ds-coral: var(--ds-coral);
+  --color-ds-background: var(--ds-background);
+  --color-ds-foreground: var(--ds-foreground);
+  --color-ds-lavender: var(--ds-lavender);
+  --color-ds-lavender-strong: var(--ds-lavender-strong);
+  --color-ds-card: var(--ds-card);
+  --color-ds-card-foreground: var(--ds-card-foreground);
+  --color-ds-muted: var(--ds-muted);
+  --color-ds-muted-foreground: var(--ds-muted-foreground);
+  --color-ds-subtle-foreground: var(--ds-subtle-foreground);
+  --color-ds-border: var(--ds-border);
+  --color-ds-input: var(--ds-input);
+  --color-ds-ring: var(--ds-ring);
+  --color-ds-destructive: var(--ds-destructive);
+  --color-ds-destructive-foreground: var(--ds-destructive-foreground);
+  --color-ds-success: var(--ds-success);
+  --color-ds-warning: var(--ds-warning);
+
+  --radius-ds-control: 12px;
+  --radius-ds-card: 20px;
+  --radius-ds-panel: 32px;
+
+  --shadow-ds-sm: 0 1px 2px rgb(20 16 43 / 0.06), 0 1px 3px rgb(20 16 43 / 0.04);
+  --shadow-ds-md: 0 4px 12px rgb(20 16 43 / 0.06), 0 12px 32px rgb(20 16 43 / 0.06);
+  --shadow-ds-lg: 0 12px 24px rgb(20 16 43 / 0.08), 0 32px 64px rgb(20 16 43 / 0.10);
+
+  --animate-ds-accordion-down: ds-accordion-down 0.2s ease-out;
+  --animate-ds-accordion-up: ds-accordion-up 0.2s ease-out;
+  --animate-ds-rise: ds-rise 0.2s ease-out;
+  --animate-ds-fade-in: ds-fade-in 0.2s ease-out;
+  --animate-ds-fade-out: ds-fade-out 0.12s ease-in;
+}
+
+@keyframes ds-accordion-down {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}
+@keyframes ds-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes ds-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes ds-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+@keyframes ds-accordion-up {
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
+}
+
+/* Optional subtree wrapper: font + colour defaults only, no resets.
+   In the base layer so any utility (e.g. text-white) on the same element wins. */
+@layer base {
+  .studlyf-ds {
+    font-family: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+    color: var(--ds-foreground);
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* Layout: one container and one section rhythm for the whole page. */
+@utility ds-container {
+  width: 100%;
+  max-width: calc(1200px + 2 * 24px);
+  margin-inline: auto;
+  padding-inline: 16px;
+  @media (min-width: 640px) {
+    padding-inline: 24px;
+  }
+}
+
+@utility ds-section {
+  padding-block: 72px;
+  @media (min-width: 768px) {
+    padding-block: 96px;
+  }
+  @media (min-width: 1024px) {
+    padding-block: 120px;
+  }
+}
+
+/* Type scale */
+@utility ds-eyebrow {
+  display: inline-block;
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ds-primary);
+}
+
+@utility ds-h1 {
+  font-size: clamp(40px, 7vw, 72px);
+  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+@utility ds-h2 {
+  font-size: clamp(32px, 4.4vw, 52px);
+  line-height: 1.12;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+@utility ds-h3 {
+  font-size: 20px;
+  line-height: 1.35;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+@utility ds-subline {
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ds-muted-foreground);
+  text-wrap: pretty;
+  @media (min-width: 768px) {
+    font-size: 20px;
+  }
+}
+
+@utility ds-body {
+  font-size: 16px;
+  line-height: 1.65;
+  @media (min-width: 768px) {
+    font-size: 17px;
+  }
+}
+
+/* Brand gradient on one key word. Never breaks across lines. */
+@utility ds-gradient-text {
+  background-image: var(--ds-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  white-space: nowrap;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+@utility ds-gradient-bg {
+  background-image: var(--ds-gradient);
+}
+
+@utility ds-focus-ring {
+  outline: none;
+  &:focus-visible {
+    outline: 2px solid var(--ds-ring);
+    outline-offset: 2px;
+  }
+}
+
+/* Tinted section band that fades in and out over 160px, so sections never meet at a hard edge. */
+@utility ds-band {
+  background-image: linear-gradient(
+    to bottom,
+    var(--ds-background) 0,
+    var(--ds-lavender) 160px,
+    var(--ds-lavender) calc(100% - 160px),
+    var(--ds-background) 100%
+  );
+}

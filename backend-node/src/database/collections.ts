@@ -1,0 +1,50 @@
+import { Collection, Document } from 'mongodb';
+import { getDb } from './connection';
+
+export const COLLECTIONS = {
+  USERS: 'users',
+  USER_PROFILES: 'user_profiles',
+  LEARNER_PROFILES: 'learner_profiles',
+  INSTITUTIONS: 'institutions',
+  EVENTS: 'events',
+  OPPORTUNITIES: 'opportunities',
+  PARTICIPANTS: 'participants',
+  TEAMS: 'teams',
+  SUBMISSIONS: 'submissions',
+  SUBMISSION_DATA: 'submission_data',
+  JUDGES: 'judges',
+  EVENT_JUDGES: 'event_judges',
+  SCORES: 'scores',
+  EVALUATION_CRITERIA: 'evaluation_criteria',
+  RUBRICS: 'rubrics',
+  NOTIFICATIONS: 'notifications',
+  MESSAGES: 'messages',
+  LEADERBOARD: 'leaderboard',
+  RESULTS: 'results',
+  CERTIFICATES: 'certificates',
+  EVENT_CERTIFICATES: 'event_certificates',
+  CERTIFICATE_JOBS: 'certificate_jobs',
+  COURSES: 'courses',
+  MODULES: 'modules',
+  QUIZZES: 'quizzes',
+  PROGRESS: 'progress',
+  ENROLLMENTS: 'enrollments',
+  CART: 'cart',
+  RESUMES: 'resumes',
+  INTERVIEWS: 'interviews',
+  COMMUNITY_POSTS: 'community_posts',
+  COMMUNITY_VOTES: 'community_votes',
+  COMMUNITY_COMMENTS: 'community_comments',
+  SDL_PROJECTS: 'sdl_projects',
+  SDL_TASKS: 'sdl_tasks',
+  BADGES: 'badges',
+  GAMIFICATION: 'gamification',
+  EMAIL_QUEUE: 'email_queue',
+  AUDIT_LOGS: 'audit_logs',
+  PASSWORD_RESETS: 'password_resets',
+  EMAIL_VERIFICATIONS: 'email_verifications',
+} as const;
+
+export function getCollection<T extends Document = Document>(name: string): Collection<T> {
+  return getDb().collection<T>(name);
+}
