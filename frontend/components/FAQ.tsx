@@ -73,9 +73,9 @@ const SplitFAQ: React.FC = () => {
         </ul>
       </div>
 
-      <div id="faq-answer" aria-live="polite" className="relative flex flex-col justify-center overflow-hidden bg-ds-lavender px-12 py-10">
-        <span aria-hidden="true" className="absolute right-4 bottom-0 text-[200px] leading-none font-bold text-ds-lavender-strong select-none">
-          {active + 1}
+      <div id="faq-answer" aria-live="polite" className="flex flex-col justify-center bg-ds-lavender px-12 py-10">
+        <span aria-hidden="true" className="mb-4 text-sm font-semibold tracking-[0.12em] text-ds-primary tabular-nums">
+          {String(active + 1).padStart(2, '0')} / {String(faqData.length).padStart(2, '0')}
         </span>
         <AnimatePresence mode="wait">
           <motion.p
@@ -84,7 +84,7 @@ const SplitFAQ: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={reduce ? undefined : { opacity: 0, y: -8 }}
             transition={{ duration: 0.2 }}
-            className="relative text-2xl leading-[1.35] font-bold text-ds-foreground"
+            className="text-2xl leading-[1.35] font-bold text-ds-foreground"
           >
             {faqData[active].answer}
           </motion.p>
