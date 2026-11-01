@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Send, User, Mail, Globe, Phone, MessageSquare, HelpCircle, Loader2, ShieldCheck, type LucideIcon } from 'lucide-react';
+import { Send, Loader2, ShieldCheck, GraduationCap, Briefcase, Handshake, Sparkles } from 'lucide-react';
 import InteractiveCreature from './InteractiveCreature';
 import emailjs from '@emailjs/browser';
 import { Button } from '@/components/ui/button';
@@ -8,16 +8,16 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
-// Fields sit on the purple panel: translucent white surface, white text, left-aligned placeholder after the icon.
-const fieldClass =
-    'h-12 border-white/40 bg-ds-ink/20 pl-11 text-white shadow-none placeholder:text-white focus-visible:border-white focus-visible:ring-white/30';
+const roles = [
+    { value: 'learner', label: 'Student', icon: GraduationCap },
+    { value: 'professional', label: 'Professional', icon: Briefcase },
+    { value: 'partner', label: 'Partner', icon: Handshake },
+    { value: 'other', label: 'Other', icon: Sparkles },
+];
 
-const FieldIcon: React.FC<{ icon: LucideIcon; top?: boolean }> = ({ icon: Icon, top }) => (
-    <Icon aria-hidden="true" className={cn('pointer-events-none absolute left-4 size-[18px] text-white/90', top ? 'top-3.5' : 'top-1/2 -translate-y-1/2')} />
-);
+const fieldClass = 'mt-2 h-12 bg-white';
 
 const EnquiryForm: React.FC = () => {
     const [formData, setFormData] = useState({
@@ -31,6 +31,7 @@ const EnquiryForm: React.FC = () => {
     const [isVerified, setIsVerified] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState('');
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -38,8 +39,13 @@ const EnquiryForm: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError('');
+        if (!formData.description) {
+            setError('Please choose what describes you best.');
+            return;
+        }
         if (!isVerified) {
-            alert('Please complete the human verification to proceed.');
+            setError('Please complete the human verification to proceed.');
             return;
         }
 
@@ -60,7 +66,7 @@ const EnquiryForm: React.FC = () => {
                 templateId: cleanTemplateId, 
                 publicKey: cleanPublicKey ? '***' : undefined 
             });
-            alert('Email service is not configured properly.');
+            setError('Sending is not set up yet. Please email support@studlyf.com instead.');
             setIsSubmitting(false);
             return;
         }
@@ -94,10 +100,9 @@ const EnquiryForm: React.FC = () => {
                 questions: ''
             });
             setIsVerified(false);
-            setTimeout(() => setIsSubmitted(false), 5000);
-        } catch (error: any) {
-            try { console.error('Failed to send email. Status:', error?.status, 'Text:', error?.text, 'Error:', error); } catch (_) {}
-            alert(`Failed to send inquiry: ${error?.text || 'Unknown error. Check console.'}`);
+                    } catch (err: any) {
+            try { console.error('Failed to send email. Status:', err?.status, 'Text:', err?.text, 'Error:', err); } catch (_) {}
+            setError('We could not send your inquiry. Please try again or email support@studlyf.com.');
         } finally {
             setIsSubmitting(false);
         }
@@ -106,79 +111,84 @@ const EnquiryForm: React.FC = () => {
     return (
         <section id="enquiry-form" aria-labelledby="enquiry-heading" className="studlyf-ds bg-ds-background pb-[72px] md:pb-[96px] lg:pb-[120px]">
             <div className="ds-container">
-                <div className="relative mx-auto max-w-[880px] overflow-hidden rounded-ds-panel bg-ds-primary px-5 py-12 shadow-ds-lg sm:px-10 md:px-14 md:py-16">
-                    <div aria-hidden="true" className="pointer-events-none absolute -top-40 -right-24 h-80 w-80 rounded-full bg-white/15 blur-[100px]" />
+                <div className="relative mx-auto grid max-w-[1120px] overflow-hidden rounded-ds-panel bg-white ring-1 ring-ds-border shadow-ds-md lg:grid-cols-[2fr_3fr]">
+                    {/* Left: the invitation, with the mascot waiting for your message */}
+                    <div className="relative flex flex-col overflow-hidden bg-ds-lavender p-8 sm:p-10">
+                        <div aria-hidden="true" className="absolute -right-24 -bottom-24 size-80 rounded-full bg-ds-lavender-strong" />
+                        <header className="relative">
+                            <p className="ds-eyebrow mb-4">Contact</p>
+                            <h2 id="enquiry-heading" className="ds-h2 text-ds-foreground lg:!text-[38px]">
+                                Let&rsquo;s get to know <br className="hidden lg:block" /><span className="ds-gradient-text">each other</span>
+                            </h2>
+                            <p className="ds-subline mt-4">Whether you&rsquo;re learning, hiring or hosting, tell us what you have in mind.</p>
+                        </header>
+                        <div aria-hidden="true" className="pointer-events-none relative mt-10 hidden flex-1 items-end justify-center lg:flex">
+                            <InteractiveCreature targetButtonText="Submit inquiry" />
+                        </div>
+                    </div>
 
-                    <header className="relative mb-10 text-center text-white">
-                        <p className="ds-eyebrow mb-4 text-white/90">Contact</p>
-                        <h2 id="enquiry-heading" className="ds-h2">Let&rsquo;s get to know each other</h2>
-                        <p className="ds-subline mx-auto mt-3 max-w-xl text-white/90">Elevate your vision with our AI-driven expertise.</p>
-                    </header>
-
-                    <form onSubmit={handleSubmit} className="relative flex flex-col gap-5">
+                    {/* Right: the form */}
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-5 p-6 sm:p-10 lg:p-12">
                         <div className="grid gap-5 md:grid-cols-2">
-                            <div className="relative">
-                                <Label htmlFor="enquiry-name" className="sr-only">Full name (required)</Label>
-                                <FieldIcon icon={User} />
-                                <Input id="enquiry-name" name="name" type="text" autoComplete="name" placeholder="Full name *" value={formData.name} onChange={handleChange} required className={fieldClass} />
+                            <div>
+                                <Label htmlFor="enquiry-name">Full name <span className="text-ds-primary">*</span></Label>
+                                <Input id="enquiry-name" name="name" type="text" autoComplete="name" placeholder="Your name" value={formData.name} onChange={handleChange} required className={fieldClass} />
                             </div>
-                            <div className="relative">
-                                <Label htmlFor="enquiry-email" className="sr-only">Email address (required)</Label>
-                                <FieldIcon icon={Mail} />
-                                <Input id="enquiry-email" name="email" type="email" autoComplete="email" placeholder="Email address *" value={formData.email} onChange={handleChange} required className={fieldClass} />
+                            <div>
+                                <Label htmlFor="enquiry-email">Email address <span className="text-ds-primary">*</span></Label>
+                                <Input id="enquiry-email" name="email" type="email" autoComplete="email" placeholder="you@example.com" value={formData.email} onChange={handleChange} required className={fieldClass} />
                             </div>
-                            <div className="relative">
-                                <Label htmlFor="enquiry-country" className="sr-only">Your country (required)</Label>
-                                <FieldIcon icon={Globe} />
-                                <Input id="enquiry-country" name="country" type="text" autoComplete="country-name" placeholder="Your country *" value={formData.country} onChange={handleChange} required className={fieldClass} />
+                            <div>
+                                <Label htmlFor="enquiry-country">Country <span className="text-ds-primary">*</span></Label>
+                                <Input id="enquiry-country" name="country" type="text" autoComplete="country-name" placeholder="India" value={formData.country} onChange={handleChange} required className={fieldClass} />
                             </div>
-                            <div className="relative">
-                                <Label htmlFor="enquiry-phone" className="sr-only">Phone number</Label>
-                                <FieldIcon icon={Phone} />
-                                <Input id="enquiry-phone" name="phone" type="tel" autoComplete="tel" placeholder="Phone number" value={formData.phone} onChange={handleChange} className={fieldClass} />
+                            <div>
+                                <Label htmlFor="enquiry-phone">Phone number</Label>
+                                <Input id="enquiry-phone" name="phone" type="tel" autoComplete="tel" placeholder="Optional" value={formData.phone} onChange={handleChange} className={fieldClass} />
                             </div>
                         </div>
 
-                        <div className="relative">
-                            <Label htmlFor="enquiry-description" className="sr-only">What describes you best? (required)</Label>
-                            <FieldIcon icon={MessageSquare} />
-                            <Select
-                                name="description"
-                                required
-                                value={formData.description}
-                                onValueChange={(value) => setFormData({ ...formData, description: value })}
-                            >
-                                <SelectTrigger id="enquiry-description" className={cn(fieldClass, 'data-[placeholder]:text-white [&>svg]:text-white [&>svg]:opacity-100')}>
-                                    <SelectValue placeholder="What describes you best? *" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="learner">Student / Learner</SelectItem>
-                                    <SelectItem value="professional">Industry Professional</SelectItem>
-                                    <SelectItem value="partner">Strategic Partner</SelectItem>
-                                    <SelectItem value="other">Other</SelectItem>
-                                </SelectContent>
-                            </Select>
+                        <fieldset>
+                            <legend className="text-sm font-medium text-ds-foreground">What describes you best? <span className="text-ds-primary">*</span></legend>
+                            <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                                {roles.map((r) => {
+                                    const on = formData.description === r.value;
+                                    return (
+                                        <label
+                                            key={r.value}
+                                            className={cn(
+                                                'flex h-12 cursor-pointer items-center justify-center gap-2 rounded-ds-control border text-sm font-semibold transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ds-ring',
+                                                on ? 'border-ds-primary bg-ds-primary text-white' : 'border-ds-border bg-white text-ds-muted-foreground hover:border-ds-primary/50 hover:text-ds-foreground',
+                                            )}
+                                        >
+                                            <input
+                                                type="radio"
+                                                name="description"
+                                                value={r.value}
+                                                checked={on}
+                                                onChange={() => { setFormData({ ...formData, description: r.value }); setError(''); }}
+                                                className="sr-only"
+                                            />
+                                            <r.icon className="size-4" aria-hidden="true" />
+                                            {r.label}
+                                        </label>
+                                    );
+                                })}
+                            </div>
+                        </fieldset>
+
+                        <div>
+                            <Label htmlFor="enquiry-questions">Any questions for us?</Label>
+                            <Textarea id="enquiry-questions" name="questions" rows={3} placeholder="Tell us a little more" value={formData.questions} onChange={handleChange} className="mt-2 min-h-24 resize-none bg-white" />
                         </div>
 
-                        <div className="relative">
-                            <Label htmlFor="enquiry-questions" className="sr-only">Any questions for us?</Label>
-                            <FieldIcon icon={HelpCircle} top />
-                            <Textarea id="enquiry-questions" name="questions" rows={4} placeholder="Any questions for us?" value={formData.questions} onChange={handleChange} className={cn(fieldClass, 'h-auto min-h-28 resize-none')} />
-                        </div>
-
-                        <div className="flex items-center gap-3 rounded-ds-control border border-white/40 bg-ds-ink/20 px-4 py-3 text-white sm:w-fit">
-                            <Checkbox
-                                id="enquiry-verify"
-                                checked={isVerified}
-                                onCheckedChange={(v) => setIsVerified(v === true)}
-                                className="border-white/70 bg-transparent data-[state=checked]:border-white data-[state=checked]:bg-white data-[state=checked]:text-ds-primary"
-                            />
-                            <Label htmlFor="enquiry-verify" className="cursor-pointer text-[15px] text-white">Secured by human verification</Label>
-                            <ShieldCheck className="size-4 text-white" aria-hidden="true" />
-                        </div>
-
-                        <div className="flex flex-col items-center pt-3">
-                            <Button type="submit" variant="white" size="lg" disabled={isSubmitting} className="group min-w-56">
+                        <div className="flex flex-col gap-4 pt-1 sm:flex-row sm:items-center sm:justify-between">
+                            <div className="flex items-center gap-2.5">
+                                <Checkbox id="enquiry-verify" checked={isVerified} onCheckedChange={(v) => { setIsVerified(v === true); setError(''); }} />
+                                <Label htmlFor="enquiry-verify" className="cursor-pointer text-sm font-normal text-ds-muted-foreground">I&rsquo;m a human</Label>
+                                <ShieldCheck className="size-4 text-ds-primary" aria-hidden="true" />
+                            </div>
+                            <Button type="submit" size="lg" disabled={isSubmitting} className="group">
                                 {isSubmitting ? (
                                     <>
                                         <Loader2 className="animate-spin" aria-hidden="true" />
@@ -191,10 +201,9 @@ const EnquiryForm: React.FC = () => {
                                     </>
                                 )}
                             </Button>
-                            <div className="pointer-events-none relative mt-2">
-                                <InteractiveCreature targetButtonText="Submit inquiry" />
-                            </div>
                         </div>
+
+                        {error && <p role="alert" className="text-sm font-medium text-red-600">{error}</p>}
                     </form>
 
                     <AnimatePresence>
@@ -204,12 +213,12 @@ const EnquiryForm: React.FC = () => {
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
                                 role="status"
-                                className="absolute inset-0 z-20 flex items-center justify-center bg-ds-primary/95"
+                                className="absolute inset-0 z-20 flex items-center justify-center bg-white/95"
                             >
-                                <div className="space-y-5 px-10 text-center text-white">
-                                    <h3 className="text-3xl font-bold">Inquiry sent</h3>
-                                    <p className="text-white/90">Thank you for reaching out.</p>
-                                    <Button variant="white" onClick={() => setIsSubmitted(false)}>Submit another</Button>
+                                <div className="space-y-5 px-10 text-center">
+                                    <h3 className="text-3xl font-bold text-ds-foreground">Inquiry sent</h3>
+                                    <p className="text-ds-muted-foreground">Thank you for reaching out.</p>
+                                    <Button variant="outline" onClick={() => setIsSubmitted(false)}>Submit another</Button>
                                 </div>
                             </motion.div>
                         )}

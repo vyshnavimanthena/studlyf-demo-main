@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Instagram, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import InteractiveCreature from './InteractiveCreature';
 
 const WhatsAppIcon = ({ size = 22 }: { size?: number }) => (
     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -62,24 +64,29 @@ const linkClass =
     'rounded-ds-control text-[15px] text-white/75 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
 
 const Footer: React.FC = () => {
+    const reduce = !!useReducedMotion();
+
     return (
-        <footer className="studlyf-ds w-full bg-ds-ink pt-16 pb-10 text-white md:pt-20">
-            <div className="ds-container flex flex-col gap-14">
-                {/* Contact card: founder photo and "Contact us" side by side */}
-                <section aria-labelledby="footer-contact-heading" className="flex flex-col gap-8 rounded-ds-panel border border-white/10 bg-white/[0.04] p-6 sm:p-10 md:flex-row md:items-center md:justify-between">
-                    <div className="flex flex-col items-center gap-5 text-center sm:flex-row sm:text-left">
-                        <img
-                            src="/images-optimized/Eshwar.webp"
-                            onError={(e) => { (e.target as HTMLImageElement).src = '/images/Eshwar.jpg'; }}
-                            alt={FOUNDER.name ? `${FOUNDER.name}, founder of STUDLYF` : 'Founder of STUDLYF'}
-                            width={128}
-                            height={128}
-                            loading="lazy"
-                            className="size-28 shrink-0 rounded-ds-card object-cover sm:size-32"
-                        />
+        <footer className="studlyf-ds w-full overflow-hidden bg-ds-ink pt-16 text-white md:pt-20">
+            <div className="ds-container flex flex-col gap-12">
+                {/* Slim contact band: founder photo, one line, three ways to reach us */}
+                <section aria-labelledby="footer-contact-heading" className="flex flex-col gap-6 rounded-ds-card border border-white/10 bg-white/[0.04] p-5 md:flex-row md:items-center md:justify-between md:px-6">
+                    <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
+                        {/* The source photo is a wide shot, so zoom in on the founder */}
+                        <span className="size-[72px] shrink-0 overflow-hidden rounded-full ring-2 ring-white/20">
+                            <img
+                                src="/images-optimized/Eshwar.webp"
+                                onError={(e) => { (e.target as HTMLImageElement).src = '/images/Eshwar.jpg'; }}
+                                alt={FOUNDER.name ? `${FOUNDER.name}, founder of STUDLYF` : 'Founder of STUDLYF'}
+                                width={72}
+                                height={72}
+                                loading="lazy"
+                                className="size-full origin-[50%_42%] scale-[2.4] object-cover"
+                            />
+                        </span>
                         <div>
-                            <h2 id="footer-contact-heading" className="text-3xl font-bold tracking-tight sm:text-4xl">Contact us</h2>
-                            <p className="mt-2 text-base text-white/75">Connect with our founder. We&rsquo;re here to help, anytime.</p>
+                            <h2 id="footer-contact-heading" className="text-xl font-bold tracking-tight">Contact us</h2>
+                            <p className="mt-1 text-[15px] text-white/75">Connect with our founder. We&rsquo;re here to help, anytime.</p>
                             {FOUNDER.name && (
                                 <p className="mt-3 text-[15px] text-white">
                                     {FOUNDER.link ? (
@@ -155,6 +162,26 @@ const Footer: React.FC = () => {
                             <li><Link to="/terms" className={linkClass}>Terms &amp; conditions</Link></li>
                         </ul>
                     </div>
+                </div>
+            </div>
+
+            {/* Closing wordmark, cropped by the page edge, with the mascot strolling along its top */}
+            <div aria-hidden="true" className="relative mt-14 select-none sm:mt-10" style={{ fontSize: 'clamp(72px, 20vw, 340px)' }}>
+                <p className="-mb-[0.2em] text-center leading-none font-bold tracking-tight whitespace-nowrap">
+                    <span className="bg-gradient-to-b from-white/20 to-white/[0.02] bg-clip-text text-transparent">STUDLYF</span>
+                </p>
+                <div className="pointer-events-none absolute inset-x-0 top-[0.14em] mx-auto w-[min(80%,1000px)]">
+                    <motion.div
+                        className="absolute bottom-0 left-0"
+                        animate={reduce ? undefined : { left: ['0%', '92%', '0%'] }}
+                        transition={{ duration: 28, repeat: Infinity, ease: 'easeInOut' }}
+                    >
+                        <div className="flex size-9 items-center justify-center sm:size-14">
+                            <div className="scale-[0.35] sm:scale-[0.55]">
+                                <InteractiveCreature className="![transform:none]" />
+                            </div>
+                        </div>
+                    </motion.div>
                 </div>
             </div>
         </footer>
