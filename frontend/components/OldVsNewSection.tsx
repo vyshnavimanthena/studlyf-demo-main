@@ -19,10 +19,10 @@ const COL = 100 / learningMethods.length;
 const faceClass = 'absolute inset-0 flex items-center gap-3 rounded-[20px] p-5 [backface-visibility:hidden] md:flex-col md:items-start md:justify-between md:p-6';
 
 /** Flips to the new way once the mascot lands; hover peeks back at the old way. */
-const FlipCard: React.FC<{ item: (typeof learningMethods)[number]; flipped: boolean }> = ({ item, flipped }) => {
+const FlipCard: React.FC<{ item: (typeof learningMethods)[number]; flipped: boolean; onHover: () => void }> = ({ item, flipped, onHover }) => {
     const [peek, setPeek] = React.useState(false);
     return (
-        <div className="h-24 [perspective:1000px] md:h-[230px]" onMouseEnter={() => setPeek(true)} onMouseLeave={() => setPeek(false)}>
+        <div className="h-24 [perspective:1000px] md:h-[230px]" onMouseEnter={() => { setPeek(true); onHover(); }} onMouseLeave={() => setPeek(false)}>
             <motion.div
                 initial={false}
                 animate={{ rotateY: flipped && !peek ? 180 : 0 }}
@@ -46,7 +46,7 @@ const FlipCard: React.FC<{ item: (typeof learningMethods)[number]; flipped: bool
     );
 };
 
-/** The mascot hops along the top of the row once, flipping each card it lands on, then stays on the last one. */
+/** The mascot hops along the row once, flipping each card it lands on; after that it hops to whichever card is hovered. */
 const FlipRow: React.FC = () => {
     const reduced = useReducedMotion() ?? false;
     const ref = React.useRef<HTMLDivElement>(null);
@@ -97,7 +97,7 @@ const FlipRow: React.FC = () => {
 
             <div aria-hidden="true" className="grid grid-cols-1 gap-3 md:grid-cols-5 md:gap-4">
                 {learningMethods.map((item, i) => (
-                    <FlipCard key={item.old} item={item} flipped={i <= flippedTo} />
+                    <FlipCard key={item.old} item={item} flipped={i <= flippedTo} onHover={() => { if (flippedTo === last) setAt(i); }} />
                 ))}
             </div>
             <p className="mt-5 hidden text-center text-sm text-ds-subtle-foreground md:block">Hover a card to see the old way</p>
