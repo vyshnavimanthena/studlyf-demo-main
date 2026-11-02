@@ -15,7 +15,7 @@ const GetHiredSection: React.FC = () => {
             />
 
             {/* Dark overlay in case image needs to be darkened slightly for better text contrast */}
-            <div className="absolute inset-0 z-0 bg-black/20" />
+            <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#fbfaff]/95 via-[#f6f3ff]/90 to-[#fbfaff]/95" />
 
             {/* Main Layout Container */}
             <div className="max-w-[1400px] w-full mx-auto px-6 sm:px-12 lg:px-20 relative z-10 flex flex-col lg:flex-row items-center justify-between">
@@ -23,7 +23,7 @@ const GetHiredSection: React.FC = () => {
                 {/* Left Side: Title and Button (55% width approx) */}
                 <div className="flex flex-col items-start w-full lg:w-[55%]">
                     <h2
-                        className="text-white font-bold text-4xl sm:text-6xl lg:text-[4.5rem] leading-[1.1] mb-10 tracking-tight font-poppins"
+                        className="text-[#14102b] font-bold text-4xl sm:text-6xl lg:text-[4.5rem] leading-[1.1] mb-10 tracking-tight font-poppins"
                     >
                         GET HIRED!<br />
                         IN STARTUP'S
@@ -51,7 +51,7 @@ const GetHiredSection: React.FC = () => {
                         }
                         .gs-btn {
                             position: relative;
-                            background: #2F6FD6;
+                            background: #6d3ff0;
                             color: #fff;
                             font-weight: 600;
                             font-size: 17px;
@@ -66,7 +66,7 @@ const GetHiredSection: React.FC = () => {
                             justify-content: center;
                             gap: 8px;
                             transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease;
-                            box-shadow: 0 8px 24px rgba(47,111,214,0.45), 0 1px 0 rgba(255,255,255,0.12) inset;
+                            box-shadow: 0 8px 24px rgba(109,63,240,0.35), 0 1px 0 rgba(255,255,255,0.12) inset;
                         }
                         .gs-btn::before {
                             content: '';
@@ -89,7 +89,7 @@ const GetHiredSection: React.FC = () => {
                         }
                         .gs-btn:hover {
                             transform: translateY(-3px) scale(1.03);
-                            box-shadow: 0 0 0 5px rgba(47,111,214,0.18), 0 0 32px 10px rgba(47,111,214,0.45), 0 12px 30px rgba(30,80,180,0.5);
+                            box-shadow: 0 0 0 5px rgba(109,63,240,0.18), 0 0 32px 10px rgba(109,63,240,0.35), 0 12px 30px rgba(30,80,180,0.5);
                         }
                         .gs-btn:active { transform: scale(0.97); }
                         .gs-orb {
@@ -127,14 +127,14 @@ const GetHiredSection: React.FC = () => {
 
             {/* Bottom bar for stipend, startup hirings, and success rate */}
             <div className="hidden lg:grid w-full absolute left-1/2 -translate-x-1/2 bottom-12 z-30 pointer-events-none grid-cols-3 items-center max-w-[1400px] px-6 sm:px-12 lg:px-20">
-                <div className="text-white text-xl font-bold pointer-events-auto text-left tracking-wide">
-                    <span className="text-blue-400">#</span> Tech
+                <div className="text-[#14102b] text-xl font-bold pointer-events-auto text-left tracking-wide">
+                    <span className="text-blue-600">#</span> Tech
                 </div>
-                <div className="text-white text-xl font-bold pointer-events-auto text-center tracking-wide" style={{fontFamily: "'Poppins', sans-serif"}}>
-                    <span className="text-pink-400">#</span> Business
+                <div className="text-[#14102b] text-xl font-bold pointer-events-auto text-center tracking-wide" style={{fontFamily: "'Poppins', sans-serif"}}>
+                    <span className="text-pink-600">#</span> Business
                 </div>
-                <div className="text-white text-xl font-bold pointer-events-auto text-right tracking-wide" style={{fontFamily: "'Poppins', sans-serif"}}>
-                    <span className="text-amber-400">#</span> Creative
+                <div className="text-[#14102b] text-xl font-bold pointer-events-auto text-right tracking-wide" style={{fontFamily: "'Poppins', sans-serif"}}>
+                    <span className="text-amber-600">#</span> Creative
                 </div>
             </div>
         </section>
@@ -144,7 +144,7 @@ const GetHiredSection: React.FC = () => {
 const GlassCard: React.FC<{ isMobile?: boolean }> = ({ isMobile }) => {
     return (
         <div
-            className={`w-full ${isMobile ? 'p-8 rounded-[20px]' : 'p-[40px] rounded-[20px]'}`}
+            className={`w-full !bg-white/85 !shadow-[0_10px_40px_rgba(20,16,43,0.08)] ${isMobile ? 'p-8 rounded-[20px]' : 'p-[40px] rounded-[20px]'}`}
             style={{
                 background: 'rgba(139, 92, 246, 0.05)',
                 border: '1px solid rgba(139, 92, 246, 0.2)',
@@ -156,15 +156,15 @@ const GlassCard: React.FC<{ isMobile?: boolean }> = ({ isMobile }) => {
 
                 {/* MNC Column */}
                 <div className="flex flex-col sm:pr-[40px]">
-                    <h3 className="text-white font-bold text-2xl tracking-wide uppercase mb-[24px]">MNC</h3>
+                    <h3 className="text-[#14102b] font-bold text-2xl tracking-wide uppercase mb-[24px]">MNC</h3>
                     <ul className="flex flex-col gap-4">
                         {[
                             'Structured Growth',
                             'Global Exposure',
                             'Tiered Authority'
                         ].map((item, idx) => (
-                            <li key={idx} className="flex items-center gap-3 text-white font-medium text-[16px]">
-                                <span className="w-1.5 h-1.5 rounded-full bg-white/70 flex-shrink-0" />
+                            <li key={idx} className="flex items-center gap-3 text-slate-700 font-medium text-[16px]">
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#14102b]/40 flex-shrink-0" />
                                 {item}
                             </li>
                         ))}
@@ -172,16 +172,16 @@ const GlassCard: React.FC<{ isMobile?: boolean }> = ({ isMobile }) => {
                 </div>
 
                 {/* STARTUPS Column */}
-                <div className="flex flex-col sm:pl-[40px] sm:border-l-2 border-[#8B5CF6]/40 relative pt-[24px] sm:pt-0 border-t-2 sm:border-t-0">
-                    <h3 className="text-[#D4BFFF] font-bold text-2xl tracking-wide uppercase mb-[24px] relative z-10">STARTUPS</h3>
+                <div className="flex flex-col sm:pl-[40px] sm:border-l-2 border-[#e8e3f5] relative pt-[24px] sm:pt-0 border-t-2 sm:border-t-0">
+                    <h3 className="text-[#6C2BFF] font-bold text-2xl tracking-wide uppercase mb-[24px] relative z-10">STARTUPS</h3>
                     <ul className="flex flex-col gap-4">
                         {[
                             'Rapid Execution',
                             'Dynamic Roles',
                             'High Ownership'
                         ].map((item, idx) => (
-                            <li key={idx} className="flex items-center gap-3 text-white font-medium text-[16px] relative z-10">
-                                <span className="w-1.5 h-1.5 rounded-full bg-[#A88CFF] flex-shrink-0" />
+                            <li key={idx} className="flex items-center gap-3 text-slate-700 font-medium text-[16px] relative z-10">
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#6C2BFF] flex-shrink-0" />
                                 {item}
                             </li>
                         ))}

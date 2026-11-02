@@ -114,7 +114,7 @@ function CommentItem({
   };
 
   return (
-    <div className={`${depth > 0 ? 'ml-6 pl-4 border-l border-white/10' : ''}`}>
+    <div className={`${depth > 0 ? 'ml-6 pl-4 border-l border-[#e8e3f5]' : ''}`}>
       <div className="flex gap-3 py-3">
         {comment.author_avatar ? (
           <img
@@ -123,28 +123,28 @@ function CommentItem({
             className="w-8 h-8 rounded-full object-cover flex-shrink-0"
           />
         ) : (
-          <div className="w-8 h-8 rounded-full bg-purple-600/30 flex items-center justify-center text-xs font-bold text-purple-300 flex-shrink-0">
+          <div className="w-8 h-8 rounded-full bg-purple-600/30 flex items-center justify-center text-xs font-bold text-purple-700 flex-shrink-0">
             {comment.author_name?.[0]?.toUpperCase()}
           </div>
         )}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-sm font-medium text-gray-300">{comment.author_name}</span>
-            <span className="text-xs text-gray-600">·</span>
-            <span className="text-xs text-gray-500">{timeAgo(comment.created_at)}</span>
+            <span className="text-sm font-medium text-slate-700">{comment.author_name}</span>
+            <span className="text-xs text-slate-400">·</span>
+            <span className="text-xs text-slate-500">{timeAgo(comment.created_at)}</span>
             {currentUser?.user_id === comment.author_id && (
               <button
                 onClick={() => onDelete(comment.id)}
-                className="ml-auto text-gray-600 hover:text-red-400 transition-colors"
+                className="ml-auto text-slate-400 hover:text-red-600 transition-colors"
               >
                 <Trash2 size={14} />
               </button>
             )}
           </div>
-          <p className="text-sm text-gray-300 whitespace-pre-wrap">{comment.content}</p>
+          <p className="text-sm text-slate-700 whitespace-pre-wrap">{comment.content}</p>
           <button
             onClick={() => setShowReply(!showReply)}
-            className="flex items-center gap-1 mt-1.5 text-xs text-gray-500 hover:text-purple-400 transition-colors"
+            className="flex items-center gap-1 mt-1.5 text-xs text-slate-500 hover:text-purple-600 transition-colors"
           >
             <Reply size={12} />
             Reply
@@ -158,7 +158,7 @@ function CommentItem({
             value={replyText}
             onChange={(e) => setReplyText(e.target.value)}
             placeholder="Write a reply..."
-            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 resize-none"
+            className="w-full bg-white border border-[#e8e3f5] rounded-lg px-3 py-2 text-sm text-[#14102b] placeholder-slate-400 focus:outline-none focus:border-purple-500 resize-none"
             rows={2}
           />
           <div className="flex gap-2 mt-2">
@@ -175,7 +175,7 @@ function CommentItem({
                 setShowReply(false);
                 setReplyText('');
               }}
-              className="px-3 py-1.5 bg-white/5 hover:bg-white/10 rounded-lg text-xs text-gray-400 transition-colors"
+              className="px-3 py-1.5 bg-white hover:bg-[#f0ecfa] rounded-lg text-xs text-slate-600 transition-colors"
             >
               Cancel
             </button>
@@ -448,16 +448,16 @@ export default function ProjectDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0a0a1a] text-white pt-24 flex items-center justify-center">
-        <Loader2 className="animate-spin text-purple-400" size={32} />
+      <div className="min-h-screen bg-[#fbfaff] text-[#14102b] pt-24 flex items-center justify-center">
+        <Loader2 className="animate-spin text-purple-600" size={32} />
       </div>
     );
   }
 
   if (!post) {
     return (
-      <div className="min-h-screen bg-[#0a0a1a] text-white pt-24 flex flex-col items-center justify-center gap-4">
-        <p className="text-gray-400 text-lg">Post not found</p>
+      <div className="min-h-screen bg-[#fbfaff] text-[#14102b] pt-24 flex flex-col items-center justify-center gap-4">
+        <p className="text-slate-600 text-lg">Post not found</p>
         <Link
           to="/community"
           className="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm font-medium transition-colors"
@@ -472,7 +472,7 @@ export default function ProjectDetail() {
   const youtubeId = post.video_url ? extractYouTubeId(post.video_url) : null;
 
   return (
-    <div className="min-h-screen bg-[#0a0a1a] text-white pt-24">
+    <div className="min-h-screen bg-[#fbfaff] text-[#14102b] pt-24">
       {toast && (
         <div className="fixed top-4 right-4 z-50 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium shadow-lg">
           {toast}
@@ -484,37 +484,37 @@ export default function ProjectDetail() {
         <div className="flex items-start gap-2 sm:gap-3 mb-4 sm:mb-6">
           <button
             onClick={() => navigate('/community')}
-            className="p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors shrink-0 mt-1"
+            className="p-2 bg-white hover:bg-[#f0ecfa] rounded-lg transition-colors shrink-0 mt-1"
           >
             <ArrowLeft size={20} />
           </button>
           <div className="flex-1 min-w-0">
-            <h1 className="text-xl sm:text-2xl font-bold text-white break-words">{post.title}</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-[#14102b] break-words">{post.title}</h1>
             <div className="flex items-center gap-2 mt-1.5 flex-wrap">
               {post.author_avatar ? (
                 <img src={post.author_avatar} alt="" className="w-5 h-5 rounded-full object-cover" />
               ) : (
-                <div className="w-5 h-5 rounded-full bg-purple-600/30 flex items-center justify-center text-[10px] font-bold text-purple-300">
+                <div className="w-5 h-5 rounded-full bg-purple-600/30 flex items-center justify-center text-[10px] font-bold text-purple-700">
                   {post.author_name?.[0]?.toUpperCase()}
                 </div>
               )}
-              <span className="text-sm text-gray-400">{post.author_name}</span>
-              <span className="text-xs text-gray-600">·</span>
-              <span className="text-xs text-gray-500">{timeAgo(post.created_at)}</span>
+              <span className="text-sm text-slate-600">{post.author_name}</span>
+              <span className="text-xs text-slate-400">·</span>
+              <span className="text-xs text-slate-500">{timeAgo(post.created_at)}</span>
             </div>
           </div>
           {isOwner && !editing && (
             <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={startEditing}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-sm text-gray-400 hover:text-white transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-[#f0ecfa] border border-[#e8e3f5] rounded-lg text-sm text-slate-600 hover:text-[#14102b] transition-colors"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
                 Edit
               </button>
               <button
                 onClick={() => setShowDeleteConfirm(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500/5 hover:bg-red-500/10 border border-red-500/20 rounded-lg text-sm text-red-400 hover:text-red-300 transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500/5 hover:bg-red-500/10 border border-red-500/20 rounded-lg text-sm text-red-600 hover:text-red-700 transition-colors"
               >
                 <Trash2 size={13} />
                 Delete
@@ -525,33 +525,33 @@ export default function ProjectDetail() {
 
         {/* Edit Form */}
         {editing && isOwner ? (
-          <div className="bg-white/5 border border-purple-500/30 rounded-xl p-5 sm:p-6 mb-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Edit Post</h3>
+          <div className="bg-white border border-purple-500/30 rounded-xl shadow-[0_1px_3px_rgba(20,16,43,0.05)] p-5 sm:p-6 mb-6">
+            <h3 className="text-lg font-semibold text-[#14102b] mb-4">Edit Post</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Title</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Title</label>
                 <input
                   type="text"
                   value={editTitle}
                   onChange={(e) => setEditTitle(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500"
+                  className="w-full bg-white border border-[#e8e3f5] rounded-lg px-4 py-2.5 text-[#14102b] text-sm focus:outline-none focus:border-purple-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Description</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
                 <textarea
                   value={editDescription}
                   onChange={(e) => setEditDescription(e.target.value)}
                   rows={6}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500 resize-none"
+                  className="w-full bg-white border border-[#e8e3f5] rounded-lg px-4 py-2.5 text-[#14102b] text-sm focus:outline-none focus:border-purple-500 resize-none"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Category</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Category</label>
                 <select
                   value={editCategory}
                   onChange={(e) => setEditCategory(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white text-sm focus:outline-none focus:border-purple-500"
+                  className="w-full bg-white border border-[#e8e3f5] rounded-lg px-4 py-2.5 text-[#14102b] text-sm focus:outline-none focus:border-purple-500"
                 >
                   <option value="web">Web</option>
                   <option value="mobile">Mobile</option>
@@ -567,12 +567,12 @@ export default function ProjectDetail() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Tags</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Tags</label>
                 <div className="flex flex-wrap gap-2 mb-2">
                   {editTags.map((tag) => (
-                    <span key={tag} className="flex items-center gap-1 px-2 py-1 text-xs rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20">
+                    <span key={tag} className="flex items-center gap-1 px-2 py-1 text-xs rounded-full bg-purple-500/10 text-purple-700 border border-purple-500/20">
                       #{tag}
-                      <button onClick={() => setEditTags(editTags.filter(t => t !== tag))} className="hover:text-red-400 ml-0.5">×</button>
+                      <button onClick={() => setEditTags(editTags.filter(t => t !== tag))} className="hover:text-red-600 ml-0.5">×</button>
                     </span>
                   ))}
                 </div>
@@ -583,18 +583,18 @@ export default function ProjectDetail() {
                     onChange={(e) => setEditTagInput(e.target.value)}
                     onKeyDown={handleEditTagAdd}
                     placeholder="Add tag + Enter"
-                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-purple-500"
+                    className="w-full bg-white border border-[#e8e3f5] rounded-lg px-4 py-2 text-[#14102b] text-sm focus:outline-none focus:border-purple-500"
                   />
                 )}
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">GitHub</label>
-                  <input type="url" value={editGithub} onChange={(e) => setEditGithub(e.target.value)} placeholder="https://github.com/..." className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-purple-500" />
+                  <label className="block text-sm font-medium text-slate-700 mb-1">GitHub</label>
+                  <input type="url" value={editGithub} onChange={(e) => setEditGithub(e.target.value)} placeholder="https://github.com/..." className="w-full bg-white border border-[#e8e3f5] rounded-lg px-4 py-2 text-[#14102b] text-sm focus:outline-none focus:border-purple-500" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1">Website</label>
-                  <input type="url" value={editWebsite} onChange={(e) => setEditWebsite(e.target.value)} placeholder="https://..." className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-purple-500" />
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Website</label>
+                  <input type="url" value={editWebsite} onChange={(e) => setEditWebsite(e.target.value)} placeholder="https://..." className="w-full bg-white border border-[#e8e3f5] rounded-lg px-4 py-2 text-[#14102b] text-sm focus:outline-none focus:border-purple-500" />
                 </div>
               </div>
               <div className="flex gap-3 pt-2">
@@ -608,7 +608,7 @@ export default function ProjectDetail() {
                 </button>
                 <button
                   onClick={() => setEditing(false)}
-                  className="px-5 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-sm text-gray-400 transition-colors"
+                  className="px-5 py-2 bg-white hover:bg-[#f0ecfa] border border-[#e8e3f5] rounded-lg text-sm text-slate-600 transition-colors"
                 >
                   Cancel
                 </button>
@@ -619,7 +619,7 @@ export default function ProjectDetail() {
           <>
             {/* Cover Image */}
             {post.cover_image && (
-              <div className="rounded-xl overflow-hidden mb-6 bg-white/5">
+              <div className="rounded-xl overflow-hidden mb-6 bg-white">
                 <img
                   src={post.cover_image}
                   alt={post.title}
@@ -629,19 +629,19 @@ export default function ProjectDetail() {
             )}
 
             {/* Content Card */}
-            <div className="bg-white/5 border border-white/10 rounded-xl p-5 sm:p-6 mb-5">
+            <div className="bg-white border border-[#e8e3f5] rounded-xl shadow-[0_1px_3px_rgba(20,16,43,0.05)] p-5 sm:p-6 mb-5">
               {/* Tags */}
               <div className="flex flex-wrap gap-2 mb-4">
-                <span className="px-2.5 py-1 text-xs rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/30 font-medium">
+                <span className="px-2.5 py-1 text-xs rounded-full bg-purple-500/20 text-purple-700 border border-purple-500/30 font-medium">
                   {post.project_type === 'startup' ? '🚀 Startup' : post.project_type === 'open-source' ? '🌍 Open Source' : '📦 Project'}
                 </span>
-                <span className="px-2.5 py-1 text-xs rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/20 font-medium">
+                <span className="px-2.5 py-1 text-xs rounded-full bg-blue-500/10 text-blue-700 border border-blue-500/20 font-medium">
                   {post.category.replace('-', '/').toUpperCase()}
                 </span>
                 {post.tags.map((tag) => (
                   <span
                     key={tag}
-                    className="px-2.5 py-1 text-xs rounded-full bg-white/5 text-gray-400 border border-white/10"
+                    className="px-2.5 py-1 text-xs rounded-full bg-white text-slate-600 border border-[#e8e3f5]"
                   >
                     #{tag}
                   </span>
@@ -650,8 +650,8 @@ export default function ProjectDetail() {
 
               {/* Description */}
               <div className="mb-5">
-                <h2 className="text-base font-semibold text-white mb-2">About this project</h2>
-                <div className="text-gray-300 text-sm leading-relaxed whitespace-pre-wrap break-words">
+                <h2 className="text-base font-semibold text-[#14102b] mb-2">About this project</h2>
+                <div className="text-slate-700 text-sm leading-relaxed whitespace-pre-wrap break-words">
                   {post.description}
                 </div>
               </div>
@@ -664,7 +664,7 @@ export default function ProjectDetail() {
                       href={post.github_link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-medium text-gray-300 transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-[#f0ecfa] border border-[#e8e3f5] rounded-lg text-xs font-medium text-slate-700 transition-colors"
                     >
                       <Github size={14} />
                       GitHub
@@ -675,7 +675,7 @@ export default function ProjectDetail() {
                       href={post.website_link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-medium text-gray-300 transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-[#f0ecfa] border border-[#e8e3f5] rounded-lg text-xs font-medium text-slate-700 transition-colors"
                     >
                       <ExternalLink size={14} />
                       Website
@@ -698,22 +698,22 @@ export default function ProjectDetail() {
               )}
 
               {/* Stats + Vote + Actions Row */}
-              <div className="flex flex-wrap items-center justify-between pt-4 border-t border-white/10 gap-3">
+              <div className="flex flex-wrap items-center justify-between pt-4 border-t border-[#e8e3f5] gap-3">
                 <div className="flex items-center gap-1 flex-wrap">
                   {/* Vote buttons inline */}
                   <button
                     onClick={() => handleVote('up')}
                     className={`p-1.5 rounded-md transition-colors ${
                       post.user_vote === 'up'
-                        ? 'text-green-400 bg-green-400/10'
-                        : 'text-gray-500 hover:text-green-400 hover:bg-green-400/10'
+                        ? 'text-green-600 bg-green-400/10'
+                        : 'text-slate-500 hover:text-green-600 hover:bg-green-400/10'
                     }`}
                   >
                     <ArrowUp size={18} />
                   </button>
                   <span
                     className={`text-sm font-bold min-w-[24px] text-center ${
-                      post.user_vote === 'up' ? 'text-green-400' : post.user_vote === 'down' ? 'text-red-400' : 'text-gray-400'
+                      post.user_vote === 'up' ? 'text-green-600' : post.user_vote === 'down' ? 'text-red-600' : 'text-slate-600'
                     }`}
                   >
                     {post.upvotes - post.downvotes}
@@ -722,24 +722,24 @@ export default function ProjectDetail() {
                     onClick={() => handleVote('down')}
                     className={`p-1.5 rounded-md transition-colors ${
                       post.user_vote === 'down'
-                        ? 'text-red-400 bg-red-400/10'
-                        : 'text-gray-500 hover:text-red-400 hover:bg-red-400/10'
+                        ? 'text-red-600 bg-red-400/10'
+                        : 'text-slate-500 hover:text-red-600 hover:bg-red-400/10'
                     }`}
                   >
                     <ArrowDown size={18} />
                   </button>
 
-                  <span className="text-gray-600 mx-1">·</span>
+                  <span className="text-slate-400 mx-1">·</span>
 
-                  <span className="flex items-center gap-1 text-xs text-gray-500">
+                  <span className="flex items-center gap-1 text-xs text-slate-500">
                     <Eye size={13} />
                     {post.view_count}
                   </span>
-                  <span className="flex items-center gap-1 text-xs text-gray-500">
+                  <span className="flex items-center gap-1 text-xs text-slate-500">
                     <MessageCircle size={13} />
                     {post.comment_count}
                   </span>
-                  <span className="flex items-center gap-1 text-xs text-gray-500">
+                  <span className="flex items-center gap-1 text-xs text-slate-500">
                     <Share2 size={13} />
                     {post.share_count}
                   </span>
@@ -750,8 +750,8 @@ export default function ProjectDetail() {
                     onClick={handleSave}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                       post.is_saved
-                        ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/30'
-                        : 'bg-white/5 text-gray-400 hover:bg-white/10 border border-white/10'
+                        ? 'bg-yellow-500/10 text-yellow-600 border border-yellow-500/30'
+                        : 'bg-white text-slate-600 hover:bg-[#f0ecfa] border border-[#e8e3f5]'
                     }`}
                   >
                     <Bookmark size={13} fill={post.is_saved ? 'currentColor' : 'none'} />
@@ -759,7 +759,7 @@ export default function ProjectDetail() {
                   </button>
                   <button
                     onClick={handleShare}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-medium text-gray-400 transition-colors"
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-[#f0ecfa] border border-[#e8e3f5] rounded-lg text-xs font-medium text-slate-600 transition-colors"
                   >
                     <Share2 size={13} />
                     Share
@@ -769,8 +769,8 @@ export default function ProjectDetail() {
             </div>
 
             {/* Comments Section */}
-            <div className="bg-white/5 border border-white/10 rounded-xl p-5 sm:p-6">
-              <h3 className="font-semibold text-white mb-4 flex items-center gap-2 text-sm">
+            <div className="bg-white border border-[#e8e3f5] rounded-xl shadow-[0_1px_3px_rgba(20,16,43,0.05)] p-5 sm:p-6">
+              <h3 className="font-semibold text-[#14102b] mb-4 flex items-center gap-2 text-sm">
                 <MessageCircle size={16} />
                 Comments ({post.comment_count})
               </h3>
@@ -782,7 +782,7 @@ export default function ProjectDetail() {
                     value={commentText}
                     onChange={(e) => setCommentText(e.target.value)}
                     placeholder="Add a comment..."
-                    className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 resize-none"
+                    className="w-full bg-white border border-[#e8e3f5] rounded-lg px-4 py-3 text-sm text-[#14102b] placeholder-slate-400 focus:outline-none focus:border-purple-500 resize-none"
                     rows={3}
                   />
                   <div className="flex justify-end mt-2">
@@ -797,15 +797,15 @@ export default function ProjectDetail() {
                   </div>
                 </div>
               ) : (
-                <p className="text-sm text-gray-500 mb-5">
-                  <Link to="/login" className="text-purple-400 hover:underline">Log in</Link> to leave a comment.
+                <p className="text-sm text-slate-500 mb-5">
+                  <Link to="/login" className="text-purple-600 hover:underline">Log in</Link> to leave a comment.
                 </p>
               )}
 
               {/* Comments List */}
-              <div className="divide-y divide-white/5">
+              <div className="divide-y divide-[#f0ecfa]">
                 {commentTree.length === 0 ? (
-                  <p className="text-sm text-gray-500 py-6 text-center">
+                  <p className="text-sm text-slate-500 py-6 text-center">
                     No comments yet. Be the first to share your thoughts!
                   </p>
                 ) : (
@@ -829,23 +829,23 @@ export default function ProjectDetail() {
       {/* Delete Confirmation Modal */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
-          <div className="bg-[#1a1a2e] border border-white/10 rounded-2xl p-6 max-w-sm w-full shadow-2xl">
+          <div className="bg-white border border-[#e8e3f5] rounded-2xl p-6 max-w-sm w-full shadow-2xl">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center shrink-0">
-                <Trash2 size={20} className="text-red-400" />
+                <Trash2 size={20} className="text-red-600" />
               </div>
               <div>
-                <h3 className="text-white font-semibold">Delete Post</h3>
-                <p className="text-gray-400 text-sm">This cannot be undone</p>
+                <h3 className="text-[#14102b] font-semibold">Delete Post</h3>
+                <p className="text-slate-600 text-sm">This cannot be undone</p>
               </div>
             </div>
-            <p className="text-gray-300 text-sm mb-6">
-              Are you sure you want to delete "<span className="text-white font-medium break-words">{post.title}</span>"? All comments and votes will be removed.
+            <p className="text-slate-700 text-sm mb-6">
+              Are you sure you want to delete "<span className="text-[#14102b] font-medium break-words">{post.title}</span>"? All comments and votes will be removed.
             </p>
             <div className="flex gap-3 justify-end">
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-sm text-gray-400 transition-colors"
+                className="px-4 py-2 bg-white hover:bg-[#f0ecfa] border border-[#e8e3f5] rounded-lg text-sm text-slate-600 transition-colors"
               >
                 Cancel
               </button>

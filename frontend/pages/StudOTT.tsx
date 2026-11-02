@@ -175,7 +175,7 @@ const VideoCard = ({ vid, onPlay, isHistory, onVideoError, highlight = '' }: { v
   return (
     <div 
       onClick={() => vid.url && onPlay(vid, title, author)}
-      className="w-full aspect-video relative rounded-lg overflow-hidden cursor-pointer group shadow-sm hover:shadow-[0_8px_25px_rgba(108,43,255,0.4)] border border-white/5 hover:border-[#6C2BFF]/50 transition-all duration-300 hover:-translate-y-1 hover:scale-105 bg-[#141414]"
+      className="w-full aspect-video relative rounded-lg overflow-hidden cursor-pointer group shadow-sm hover:shadow-[0_8px_25px_rgba(108,43,255,0.4)] border border-[#e8e3f5] hover:border-[#6C2BFF]/50 transition-all duration-300 hover:-translate-y-1 hover:scale-105 bg-[#141414]"
     >
       {vid.url ? (
         <img 
@@ -282,7 +282,7 @@ const ShortCard = ({ vid, onPlay, onVideoError, highlight = '' }: { vid: VideoIt
   return (
     <div 
       onClick={() => vid.url && onPlay(vid, title, author)}
-      className="w-full aspect-[9/16] relative rounded-2xl overflow-hidden cursor-pointer group shadow-sm hover:shadow-[0_8px_30px_rgba(236,72,153,0.4)] border border-white/5 hover:border-[#EC4899]/50 transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] bg-[#141414]"
+      className="w-full aspect-[9/16] relative rounded-2xl overflow-hidden cursor-pointer group shadow-sm hover:shadow-[0_8px_30px_rgba(236,72,153,0.4)] border border-[#e8e3f5] hover:border-[#EC4899]/50 transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] bg-[#141414]"
     >
       {vid.url ? (
         <img 
@@ -566,7 +566,7 @@ const StudOTT: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex h-screen bg-[#030305] text-white font-sans selection:bg-[#6C2BFF]/40 relative overflow-hidden">
+    <div className="flex h-screen bg-[#fbfaff] text-[#14102b] font-sans selection:bg-[#6C2BFF]/20 relative overflow-hidden">
       {(showIntro || activeVideoUrl) && (
         <style>{`
           button[aria-label="Open guide"] {
@@ -622,8 +622,8 @@ const StudOTT: React.FC = () => {
       </AnimatePresence>
 
       <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-[#6C2BFF]/15 rounded-full blur-[150px] mix-blend-screen" />
-        <div className="absolute bottom-[20%] right-[-10%] w-[800px] h-[800px] bg-[#EC4899]/10 rounded-full blur-[150px] mix-blend-screen" />
+        <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-[#6C2BFF]/[0.06] rounded-full blur-[150px]" />
+        <div className="absolute bottom-[20%] right-[-10%] w-[800px] h-[800px] bg-[#EC4899]/[0.05] rounded-full blur-[150px]" />
       </div>
 
       <AnimatePresence>
@@ -670,7 +670,7 @@ const StudOTT: React.FC = () => {
         )}
       </AnimatePresence>
 
-      <aside className="hidden md:flex flex-col w-20 xl:w-64 h-full border-r border-white/5 bg-[#05050A]/60 backdrop-blur-3xl z-40 pt-[104px] pb-8 shrink-0 transition-all duration-500">
+      <aside className="hidden md:flex flex-col w-20 xl:w-64 h-full border-r border-[#e8e3f5] bg-white/80 backdrop-blur-3xl z-40 pt-[104px] pb-8 shrink-0 transition-all duration-500">
         <div className="px-6 mb-12 flex justify-center xl:justify-start cursor-pointer" onClick={() => navigate('/')}>
           <img src="/images/studott.jpg" alt="STUDOTT" className="h-8 xl:h-9 w-auto object-contain drop-shadow-[0_0_15px_rgba(108,43,255,0.2)] rounded-sm" />
         </div>
@@ -682,10 +682,10 @@ const StudOTT: React.FC = () => {
               <button 
                 key={item.id}
                 onClick={() => setActiveMenu(item.id)}
-                className={`flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-300 group relative ${isActive ? 'bg-[#6C2BFF]/15 text-white' : 'text-gray-500 hover:bg-white/5 hover:text-white'}`}
+                className={`flex items-center gap-4 px-4 py-3.5 rounded-xl transition-all duration-300 group relative ${isActive ? 'bg-[#6C2BFF]/10 text-[#6C2BFF]' : 'text-slate-500 hover:bg-[#f6f3ff] hover:text-[#14102b]'}`}
               >
-                <item.icon className={`w-5 h-5 shrink-0 transition-colors ${isActive ? 'text-[#A88CFF]' : 'group-hover:text-[#A88CFF]'}`} />
-                <span className={`hidden xl:block text-sm font-bold tracking-wide transition-colors ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-white'}`}>{item.label}</span>
+                <item.icon className={`w-5 h-5 shrink-0 transition-colors ${isActive ? 'text-[#6C2BFF]' : 'group-hover:text-[#6C2BFF]'}`} />
+                <span className={`hidden xl:block text-sm font-bold tracking-wide transition-colors ${isActive ? 'text-[#6C2BFF]' : 'text-slate-600 group-hover:text-[#14102b]'}`}>{item.label}</span>
                 {isActive && (
                   <motion.div layoutId="activeNavIndicator" className="absolute left-0 w-1 h-6 bg-[#6C2BFF] rounded-r-full shadow-[0_0_10px_#6C2BFF]" />
                 )}
@@ -697,11 +697,11 @@ const StudOTT: React.FC = () => {
 
       <main className="flex-1 w-full relative z-10 overflow-y-auto h-full custom-scrollbar pt-[88px] sm:pt-[104px] pb-16">
         
-        <div className="md:hidden flex items-center justify-between px-3 sm:px-6 py-4 sticky top-0 z-40 bg-[#05050A]/80 backdrop-blur-xl border-b border-white/5">
+        <div className="md:hidden flex items-center justify-between px-3 sm:px-6 py-4 sticky top-0 z-40 bg-white/90 backdrop-blur-xl border-b border-[#e8e3f5]">
           <img src="/images/studott.jpg" alt="STUDOTT" className="h-6 w-auto object-contain drop-shadow-[0_0_10px_rgba(108,43,255,0.2)] rounded-sm" />
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#6C2BFF] to-[#EC4899] p-[1.5px]">
-            <div className="w-full h-full bg-[#05050A] rounded-full flex items-center justify-center">
-              <User className="w-4 h-4 text-white" />
+            <div className="w-full h-full bg-white rounded-full flex items-center justify-center">
+              <User className="w-4 h-4 text-[#6C2BFF]" />
             </div>
           </div>
         </div>
@@ -712,11 +712,11 @@ const StudOTT: React.FC = () => {
               <div className="relative max-w-2xl mx-auto">
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Search className="h-5 w-5 text-gray-400 group-focus-within:text-[#A88CFF] transition-colors" />
+                    <Search className="h-5 w-5 text-slate-500 group-focus-within:text-[#6C2BFF] transition-colors" />
                   </div>
                   <input
                     type="text"
-                    className="block w-full pl-11 pr-10 py-3.5 bg-[#141414]/80 border border-white/10 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#6C2BFF]/50 focus:border-[#6C2BFF]/50 backdrop-blur-xl transition-all shadow-[0_8px_30px_rgba(0,0,0,0.5)]"
+                    className="block w-full pl-11 pr-10 py-3.5 bg-white border border-[#e8e3f5] rounded-2xl text-[#14102b] placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#6C2BFF]/50 focus:border-[#6C2BFF]/50 backdrop-blur-xl transition-all shadow-[0_4px_20px_rgba(20,16,43,0.06)]"
                     placeholder="Search by title, mentor, category, or topic..."
                     value={searchQuery}
                     onChange={(e) => {
@@ -734,7 +734,7 @@ const StudOTT: React.FC = () => {
                       }}
                       className="absolute inset-y-0 right-0 pr-4 flex items-center"
                     >
-                      <X className="h-5 w-5 text-gray-400 hover:text-white transition-colors" />
+                      <X className="h-5 w-5 text-slate-400 hover:text-[#14102b] transition-colors" />
                     </button>
                   )}
                 </div>
@@ -745,7 +745,7 @@ const StudOTT: React.FC = () => {
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
-                      className="absolute w-full mt-2 bg-[#1A1A1A]/95 backdrop-blur-2xl border border-white/10 rounded-xl shadow-2xl overflow-hidden z-[100]"
+                      className="absolute w-full mt-2 bg-white backdrop-blur-2xl border border-[#e8e3f5] rounded-xl shadow-2xl overflow-hidden z-[100]"
                     >
                       {suggestions.map((vid, idx) => (
                         <div
@@ -755,15 +755,15 @@ const StudOTT: React.FC = () => {
                             setDebouncedSearchQuery(vid.title || '');
                             setShowSuggestions(false);
                           }}
-                          className="px-4 py-3 hover:bg-white/5 cursor-pointer flex items-center gap-3 transition-colors border-b border-white/5 last:border-0"
+                          className="px-4 py-3 hover:bg-[#f6f3ff] cursor-pointer flex items-center gap-3 transition-colors border-b border-[#f0ecfa] last:border-0"
                         >
-                          <Search className="w-4 h-4 text-gray-500" />
+                          <Search className="w-4 h-4 text-slate-400" />
                           <div className="flex-1 min-w-0">
-                            <span className="text-white font-medium text-sm truncate w-full group-hover:text-[#A88CFF] transition-colors">
+                            <span className="text-[#14102b] font-medium text-sm truncate w-full group-hover:text-[#6C2BFF] transition-colors">
                               <HighlightText text={vid.title || 'Untitled'} highlight={searchQuery} />
                             </span>
                             {(vid.category || vid.subtitle) && (
-                              <p className="text-gray-400 text-xs truncate">{vid.category} {vid.subtitle ? `• ${vid.subtitle}` : ''}</p>
+                              <p className="text-slate-500 text-xs truncate">{vid.category} {vid.subtitle ? `• ${vid.subtitle}` : ''}</p>
                             )}
                           </div>
                         </div>
@@ -777,8 +777,8 @@ const StudOTT: React.FC = () => {
             {/* Search Results */}
             {debouncedSearchQuery.trim() !== '' && (
               <div className="relative z-20 pt-8 pb-12 px-3 sm:px-6 lg:px-12">
-                <h2 className="text-2xl font-bold text-white tracking-tight flex items-center gap-2 mb-6">
-                  <Search className="w-6 h-6 text-[#A88CFF]" />
+                <h2 className="text-2xl font-bold text-[#14102b] tracking-tight flex items-center gap-2 mb-6">
+                  <Search className="w-6 h-6 text-[#6C2BFF]" />
                   Search Results for "{debouncedSearchQuery}"
                 </h2>
                 {searchResults.length > 0 ? (
@@ -796,15 +796,15 @@ const StudOTT: React.FC = () => {
                     ))}
                   </div>
                 ) : (
-                  <div className="w-full bg-[#141414]/50 border border-white/5 rounded-2xl p-12 flex flex-col items-center justify-center text-center">
-                    <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6">
-                      <Search className="w-10 h-10 text-white/20" />
+                  <div className="w-full bg-white border border-[#e8e3f5] shadow-sm rounded-2xl p-12 flex flex-col items-center justify-center text-center">
+                    <div className="w-20 h-20 bg-[#f6f3ff] rounded-full flex items-center justify-center mb-6">
+                      <Search className="w-10 h-10 text-[#6C2BFF]/40" />
                     </div>
-                    <h3 className="text-2xl font-bold text-white mb-3">No matching content found</h3>
-                    <p className="text-gray-400 max-w-md mx-auto mb-8">We couldn't find anything matching "{debouncedSearchQuery}". Try adjusting your search or check out our popular topics.</p>
+                    <h3 className="text-2xl font-bold text-[#14102b] mb-3">No matching content found</h3>
+                    <p className="text-slate-500 max-w-md mx-auto mb-8">We couldn't find anything matching "{debouncedSearchQuery}". Try adjusting your search or check out our popular topics.</p>
                     <div className="flex gap-4">
-                      <button onClick={() => setSearchQuery('AI')} className="px-6 py-2 bg-[#6C2BFF]/20 text-[#A88CFF] hover:bg-[#6C2BFF]/30 hover:text-white rounded-full text-sm font-semibold transition-all border border-[#6C2BFF]/30">Explore AI</button>
-                      <button onClick={() => setSearchQuery('Startup')} className="px-6 py-2 bg-white/5 hover:bg-white/10 text-white rounded-full text-sm font-semibold transition-all border border-white/10">Startup Tips</button>
+                      <button onClick={() => setSearchQuery('AI')} className="px-6 py-2 bg-[#6C2BFF]/10 text-[#6C2BFF] hover:bg-[#6C2BFF] hover:text-white rounded-full text-sm font-semibold transition-all border border-[#6C2BFF]/30">Explore AI</button>
+                      <button onClick={() => setSearchQuery('Startup')} className="px-6 py-2 bg-white hover:bg-[#f6f3ff] text-[#14102b] rounded-full text-sm font-semibold transition-all border border-[#e8e3f5]">Startup Tips</button>
                     </div>
                   </div>
                 )}
@@ -825,42 +825,42 @@ const StudOTT: React.FC = () => {
                   </span>
                 </div>
                 
-                <h1 className="text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-black text-white leading-[1.05] tracking-tight mb-6 drop-shadow-2xl">
+                <h1 className="text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-black text-[#14102b] leading-[1.05] tracking-tight mb-6">
                   {heroVideo.title}
                 </h1>
                 
-                <p className="text-sm sm:text-lg text-gray-300 mb-8 max-w-lg leading-relaxed font-medium drop-shadow-md">
+                <p className="text-sm sm:text-lg text-[#5b5675] mb-8 max-w-lg leading-relaxed font-medium">
                   {heroVideo.subtitle}
                 </p>
                 
                 <div className="flex flex-wrap items-center gap-3 mb-10">
                   {heroVideo.tags?.map(tag => (
-                    <span key={tag} className="px-3 py-1.5 bg-white/5 border border-white/10 text-gray-300 text-[11px] uppercase tracking-wider font-bold rounded-lg">{tag}</span>
+                    <span key={tag} className="px-3 py-1.5 bg-white border border-[#e8e3f5] text-slate-600 text-[11px] uppercase tracking-wider font-bold rounded-lg">{tag}</span>
                   ))}
-                  <span className="px-3 py-1.5 bg-white/5 border border-[#6C2BFF]/30 text-[#A88CFF] text-[11px] uppercase tracking-wider font-bold rounded-lg">{heroVideo.duration}</span>
+                  <span className="px-3 py-1.5 bg-[#f6f3ff] border border-[#6C2BFF]/30 text-[#6C2BFF] text-[11px] uppercase tracking-wider font-bold rounded-lg">{heroVideo.duration}</span>
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
                   <button 
                     onClick={() => handleVideoOpen(heroVideo, heroVideo.title || '', heroVideo.subtitle || '')}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-10 py-4 bg-white text-black rounded-xl font-black hover:bg-gray-200 transition-all hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,255,255,0.25)]"
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-10 py-4 bg-[#6C2BFF] text-white rounded-xl font-black hover:bg-[#5a1ee6] transition-all hover:scale-105 active:scale-95 shadow-[0_8px_24px_rgba(108,43,255,0.3)]"
                   >
-                    <Play className="w-5 h-5 fill-black" />
+                    <Play className="w-5 h-5 fill-white" />
                     <span className="tracking-widest text-sm uppercase">Watch Now</span>
                   </button>
                   <button 
                     onClick={() => handleToggleWatchlist(heroVideo)}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-white/5 backdrop-blur-md text-white rounded-xl font-bold hover:bg-white/10 transition-all border border-white/10 hover:border-[#6C2BFF]/50 hover:scale-105 active:scale-95 group"
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-4 bg-white backdrop-blur-md text-[#14102b] rounded-xl font-bold hover:bg-[#f6f3ff] transition-all border border-[#e8e3f5] hover:border-[#6C2BFF]/50 hover:scale-105 active:scale-95 group"
                   >
                     {savedVideos.some(v => v.url === heroVideo.url) ? (
                       <>
-                        <X className="w-5 h-5 text-emerald-400 group-hover:text-emerald-500 transition-colors" />
-                        <span className="tracking-widest text-sm uppercase text-emerald-400 group-hover:text-emerald-500 transition-colors">Saved</span>
+                        <X className="w-5 h-5 text-emerald-600 group-hover:text-emerald-700 transition-colors" />
+                        <span className="tracking-widest text-sm uppercase text-emerald-600 group-hover:text-emerald-700 transition-colors">Saved</span>
                       </>
                     ) : (
                       <>
-                        <Plus className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
-                        <span className="tracking-widest text-sm uppercase text-gray-300 group-hover:text-white transition-colors">Save List</span>
+                        <Plus className="w-5 h-5 text-slate-500 group-hover:text-[#6C2BFF] transition-colors" />
+                        <span className="tracking-widest text-sm uppercase text-slate-700 group-hover:text-[#6C2BFF] transition-colors">Save List</span>
                       </>
                     )}
                   </button>
@@ -875,7 +875,7 @@ const StudOTT: React.FC = () => {
               >
                 <div className="perspective-1000 w-full h-full">
                   <div 
-                    className="relative w-full aspect-video sm:aspect-[16/10] lg:aspect-[16/9] rounded-[2rem] overflow-hidden shadow-[0_20px_80px_rgba(108,43,255,0.25)] border border-white/10 group cursor-pointer transform-gpu hover:rotate-y-[-2deg] hover:rotate-x-[2deg] transition-all duration-700 bg-[#0A0A0F]" 
+                    className="relative w-full aspect-video sm:aspect-[16/10] lg:aspect-[16/9] rounded-[2rem] overflow-hidden shadow-[0_20px_60px_rgba(108,43,255,0.18)] border border-[#e8e3f5] group cursor-pointer transform-gpu hover:rotate-y-[-2deg] hover:rotate-x-[2deg] transition-all duration-700 bg-[#0A0A0F]" 
                     onClick={() => handleVideoOpen(heroVideo, heroVideo.title || '', heroVideo.subtitle || '')}
                   >
                     <img 
@@ -922,7 +922,7 @@ const StudOTT: React.FC = () => {
                   className="w-full relative group/row"
                 >
                   <div className="flex items-center justify-between mb-4 lg:mb-5">
-                    <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight flex items-center gap-2 group-hover/row:text-[#EC4899] transition-colors">
+                    <h2 className="text-xl md:text-2xl font-bold text-[#14102b] tracking-tight flex items-center gap-2 group-hover/row:text-[#EC4899] transition-colors">
                       <svg className="w-6 h-6 md:w-7 md:h-7 fill-[#EC4899]" viewBox="0 0 24 24"><path d="M10 14.65v-5.3L15 12l-5 2.65zm7.77-4.27c-.42-.18-.68-.32-.68-.32l1.61-.74c2.25-1.04 3.23-3.7 2.2-5.94-1.04-2.25-3.7-3.23-5.94-2.2l-9.84 4.54c-1.84.85-2.73 2.92-2.12 4.86.37 1.15 1.19 2.05 2.25 2.54.42.18.68.32.68.32l-1.61.74c-2.25 1.04-3.23 3.7-2.2 5.94 1.04 2.25 3.7 3.23 5.94 2.2l9.84-4.54c1.84-.85 2.73-2.92 2.12-4.86-.37-1.15-1.19-2.05-2.25-2.54z"/></svg>
                       Bite-Sized Learning
                     </h2>
@@ -932,7 +932,7 @@ const StudOTT: React.FC = () => {
                       onClick={() => scrollRow('shorts', 'left')}
                       className="absolute left-0 sm:-left-2 top-[45%] -translate-y-[50%] z-30 opacity-0 group-hover/scroll:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none group-hover/scroll:pointer-events-auto"
                     >
-                      <div className="w-10 h-24 sm:w-12 sm:h-32 bg-[#141414]/95 backdrop-blur-md rounded-xl flex items-center justify-center border border-[#EC4899]/30 hover:bg-[#EC4899]/20 hover:scale-105 transition-all shadow-2xl">
+                      <div className="w-10 h-24 sm:w-12 sm:h-32 bg-white/95 backdrop-blur-md rounded-xl flex items-center justify-center border border-[#EC4899]/30 hover:bg-[#EC4899]/10 hover:scale-105 transition-all shadow-lg">
                         <ChevronRight className="w-8 h-8 text-[#EC4899] rotate-180 opacity-90 hover:opacity-100" />
                       </div>
                     </button>
@@ -952,7 +952,7 @@ const StudOTT: React.FC = () => {
                       onClick={() => scrollRow('shorts', 'right')}
                       className="absolute right-0 sm:right-2 top-[45%] -translate-y-[50%] z-30 opacity-0 group-hover/scroll:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none group-hover/scroll:pointer-events-auto"
                     >
-                      <div className="w-10 h-24 sm:w-12 sm:h-32 bg-[#141414]/95 backdrop-blur-md rounded-xl flex items-center justify-center border border-[#EC4899]/30 hover:bg-[#EC4899]/20 hover:scale-105 transition-all shadow-2xl">
+                      <div className="w-10 h-24 sm:w-12 sm:h-32 bg-white/95 backdrop-blur-md rounded-xl flex items-center justify-center border border-[#EC4899]/30 hover:bg-[#EC4899]/10 hover:scale-105 transition-all shadow-lg">
                         <ChevronRight className="w-8 h-8 text-[#EC4899] opacity-90 hover:opacity-100" />
                       </div>
                     </button>
@@ -975,10 +975,10 @@ const StudOTT: React.FC = () => {
                   <div className="flex items-center justify-between mb-4 lg:mb-5">
                     <h2 
                       onClick={() => setActiveMenu(key)}
-                      className="text-xl md:text-2xl font-bold text-white tracking-tight flex items-center gap-2 cursor-pointer group-hover/row:text-[#A88CFF] transition-colors"
+                      className="text-xl md:text-2xl font-bold text-[#14102b] tracking-tight flex items-center gap-2 cursor-pointer group-hover/row:text-[#6C2BFF] transition-colors"
                     >
                       {row.title}
-                      <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-[#A88CFF] opacity-0 -ml-2 group-hover/row:opacity-100 group-hover/row:translate-x-1 transition-all duration-300" />
+                      <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-[#6C2BFF] opacity-0 -ml-2 group-hover/row:opacity-100 group-hover/row:translate-x-1 transition-all duration-300" />
                     </h2>
                   </div>
                   <div className="relative group/scroll">
@@ -986,8 +986,8 @@ const StudOTT: React.FC = () => {
                       onClick={() => scrollRow(key, 'left')}
                       className="absolute left-0 sm:-left-2 top-[40%] -translate-y-[50%] z-30 opacity-0 group-hover/scroll:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none group-hover/scroll:pointer-events-auto"
                     >
-                      <div className="w-10 h-24 sm:w-12 sm:h-32 bg-[#141414]/95 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/10 hover:bg-white/10 hover:scale-105 transition-all shadow-2xl">
-                        <ChevronRight className="w-8 h-8 text-white rotate-180 opacity-70 hover:opacity-100" />
+                      <div className="w-10 h-24 sm:w-12 sm:h-32 bg-white/95 backdrop-blur-md rounded-xl flex items-center justify-center border border-[#e8e3f5] hover:bg-[#f6f3ff] hover:scale-105 transition-all shadow-lg">
+                        <ChevronRight className="w-8 h-8 text-[#14102b] rotate-180 opacity-70 hover:opacity-100" />
                       </div>
                     </button>
 
@@ -1018,8 +1018,8 @@ const StudOTT: React.FC = () => {
                       onClick={() => scrollRow(key, 'right')}
                       className="absolute right-0 sm:right-2 top-[40%] -translate-y-[50%] z-30 opacity-0 group-hover/scroll:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none group-hover/scroll:pointer-events-auto"
                     >
-                      <div className="w-10 h-24 sm:w-12 sm:h-32 bg-[#141414]/95 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/10 hover:bg-white/10 hover:scale-105 transition-all shadow-2xl">
-                        <ChevronRight className="w-8 h-8 text-white opacity-70 hover:opacity-100" />
+                      <div className="w-10 h-24 sm:w-12 sm:h-32 bg-white/95 backdrop-blur-md rounded-xl flex items-center justify-center border border-[#e8e3f5] hover:bg-[#f6f3ff] hover:scale-105 transition-all shadow-lg">
+                        <ChevronRight className="w-8 h-8 text-[#14102b] opacity-70 hover:opacity-100" />
                       </div>
                     </button>
                   </div>
@@ -1036,8 +1036,8 @@ const StudOTT: React.FC = () => {
                   className="w-full relative group/row mb-16"
                 >
                   <div className="flex items-center justify-between mb-4 lg:mb-5">
-                    <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight flex items-center gap-2 group-hover/row:text-[#A88CFF] transition-colors">
-                      <Plus className="w-5 h-5 md:w-6 md:h-6 text-[#A88CFF]" />
+                    <h2 className="text-xl md:text-2xl font-bold text-[#14102b] tracking-tight flex items-center gap-2 group-hover/row:text-[#6C2BFF] transition-colors">
+                      <Plus className="w-5 h-5 md:w-6 md:h-6 text-[#6C2BFF]" />
                       My Saved List
                     </h2>
                   </div>
@@ -1067,8 +1067,8 @@ const StudOTT: React.FC = () => {
                   className="w-full relative group/row"
                 >
                   <div className="flex items-center justify-between mb-4 lg:mb-5">
-                    <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight flex items-center gap-2 group-hover/row:text-[#A88CFF] transition-colors">
-                      <History className="w-5 h-5 md:w-6 md:h-6 text-[#A88CFF]" />
+                    <h2 className="text-xl md:text-2xl font-bold text-[#14102b] tracking-tight flex items-center gap-2 group-hover/row:text-[#6C2BFF] transition-colors">
+                      <History className="w-5 h-5 md:w-6 md:h-6 text-[#6C2BFF]" />
                       Continue Watching
                     </h2>
                   </div>
@@ -1077,8 +1077,8 @@ const StudOTT: React.FC = () => {
                       onClick={() => scrollRow('continue-watching', 'left')}
                       className="absolute left-0 sm:-left-2 top-[40%] -translate-y-[50%] z-30 opacity-0 group-hover/scroll:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none group-hover/scroll:pointer-events-auto"
                     >
-                      <div className="w-10 h-24 sm:w-12 sm:h-32 bg-[#141414]/95 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/10 hover:bg-white/10 hover:scale-105 transition-all shadow-2xl">
-                        <ChevronRight className="w-8 h-8 text-white rotate-180 opacity-70 hover:opacity-100" />
+                      <div className="w-10 h-24 sm:w-12 sm:h-32 bg-white/95 backdrop-blur-md rounded-xl flex items-center justify-center border border-[#e8e3f5] hover:bg-[#f6f3ff] hover:scale-105 transition-all shadow-lg">
+                        <ChevronRight className="w-8 h-8 text-[#14102b] rotate-180 opacity-70 hover:opacity-100" />
                       </div>
                     </button>
 
@@ -1097,8 +1097,8 @@ const StudOTT: React.FC = () => {
                       onClick={() => scrollRow('continue-watching', 'right')}
                       className="absolute right-0 sm:right-2 top-[40%] -translate-y-[50%] z-30 opacity-0 group-hover/scroll:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none group-hover/scroll:pointer-events-auto"
                     >
-                      <div className="w-10 h-24 sm:w-12 sm:h-32 bg-[#141414]/95 backdrop-blur-md rounded-xl flex items-center justify-center border border-white/10 hover:bg-white/10 hover:scale-105 transition-all shadow-2xl">
-                        <ChevronRight className="w-8 h-8 text-white opacity-70 hover:opacity-100" />
+                      <div className="w-10 h-24 sm:w-12 sm:h-32 bg-white/95 backdrop-blur-md rounded-xl flex items-center justify-center border border-[#e8e3f5] hover:bg-[#f6f3ff] hover:scale-105 transition-all shadow-lg">
+                        <ChevronRight className="w-8 h-8 text-[#14102b] opacity-70 hover:opacity-100" />
                       </div>
                     </button>
                   </div>
@@ -1106,11 +1106,11 @@ const StudOTT: React.FC = () => {
               ) : (
                 <div className="w-full relative py-2 mb-8">
                   <div className="flex items-center gap-2 mb-4">
-                    <History className="w-5 h-5 md:w-6 md:h-6 text-gray-500" />
-                    <h2 className="text-xl md:text-2xl font-bold text-gray-500 tracking-tight">Continue Watching</h2>
+                    <History className="w-5 h-5 md:w-6 md:h-6 text-slate-400" />
+                    <h2 className="text-xl md:text-2xl font-bold text-slate-400 tracking-tight">Continue Watching</h2>
                   </div>
-                  <div className="w-full bg-[#141414]/40 border border-white/5 rounded-2xl p-6 sm:p-8 flex items-center justify-center text-center">
-                    <p className="text-gray-400 font-medium">Start exploring content to build your watch history.</p>
+                  <div className="w-full bg-white border border-[#e8e3f5] shadow-sm rounded-2xl p-6 sm:p-8 flex items-center justify-center text-center">
+                    <p className="text-slate-500 font-medium">Start exploring content to build your watch history.</p>
                   </div>
                 </div>
               )}
@@ -1124,10 +1124,10 @@ const StudOTT: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               className="mb-10 lg:mb-14"
             >
-              <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight mb-4 drop-shadow-2xl flex items-center gap-4">
+              <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-[#14102b] tracking-tight mb-4 flex items-center gap-4">
                 {activeMenu === 'history' ? 'History' : categories[activeMenu]?.title}
               </h1>
-              <p className="text-gray-400 text-lg max-w-2xl font-medium">
+              <p className="text-slate-500 text-lg max-w-2xl font-medium">
                 {activeMenu === 'history' ? 'Your recently watched content.' : categories[activeMenu]?.desc}
               </p>
             </motion.div>
@@ -1147,10 +1147,10 @@ const StudOTT: React.FC = () => {
                     </motion.div>
                   ))
                 ) : (
-                  <div className="col-span-full w-full bg-[#141414]/40 border border-white/5 rounded-2xl p-12 flex flex-col items-center justify-center text-center">
-                    <History className="w-12 h-12 text-gray-500 mb-4" />
-                    <h3 className="text-xl font-bold text-white mb-2">No Watch History</h3>
-                    <p className="text-gray-400">Start exploring content to build your watch history.</p>
+                  <div className="col-span-full w-full bg-white border border-[#e8e3f5] shadow-sm rounded-2xl p-12 flex flex-col items-center justify-center text-center">
+                    <History className="w-12 h-12 text-slate-400 mb-4" />
+                    <h3 className="text-xl font-bold text-[#14102b] mb-2">No Watch History</h3>
+                    <p className="text-slate-500">Start exploring content to build your watch history.</p>
                   </div>
                 )}
               </div>

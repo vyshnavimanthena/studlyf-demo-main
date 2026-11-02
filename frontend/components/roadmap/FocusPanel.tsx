@@ -74,7 +74,7 @@ const FocusPanel: React.FC<FocusPanelProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 z-[200] bg-[#0A0514]/60 backdrop-blur-md transition-opacity"
+            className="fixed inset-0 z-[200] bg-[#14102b]/30 backdrop-blur-sm transition-opacity"
           />
 
           {/* Slide-out Panel / Full Page View on Mobile */}

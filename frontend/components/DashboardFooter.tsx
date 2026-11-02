@@ -70,10 +70,10 @@ const DashboardFooter: React.FC<DashboardFooterProps> = ({ variant = 'student' }
     const links = isInstitution ? institutionLinks : studentLinks;
 
     return (
-        <section className="relative w-full bg-[#0B0B0F] py-12 px-4 md:px-10 font-poppins font-medium overflow-hidden">
+        <section className="relative w-full bg-[#fbfaff] border-t border-[#e8e3f5] py-12 px-4 md:px-10 font-poppins font-medium overflow-hidden">
             {/* Animated Purple Gradient Overlay */}
             <motion.div
-                className="absolute inset-0 pointer-events-none opacity-40"
+                className="absolute inset-0 pointer-events-none opacity-[0.07]"
                 animate={{
                     background: [
                         "radial-gradient(circle at 20% 20%, #6C3BFF 0%, transparent 60%)",
@@ -118,21 +118,21 @@ const DashboardFooter: React.FC<DashboardFooterProps> = ({ variant = 'student' }
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: 0.15 }}
-                    className="relative backdrop-blur-3xl bg-white/[0.04] border border-white/10 rounded-[2.5rem] p-8 md:p-10 shadow-[0_30px_100px_rgba(0,0,0,0.5),0_0_50px_rgba(108,59,255,0.1)] overflow-hidden"
+                    className="relative backdrop-blur-3xl bg-white border border-[#e8e3f5] rounded-[2.5rem] p-8 md:p-10 shadow-[0_10px_40px_rgba(20,16,43,0.06)] overflow-hidden"
                 >
                     {/* Glowing Top Border Line */}
                     <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#9D7CFF]/50 to-transparent" />
 
                     <div className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-14 relative z-10">
                         <div className="flex flex-col items-center">
-                            <div className="w-32 h-32 md:w-40 md:h-40 bg-white/[0.04] rounded-3xl border border-white/10 flex items-center justify-center overflow-hidden shadow-2xl group">
+                            <div className="w-32 h-32 md:w-40 md:h-40 bg-[#f6f3ff] rounded-3xl border border-[#e8e3f5] flex items-center justify-center overflow-hidden shadow-sm group">
                                 <img
                                     src="/images-optimized/Eshwar.webp"
                                     alt="Founder"
                                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                 />
                             </div>
-                            <span className="mt-3 text-[10px] font-black text-[#CFCFEA] uppercase tracking-widest font-poppins opacity-60">
+                            <span className="mt-3 text-[10px] font-black text-[#5b5675] uppercase tracking-widest font-poppins">
                                 Connect with founder
                             </span>
                         </div>
@@ -140,7 +140,7 @@ const DashboardFooter: React.FC<DashboardFooterProps> = ({ variant = 'student' }
                         {/* RIGHT SECTION: CONTACT US */}
                         <div className="flex-1 w-full lg:max-w-lg">
                             <div className="flex flex-col items-center lg:items-end text-center lg:text-right space-y-6">
-                                <h3 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter font-poppins drop-shadow-md">
+                                <h3 className="text-3xl md:text-5xl font-black text-[#14102b] uppercase tracking-tighter font-poppins">
                                     CONTACT US
                                 </h3>
 
@@ -173,10 +173,10 @@ const DashboardFooter: React.FC<DashboardFooterProps> = ({ variant = 'student' }
                                         href="mailto: saieshwarerelli10@gmail.com"
                                         className="flex flex-col items-center gap-2 group"
                                     >
-                                        <div className="w-14 h-14 rounded-full bg-white/[0.04] border border-white/10 shadow-xl flex items-center justify-center text-white group-hover:bg-[#6C3BFF] group-hover:text-white group-hover:border-[#6C3BFF] transition-all duration-300">
+                                        <div className="w-14 h-14 rounded-full bg-white border border-[#e8e3f5] shadow-sm flex items-center justify-center text-[#6C3BFF] group-hover:bg-[#6C3BFF] group-hover:text-white group-hover:border-[#6C3BFF] transition-all duration-300">
                                             <Mail size={24} />
                                         </div>
-                                        <span className="text-[10px] font-bold text-[#CFCFEA] uppercase tracking-widest font-poppins opacity-50">email</span>
+                                        <span className="text-[10px] font-bold text-[#5b5675] uppercase tracking-widest font-poppins">email</span>
                                     </motion.a>
 
                                     {/* WhatsApp Icon */}
@@ -193,10 +193,10 @@ const DashboardFooter: React.FC<DashboardFooterProps> = ({ variant = 'student' }
                                         href="https://whatsapp.com/channel/0029VbCHsjAHVvTRqLfOau24/113"
                                         className="flex flex-col items-center gap-2 group"
                                     >
-                                        <div className="w-14 h-14 rounded-full bg-white/[0.04] border border-white/10 shadow-xl flex items-center justify-center text-[#25D366] group-hover:bg-[#25D366] group-hover:text-white group-hover:border-[#25D366] transition-all duration-300">
+                                        <div className="w-14 h-14 rounded-full bg-white border border-[#e8e3f5] shadow-sm flex items-center justify-center text-[#25D366] group-hover:bg-[#25D366] group-hover:text-white group-hover:border-[#25D366] transition-all duration-300">
                                             <MessageCircle size={24} />
                                         </div>
-                                        <span className="text-[10px] font-bold text-[#CFCFEA] uppercase tracking-widest font-poppins opacity-50">whatsapp</span>
+                                        <span className="text-[10px] font-bold text-[#5b5675] uppercase tracking-widest font-poppins">whatsapp</span>
                                     </motion.a>
 
                                     {/* Instagram Icon */}
@@ -215,14 +215,14 @@ const DashboardFooter: React.FC<DashboardFooterProps> = ({ variant = 'student' }
                                         rel="noopener noreferrer"
                                         className="flex flex-col items-center gap-2 group"
                                     >
-                                        <div className="w-14 h-14 rounded-full bg-white/[0.04] border border-white/10 shadow-xl flex items-center justify-center text-[#E4405F] group-hover:bg-[#E4405F] group-hover:text-white group-hover:border-[#E4405F] transition-all duration-300">
+                                        <div className="w-14 h-14 rounded-full bg-white border border-[#e8e3f5] shadow-sm flex items-center justify-center text-[#E4405F] group-hover:bg-[#E4405F] group-hover:text-white group-hover:border-[#E4405F] transition-all duration-300">
                                             <Instagram size={24} />
                                         </div>
-                                        <span className="text-[10px] font-bold text-[#CFCFEA] uppercase tracking-widest font-poppins opacity-50">instagram</span>
+                                        <span className="text-[10px] font-bold text-[#5b5675] uppercase tracking-widest font-poppins">instagram</span>
                                     </motion.a>
                                 </motion.div>
 
-                                <p className="text-[#CFCFEA]/60 font-black uppercase tracking-wider text-[9px] md:text-[10px] font-poppins lg:mr-8">
+                                <p className="text-[#5b5675] font-black uppercase tracking-wider text-[9px] md:text-[10px] font-poppins lg:mr-8">
                                     Contact us anytime, we are here to help.
                                 </p>
                             </div>
@@ -235,13 +235,13 @@ const DashboardFooter: React.FC<DashboardFooterProps> = ({ variant = 'student' }
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    className="grid grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-10 pt-10 mt-10 border-t border-white/[0.08]"
+                    className="grid grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-10 pt-10 mt-10 border-t border-[#e8e3f5]"
                 >
                     {/* Column 1: Logo & Slogan */}
                     <div className="col-span-2 lg:col-span-1 flex flex-col items-start space-y-6">
                         <Link to="/" className="relative group/logo block">
                             <div className="absolute inset-0 bg-[#7C3AED]/20 blur-2xl rounded-3xl opacity-50 group-hover/logo:opacity-100 transition-opacity duration-500" />
-                            <div className="relative bg-white px-6 py-3 rounded-2xl shadow-2xl transition-all duration-500 hover:scale-[1.03] w-fit overflow-hidden">
+                            <div className="relative bg-white px-6 py-3 rounded-2xl border border-[#e8e3f5] shadow-sm transition-all duration-500 hover:scale-[1.03] w-fit overflow-hidden">
                                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(0,0,0,0.02)_0%,_transparent_75%)]" />
                                 <img 
                                     src="/images-optimized/studlyf.webp" 
@@ -250,7 +250,7 @@ const DashboardFooter: React.FC<DashboardFooterProps> = ({ variant = 'student' }
                                 />
                             </div>
                         </Link>
-                        <p className="text-[#CFCFEA]/80 text-sm md:text-base font-poppins leading-relaxed font-semibold opacity-60">
+                        <p className="text-[#5b5675] text-sm md:text-base font-poppins leading-relaxed font-semibold">
                             {isInstitution
                                 ? 'Empowering institutions with AI-driven tools to manage events, participants, and certifications seamlessly.'
                                 : 'Empowering the next generation of engineers with AI-driven career tools and resources.'
@@ -262,11 +262,11 @@ const DashboardFooter: React.FC<DashboardFooterProps> = ({ variant = 'student' }
                     <div className="flex flex-col space-y-5 lg:ml-8">
                         {links.col2.map((item) => (
                             item.name === 'Contact Us' || item.name === 'Support' ? (
-                                <a key={item.name} href={item.to} className="text-white/80 hover:text-[#9D7CFF] transition-all duration-200 uppercase tracking-wider text-sm md:text-base font-medium font-poppins hover:translate-x-1 w-fit">
+                                <a key={item.name} href={item.to} className="text-[#5b5675] hover:text-[#6C3BFF] transition-all duration-200 uppercase tracking-wider text-sm md:text-base font-medium font-poppins hover:translate-x-1 w-fit">
                                     {item.name}
                                 </a>
                             ) : (
-                                <Link key={item.name} to={item.to} className="text-white/80 hover:text-[#9D7CFF] transition-all duration-200 uppercase tracking-wider text-sm md:text-base font-medium font-poppins hover:translate-x-1 w-fit">
+                                <Link key={item.name} to={item.to} className="text-[#5b5675] hover:text-[#6C3BFF] transition-all duration-200 uppercase tracking-wider text-sm md:text-base font-medium font-poppins hover:translate-x-1 w-fit">
                                     {item.name}
                                 </Link>
                             )
@@ -277,11 +277,11 @@ const DashboardFooter: React.FC<DashboardFooterProps> = ({ variant = 'student' }
                     <div className="flex flex-col space-y-5">
                         {links.col3.map((item) => (
                             item.name === 'Contact Us' || item.name === 'Support' ? (
-                                <a key={item.name} href={item.to} className="text-white/80 hover:text-[#9D7CFF] transition-all duration-200 uppercase tracking-wider text-sm md:text-base font-medium font-poppins hover:translate-x-1 w-fit">
+                                <a key={item.name} href={item.to} className="text-[#5b5675] hover:text-[#6C3BFF] transition-all duration-200 uppercase tracking-wider text-sm md:text-base font-medium font-poppins hover:translate-x-1 w-fit">
                                     {item.name}
                                 </a>
                             ) : (
-                                <Link key={item.name} to={item.to} className="text-white/80 hover:text-[#9D7CFF] transition-all duration-200 uppercase tracking-wider text-sm md:text-base font-medium font-poppins hover:translate-x-1 w-fit">
+                                <Link key={item.name} to={item.to} className="text-[#5b5675] hover:text-[#6C3BFF] transition-all duration-200 uppercase tracking-wider text-sm md:text-base font-medium font-poppins hover:translate-x-1 w-fit">
                                     {item.name}
                                 </Link>
                             )
@@ -292,11 +292,11 @@ const DashboardFooter: React.FC<DashboardFooterProps> = ({ variant = 'student' }
                     <div className="flex flex-col space-y-5">
                         {links.col4.map((item) => (
                             item.name === 'Contact Us' || item.name === 'Support' ? (
-                                <a key={item.name} href={item.to} className="text-white/80 hover:text-[#9D7CFF] transition-all duration-200 uppercase tracking-wider text-sm md:text-base font-medium font-poppins hover:translate-x-1 w-fit">
+                                <a key={item.name} href={item.to} className="text-[#5b5675] hover:text-[#6C3BFF] transition-all duration-200 uppercase tracking-wider text-sm md:text-base font-medium font-poppins hover:translate-x-1 w-fit">
                                     {item.name}
                                 </a>
                             ) : (
-                                <Link key={item.name} to={item.to} className="text-white/80 hover:text-[#9D7CFF] transition-all duration-200 uppercase tracking-wider text-sm md:text-base font-medium font-poppins hover:translate-x-1 w-fit">
+                                <Link key={item.name} to={item.to} className="text-[#5b5675] hover:text-[#6C3BFF] transition-all duration-200 uppercase tracking-wider text-sm md:text-base font-medium font-poppins hover:translate-x-1 w-fit">
                                     {item.name}
                                 </Link>
                             )
@@ -307,11 +307,11 @@ const DashboardFooter: React.FC<DashboardFooterProps> = ({ variant = 'student' }
                     <div className="flex flex-col space-y-5">
                         {links.col5.map((item) => (
                             item.name === 'Contact Us' || item.name === 'Support' ? (
-                                <a key={item.name} href={item.to} className="text-white/80 hover:text-[#9D7CFF] transition-all duration-200 uppercase tracking-wider text-sm md:text-base font-medium font-poppins hover:translate-x-1 w-fit">
+                                <a key={item.name} href={item.to} className="text-[#5b5675] hover:text-[#6C3BFF] transition-all duration-200 uppercase tracking-wider text-sm md:text-base font-medium font-poppins hover:translate-x-1 w-fit">
                                     {item.name}
                                 </a>
                             ) : (
-                                <Link key={item.name} to={item.to} className="text-white/80 hover:text-[#9D7CFF] transition-all duration-200 uppercase tracking-wider text-sm md:text-base font-medium font-poppins hover:translate-x-1 w-fit">
+                                <Link key={item.name} to={item.to} className="text-[#5b5675] hover:text-[#6C3BFF] transition-all duration-200 uppercase tracking-wider text-sm md:text-base font-medium font-poppins hover:translate-x-1 w-fit">
                                     {item.name}
                                 </Link>
                             )
@@ -320,7 +320,7 @@ const DashboardFooter: React.FC<DashboardFooterProps> = ({ variant = 'student' }
                 </motion.div>
 
                 <div className="text-center pt-16 pb-8">
-                    <p className="text-[11px] md:text-[12px] text-[#CFCFEA]/40 font-poppins font-bold uppercase tracking-[0.3em]">
+                    <p className="text-[11px] md:text-[12px] text-slate-400 font-poppins font-bold uppercase tracking-[0.3em]">
                         &copy; {new Date().getFullYear()} Studlyf • All Rights Reserved
                     </p>
                 </div>

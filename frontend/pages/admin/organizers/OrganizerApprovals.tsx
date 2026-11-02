@@ -123,7 +123,7 @@ const OrganizerApprovals: React.FC = () => {
     };
 
     if (role && !['admin', 'super_admin'].includes(role)) {
-        return <div className="py-24 text-center text-sm text-zinc-400">Only STUDLYF admins can review organizer accounts.</div>;
+        return <div className="py-24 text-center text-sm text-slate-600">Only STUDLYF admins can review organizer accounts.</div>;
     }
 
     const counts = data?.counts;
@@ -169,13 +169,13 @@ const OrganizerApprovals: React.FC = () => {
             </div>
 
             {notice && (
-                <div className="flex items-center justify-between rounded-ds-control border border-emerald-500/20 bg-emerald-500/10 px-4 py-2.5 text-sm text-emerald-200">
+                <div className="flex items-center justify-between rounded-ds-control border border-emerald-500/20 bg-emerald-500/10 px-4 py-2.5 text-sm text-emerald-600">
                     {notice}
-                    <button onClick={() => setNotice(null)} className="text-emerald-300/70 hover:text-emerald-200" aria-label="Dismiss"><X className="size-4" /></button>
+                    <button onClick={() => setNotice(null)} className="text-emerald-600 hover:text-emerald-200" aria-label="Dismiss"><X className="size-4" /></button>
                 </div>
             )}
             {error && (
-                <div className="rounded-ds-control border border-red-500/20 bg-red-500/10 px-4 py-2.5 text-sm text-red-200">{error}</div>
+                <div className="rounded-ds-control border border-red-500/20 bg-red-500/10 px-4 py-2.5 text-sm text-red-600">{error}</div>
             )}
 
             <div className="overflow-hidden rounded-ds-card border border-ds-border bg-ds-card">
@@ -203,7 +203,7 @@ const OrganizerApprovals: React.FC = () => {
                                 </div>
                             </td></tr>
                         ) : data.items.map((o) => (
-                            <tr key={o.user_id} className="border-b border-ds-border last:border-0 hover:bg-white/[0.02]">
+                            <tr key={o.user_id} className="border-b border-ds-border last:border-0 hover:bg-[#f6f3ff]">
                                 <td className="px-5 py-3.5">
                                     <div className="font-medium">{o.full_name || '—'}</div>
                                     <div className="text-[13px] text-ds-muted-foreground">{o.email}</div>

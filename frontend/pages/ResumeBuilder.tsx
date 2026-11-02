@@ -1282,20 +1282,20 @@ export default function ResumeBuilder() {
                 </section>
 
                 {/* ── FINAL CTA ── */}
-                <section className="py-16 sm:py-24 bg-gray-950 relative overflow-hidden">
-                    <div className="absolute inset-0 grid-bg opacity-20" />
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-96 w-96 bg-violet-800/20 rounded-full blur-3xl" />
+                <section className="py-16 sm:py-24 bg-[#f6f3ff] border-t border-[#e8e3f5] relative overflow-hidden">
+                    <div className="absolute inset-0 grid-bg opacity-40" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-96 w-96 bg-violet-300/20 rounded-full blur-3xl" />
                     <div className="max-w-2xl mx-auto px-3 sm:px-6 text-center relative z-10">
                         <motion.h2
                             initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                            className="text-2xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight mb-5"
+                            className="text-2xl sm:text-4xl md:text-5xl font-bold text-gray-950 tracking-tight mb-5"
                         >
                             Your next opportunity<br />starts here.
                         </motion.h2>
                         <motion.p
                             initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
                             transition={{ delay: 0.1 }}
-                            className="text-gray-400 text-lg mb-10"
+                            className="text-gray-500 text-lg mb-10"
                         >
                             Free to use. No credit card required. Ready in under 5 minutes.
                         </motion.p>

@@ -133,13 +133,13 @@ const DashboardOverview: React.FC = () => {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-white tracking-tight">System Overview</h1>
-                    <p className="text-white/50 text-sm mt-1">Monitor the entire StudLyf ecosystem in real-time.</p>
+                    <h1 className="text-3xl font-bold text-[#14102b] tracking-tight">System Overview</h1>
+                    <p className="text-slate-500 text-sm mt-1">Monitor the entire StudLyf ecosystem in real-time.</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <button
                         onClick={handleDownloadReport}
-                        className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-bold text-white transition-all flex items-center gap-2 active:scale-95"
+                        className="px-4 py-2 bg-white hover:bg-[#f6f3ff] border border-[#e8e3f5] rounded-xl text-xs font-bold text-[#14102b] transition-all flex items-center gap-2 active:scale-95"
                     >
                         <Download size={14} /> Download Report
                     </button>
@@ -158,10 +158,10 @@ const DashboardOverview: React.FC = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: i * 0.1 }}
                         onClick={() => navigate(kpi.path)}
-                        className="bg-white/5 border border-white/10 p-4 sm:p-6 rounded-2xl hover:bg-white/[0.07] transition-all group cursor-pointer active:scale-[0.97]"
+                        className="bg-white shadow-sm border border-[#e8e3f5] p-4 sm:p-6 rounded-2xl hover:bg-[#f6f3ff] transition-all group cursor-pointer active:scale-[0.97]"
                     >
                         <div className="flex items-center justify-between mb-4">
-                            <div className={`p-2 rounded-lg bg-white/5 ${kpi.color}`}>
+                            <div className={`p-2 rounded-lg bg-white ${kpi.color}`}>
                                 <kpi.icon size={20} />
                             </div>
                             <div className={`text-xs font-bold flex items-center gap-1 ${String(kpi.trend).startsWith('+') ? 'text-green-500' : 'text-red-500'
@@ -169,8 +169,8 @@ const DashboardOverview: React.FC = () => {
                                 {kpi.trend} {String(kpi.trend).startsWith('+') ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
                             </div>
                         </div>
-                        <div className="text-2xl font-bold text-white mb-1">{kpi.value}</div>
-                        <div className="text-xs text-white/40 uppercase tracking-widest font-bold">{kpi.title}</div>
+                        <div className="text-2xl font-bold text-[#14102b] mb-1">{kpi.value}</div>
+                        <div className="text-xs text-slate-500 uppercase tracking-widest font-bold">{kpi.title}</div>
                     </motion.div>
                 ))}
             </div>
@@ -178,13 +178,13 @@ const DashboardOverview: React.FC = () => {
             {/* Main Content Sections */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
                 {/* Enrollment Chart */}
-                <div className="lg:col-span-2 bg-white/5 border border-white/10 rounded-2xl p-4 sm:p-8">
+                <div className="lg:col-span-2 bg-white shadow-sm border border-[#e8e3f5] rounded-2xl p-4 sm:p-8">
                     <div className="flex items-center justify-between mb-8">
                         <div>
-                            <h3 className="text-lg font-bold text-white">Student Enrollment & Growth</h3>
-                            <p className="text-xs text-white/40 uppercase tracking-widest mt-1">Last 12 Months</p>
+                            <h3 className="text-lg font-bold text-[#14102b]">Student Enrollment & Growth</h3>
+                            <p className="text-xs text-slate-500 uppercase tracking-widest mt-1">Last 12 Months</p>
                         </div>
-                        <select className="bg-[#1A1A1A] border border-white/10 rounded-lg text-xs font-bold text-white px-3 py-1.5 outline-none">
+                        <select className="bg-white border border-[#e8e3f5] rounded-lg text-xs font-bold text-[#14102b] px-3 py-1.5 outline-none">
                             <option>2024 (Current Year)</option>
                         </select>
                     </div>
@@ -197,14 +197,14 @@ const DashboardOverview: React.FC = () => {
                                         animate={{ height: `${((data.students ?? 0) / Math.max((stats?.totalStudents ?? 1) * 1.2, 10)) * 100}%` }}
                                         className="w-full bg-gradient-to-t from-[#7C3AED]/20 to-[#7C3AED] rounded-t-lg group-hover:from-[#7C3AED]/40 group-hover:to-[#9F67FF] transition-all relative"
                                     />
-                                    <span className="text-[10px] font-bold text-white/30 uppercase">{data.month}</span>
+                                    <span className="text-[10px] font-bold text-slate-500 uppercase">{data.month}</span>
                                     <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-white text-black text-[10px] font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                                         {(data.students ?? 0).toLocaleString()}
                                     </div>
                                 </div>
                             ))
                         ) : (
-                            <div className="w-full h-full flex items-center justify-center text-white/30 text-sm">
+                            <div className="w-full h-full flex items-center justify-center text-slate-500 text-sm">
                                 No enrollment data available yet.
                             </div>
                         )}
@@ -220,10 +220,10 @@ const DashboardOverview: React.FC = () => {
             {/* Secondary Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
                 {/* Hiring Success Funnel */}
-                <div className="lg:col-span-2 bg-white/5 border border-white/10 rounded-2xl p-4 sm:p-8">
+                <div className="lg:col-span-2 bg-white shadow-sm border border-[#e8e3f5] rounded-2xl p-4 sm:p-8">
                     <div className="flex items-center justify-between mb-8">
-                        <h3 className="text-lg font-bold text-white">Hiring Success Funnel</h3>
-                        <div className="p-2 rounded-lg bg-white/5 text-purple-500">
+                        <h3 className="text-lg font-bold text-[#14102b]">Hiring Success Funnel</h3>
+                        <div className="p-2 rounded-lg bg-white text-purple-500">
                             <TrendingUp size={20} />
                         </div>
                     </div>
@@ -231,10 +231,10 @@ const DashboardOverview: React.FC = () => {
                         {hiringFunnel.map((item: any, i: number) => (
                             <div key={i} className="space-y-2">
                                 <div className="flex justify-between text-xs font-bold">
-                                    <span className="text-white/40 uppercase tracking-widest">{item.label}</span>
-                                    <span className="text-white">{(item.value ?? 0).toLocaleString()}</span>
+                                    <span className="text-slate-500 uppercase tracking-widest">{item.label}</span>
+                                    <span className="text-[#14102b]">{(item.value ?? 0).toLocaleString()}</span>
                                 </div>
-                                <div className="w-full bg-white/5 h-2 rounded-full overflow-hidden">
+                                <div className="w-full bg-white h-2 rounded-full overflow-hidden">
                                     <motion.div
                                         initial={{ width: 0 }}
                                         animate={{ width: `${((item.value ?? 0) / 1200) * 100}%` }}
@@ -248,7 +248,7 @@ const DashboardOverview: React.FC = () => {
                 </div>
 
                 {/* Course Completion Meter */}
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 sm:p-8 flex flex-col items-center justify-center text-center">
+                <div className="bg-white shadow-sm border border-[#e8e3f5] rounded-2xl p-4 sm:p-8 flex flex-col items-center justify-center text-center">
                     <div className="relative w-32 h-32 mb-6">
                         <svg className="w-full h-full -rotate-90">
                             <circle
@@ -256,7 +256,7 @@ const DashboardOverview: React.FC = () => {
                                 stroke="currentColor"
                                 strokeWidth="8"
                                 fill="transparent"
-                                className="text-white/5"
+                                className="text-slate-100"
                             />
                             <motion.circle
                                 cx="64" cy="64" r="58"
@@ -272,12 +272,12 @@ const DashboardOverview: React.FC = () => {
                             />
                         </svg>
                         <div className="absolute inset-0 flex items-center justify-center">
-                            <span className="text-3xl font-bold text-white">{stats?.courseCompletion || '84%'}</span>
+                            <span className="text-3xl font-bold text-[#14102b]">{stats?.courseCompletion || '84%'}</span>
                         </div>
                     </div>
                     <div>
-                        <h4 className="font-bold text-white uppercase tracking-widest text-xs">Course Completion</h4>
-                        <p className="text-white/30 text-[10px] mt-2">Average success across all tracks</p>
+                        <h4 className="font-bold text-[#14102b] uppercase tracking-widest text-xs">Course Completion</h4>
+                        <p className="text-slate-500 text-[10px] mt-2">Average success across all tracks</p>
                     </div>
                 </div>
 

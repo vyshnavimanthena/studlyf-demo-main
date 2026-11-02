@@ -78,7 +78,7 @@ const PublishedResults: React.FC = () => {
     };
 
     if (role && !['admin', 'super_admin'].includes(role)) {
-        return <div className="py-24 text-center text-sm text-zinc-400">Only STUDLYF admins can manage published results.</div>;
+        return <div className="py-24 text-center text-sm text-slate-600">Only STUDLYF admins can manage published results.</div>;
     }
 
     return (
@@ -90,7 +90,7 @@ const PublishedResults: React.FC = () => {
                 </p>
             </div>
 
-            {error && <div className="rounded-ds-control border border-red-500/20 bg-red-500/10 px-4 py-2.5 text-sm text-red-200">{error}</div>}
+            {error && <div className="rounded-ds-control border border-red-500/20 bg-red-500/10 px-4 py-2.5 text-sm text-red-600">{error}</div>}
 
             <div className="overflow-hidden rounded-ds-card border border-ds-border bg-ds-card">
                 <table className="w-full text-sm">
@@ -120,7 +120,7 @@ const PublishedResults: React.FC = () => {
                                 <div className="mt-1 text-[13px] text-ds-muted-foreground">Events appear here once their results are published.</div>
                             </td></tr>
                         ) : items.map((e) => (
-                            <tr key={e.id} className="border-b border-ds-border last:border-0 hover:bg-white/[0.02]">
+                            <tr key={e.id} className="border-b border-ds-border last:border-0 hover:bg-[#f6f3ff]">
                                 <td className="px-5 py-3.5 font-medium">{e.title}</td>
                                 <td className="px-3 py-3.5 text-ds-muted-foreground">{e.institution_name || '—'}</td>
                                 <td className="px-3 py-3.5 text-ds-muted-foreground tabular-nums">{formatDate(e.published_at, true)}</td>

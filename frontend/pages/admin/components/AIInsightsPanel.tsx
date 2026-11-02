@@ -48,26 +48,26 @@ const AIInsightsPanel: React.FC = () => {
         fetchInsights();
     }, [user]);
 
-    if (loading) return <div className="p-12 text-center text-white/30 text-xs font-mono animate-pulse">Scanning Neural Network...</div>;
+    if (loading) return <div className="p-12 text-center text-slate-500 text-xs font-mono animate-pulse">Scanning Neural Network...</div>;
 
     return (
-        <div className="bg-[#1A0B2E]/50 border border-[#7C3AED]/20 rounded-2xl p-6 backdrop-blur-xl relative overflow-hidden group">
+        <div className="bg-white border border-[#e8e3f5] shadow-sm rounded-2xl p-6 backdrop-blur-xl relative overflow-hidden group">
             {/* Ambient Glow */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#7C3AED]/20 blur-3xl -mr-16 -mt-16 group-hover:bg-[#7C3AED]/30 transition-all" />
 
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#7C3AED] to-[#C084FC] flex items-center justify-center shadow-lg shadow-purple-500/20">
-                        <Brain size={20} className="text-white" />
+                        <Brain size={20} className="text-[#14102b]" />
                     </div>
                     <div>
-                        <h3 className="text-lg font-bold text-white leading-tight">System Intelligence</h3>
+                        <h3 className="text-lg font-bold text-[#14102b] leading-tight">System Intelligence</h3>
                         <p className="text-[10px] font-bold text-[#7C3AED] uppercase tracking-widest mt-0.5">Real-time AI Synthesis</p>
                     </div>
                 </div>
-                <div className="flex items-center gap-1.5 px-3 py-1 bg-white/5 rounded-full border border-white/10">
+                <div className="flex items-center gap-1.5 px-3 py-1 bg-white rounded-full border border-[#e8e3f5]">
                     <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-[10px] font-bold text-white/40 uppercase">Analyzing</span>
+                    <span className="text-[10px] font-bold text-slate-500 uppercase">Analyzing</span>
                 </div>
             </div>
 
@@ -78,20 +78,20 @@ const AIInsightsPanel: React.FC = () => {
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: i * 0.1 }}
-                        className="p-4 rounded-xl bg-white/5 border border-white/5 hover:border-[#7C3AED]/30 hover:bg-white/[0.08] transition-all"
+                        className="p-4 rounded-xl bg-white border border-[#e8e3f5] hover:border-[#7C3AED]/30 hover:bg-[#f6f3ff] transition-all"
                     >
                         <div className="flex gap-4">
-                            <div className={`flex-shrink-0 mt-1 ${insight.type === 'risk' ? 'text-red-400' :
-                                insight.type === 'opportunity' ? 'text-green-400' :
-                                    insight.type === 'warning' ? 'text-yellow-400' : 'text-blue-400'
+                            <div className={`flex-shrink-0 mt-1 ${insight.type === 'risk' ? 'text-red-600' :
+                                insight.type === 'opportunity' ? 'text-green-600' :
+                                    insight.type === 'warning' ? 'text-amber-700' : 'text-blue-600'
                                 }`}>
                                 {insight.type === 'risk' ? <AlertTriangle size={18} /> :
                                     insight.type === 'opportunity' ? <Zap size={18} /> :
                                         insight.type === 'warning' ? <AlertTriangle size={18} /> : <TrendingUp size={18} />}
                             </div>
                             <div className="flex-grow">
-                                <div className="text-sm font-bold text-white mb-1">{insight.title}</div>
-                                <p className="text-xs text-white/50 leading-relaxed mb-3">{insight.description}</p>
+                                <div className="text-sm font-bold text-[#14102b] mb-1">{insight.title}</div>
+                                <p className="text-xs text-slate-500 leading-relaxed mb-3">{insight.description}</p>
                                 {insight.actionLabel && (
                                     <button className="text-[10px] font-bold text-[#7C3AED] uppercase tracking-widest hover:text-[#9F67FF] transition-colors flex items-center gap-1 group/btn">
                                         {insight.actionLabel}

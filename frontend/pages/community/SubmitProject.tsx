@@ -170,17 +170,17 @@ export default function SubmitProject() {
   };
 
   const inputClass =
-    'w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors';
-  const labelClass = 'block text-sm font-medium text-gray-300 mb-1.5';
+    'w-full bg-white border border-[#e8e3f5] rounded-lg px-4 py-3 text-sm text-[#14102b] placeholder-slate-400 focus:outline-none focus:border-purple-500 transition-colors';
+  const labelClass = 'block text-sm font-medium text-slate-700 mb-1.5';
 
   return (
-    <div className="min-h-screen bg-[#0a0a1a] text-white pt-24">
+    <div className="min-h-screen bg-[#fbfaff] text-[#14102b] pt-24">
       <div className="max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
         {/* Header */}
         <div className="flex items-center gap-4 mb-8">
           <button
             onClick={() => navigate('/community')}
-            className="p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
+            className="p-2 bg-white hover:bg-[#f0ecfa] rounded-lg transition-colors"
           >
             <ArrowLeft size={20} />
           </button>
@@ -204,7 +204,7 @@ export default function SubmitProject() {
                 className={inputClass}
                 maxLength={100}
               />
-              {errors.title && <p className="text-red-400 text-xs mt-1">{errors.title}</p>}
+              {errors.title && <p className="text-red-600 text-xs mt-1">{errors.title}</p>}
             </div>
 
             {/* Description */}
@@ -223,11 +223,11 @@ export default function SubmitProject() {
               />
               <div className="flex justify-between items-center mt-1">
                 {errors.description ? (
-                  <p className="text-red-400 text-xs">{errors.description}</p>
+                  <p className="text-red-600 text-xs">{errors.description}</p>
                 ) : (
-                  <p className="text-gray-500 text-xs">Be specific about the problem, solution, and tech stack</p>
+                  <p className="text-slate-500 text-xs">Be specific about the problem, solution, and tech stack</p>
                 )}
-                <span className={`text-xs ${description.length > 1800 ? 'text-red-400' : 'text-gray-500'}`}>
+                <span className={`text-xs ${description.length > 1800 ? 'text-red-600' : 'text-slate-500'}`}>
                   {description.length}/2000
                 </span>
               </div>
@@ -243,8 +243,8 @@ export default function SubmitProject() {
                     onClick={() => setProjectType(pt.value)}
                     className={`flex-1 px-4 py-3 rounded-lg text-sm font-medium border transition-all ${
                       projectType === pt.value
-                        ? 'bg-purple-600/20 border-purple-500/50 text-purple-300'
-                        : 'bg-white/5 border-white/10 text-gray-400 hover:bg-white/10'
+                        ? 'bg-purple-600/20 border-purple-500/50 text-purple-700'
+                        : 'bg-white border-[#e8e3f5] text-slate-600 hover:bg-[#f0ecfa]'
                     }`}
                   >
                     {pt.label}
@@ -262,7 +262,7 @@ export default function SubmitProject() {
                 className={`${inputClass} appearance-none cursor-pointer`}
               >
                 {CATEGORIES.map((cat) => (
-                  <option key={cat.value} value={cat.value} className="bg-[#0a0a1a]">
+                  <option key={cat.value} value={cat.value} className="bg-[#fbfaff]">
                     {cat.label}
                   </option>
                 ))}
@@ -276,12 +276,12 @@ export default function SubmitProject() {
                 {tags.map((tag) => (
                   <span
                     key={tag}
-                    className="flex items-center gap-1 px-3 py-1 text-sm rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20"
+                    className="flex items-center gap-1 px-3 py-1 text-sm rounded-full bg-purple-500/10 text-purple-700 border border-purple-500/20"
                   >
                     {tag}
                     <button
                       onClick={() => handleRemoveTag(tag)}
-                      className="hover:text-red-400 transition-colors"
+                      className="hover:text-red-600 transition-colors"
                     >
                       <X size={14} />
                     </button>
@@ -299,7 +299,7 @@ export default function SubmitProject() {
                 />
               )}
               {tagError && (
-                <p className="text-red-400 text-xs mt-1">{tagError}</p>
+                <p className="text-red-600 text-xs mt-1">{tagError}</p>
               )}
             </div>
 
@@ -321,7 +321,7 @@ export default function SubmitProject() {
                   className={inputClass}
                 />
                 {errors.githubLink && (
-                  <p className="text-red-400 text-xs mt-1">{errors.githubLink}</p>
+                  <p className="text-red-600 text-xs mt-1">{errors.githubLink}</p>
                 )}
               </div>
               <div>
@@ -340,7 +340,7 @@ export default function SubmitProject() {
                   className={inputClass}
                 />
                 {errors.websiteLink && (
-                  <p className="text-red-400 text-xs mt-1">{errors.websiteLink}</p>
+                  <p className="text-red-600 text-xs mt-1">{errors.websiteLink}</p>
                 )}
               </div>
             </div>
@@ -361,14 +361,14 @@ export default function SubmitProject() {
                 placeholder="https://youtube.com/watch?v=..."
                 className={inputClass}
               />
-              {errors.videoUrl && <p className="text-red-400 text-xs mt-1">{errors.videoUrl}</p>}
+              {errors.videoUrl && <p className="text-red-600 text-xs mt-1">{errors.videoUrl}</p>}
             </div>
 
             {/* Cover Image */}
             <div>
               <label className={labelClass}>Cover Image (max 5MB)</label>
               {coverImage ? (
-                <div className="relative rounded-lg overflow-hidden border border-white/10">
+                <div className="relative rounded-lg overflow-hidden border border-[#e8e3f5]">
                   <img
                     src={coverImage}
                     alt="Cover preview"
@@ -379,11 +379,11 @@ export default function SubmitProject() {
                       setCoverImage(null);
                       setCoverFileName('');
                     }}
-                    className="absolute top-2 right-2 p-1.5 bg-black/60 hover:bg-red-600 rounded-lg transition-colors"
+                    className="absolute top-2 right-2 p-1.5 bg-black/60 text-white hover:bg-red-600 rounded-lg transition-colors"
                   >
                     <X size={16} />
                   </button>
-                  <div className="absolute bottom-0 left-0 right-0 px-3 py-2 bg-black/60 text-xs text-gray-300 truncate">
+                  <div className="absolute bottom-0 left-0 right-0 px-3 py-2 bg-black/60 text-xs text-white/90 truncate">
                     {coverFileName}
                   </div>
                 </div>
@@ -392,13 +392,13 @@ export default function SubmitProject() {
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={handleDrop}
                   onClick={() => fileInputRef.current?.click()}
-                  className="border-2 border-dashed border-white/10 hover:border-purple-500/50 rounded-lg p-4 sm:p-8 text-center cursor-pointer transition-colors"
+                  className="border-2 border-dashed border-[#e8e3f5] hover:border-purple-500/50 rounded-lg p-4 sm:p-8 text-center cursor-pointer transition-colors"
                 >
-                  <ImageIcon className="mx-auto mb-3 text-gray-600" size={32} />
-                  <p className="text-sm text-gray-400">
+                  <ImageIcon className="mx-auto mb-3 text-slate-400" size={32} />
+                  <p className="text-sm text-slate-600">
                     Drag & drop or click to upload
                   </p>
-                  <p className="text-xs text-gray-600 mt-1">PNG, JPG, GIF up to 5MB</p>
+                  <p className="text-xs text-slate-400 mt-1">PNG, JPG, GIF up to 5MB</p>
                 </div>
               )}
               <input
@@ -409,13 +409,13 @@ export default function SubmitProject() {
                 className="hidden"
               />
               {errors.coverImage && (
-                <p className="text-red-400 text-xs mt-1">{errors.coverImage}</p>
+                <p className="text-red-600 text-xs mt-1">{errors.coverImage}</p>
               )}
             </div>
 
             {/* Error */}
             {errors.submit && (
-              <p className="text-red-400 text-sm bg-red-400/10 px-4 py-2 rounded-lg">
+              <p className="text-red-600 text-sm bg-red-400/10 px-4 py-2 rounded-lg">
                 {errors.submit}
               </p>
             )}
@@ -432,7 +432,7 @@ export default function SubmitProject() {
               </button>
               <Link
                 to="/community"
-                className="px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg font-medium text-gray-400 transition-colors"
+                className="px-6 py-3 bg-white hover:bg-[#f0ecfa] border border-[#e8e3f5] rounded-lg font-medium text-slate-600 transition-colors"
               >
                 Cancel
               </Link>
@@ -443,10 +443,10 @@ export default function SubmitProject() {
           <div className="hidden xl:block w-80 flex-shrink-0">
             <div className="sticky top-24">
               <div className="flex items-center gap-2 mb-3">
-                <Eye size={16} className="text-gray-500" />
-                <h3 className="text-sm font-medium text-gray-400">Preview</h3>
+                <Eye size={16} className="text-slate-500" />
+                <h3 className="text-sm font-medium text-slate-600">Preview</h3>
               </div>
-              <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+              <div className="bg-white border border-[#e8e3f5] rounded-xl shadow-[0_1px_3px_rgba(20,16,43,0.05)] overflow-hidden">
                 {coverImage ? (
                   <img
                     src={coverImage}
@@ -454,8 +454,8 @@ export default function SubmitProject() {
                     className="w-full h-36 object-cover"
                   />
                 ) : (
-                  <div className="w-full h-36 bg-white/5 flex items-center justify-center">
-                    <ImageIcon size={24} className="text-gray-700" />
+                  <div className="w-full h-36 bg-white flex items-center justify-center">
+                    <ImageIcon size={24} className="text-slate-300" />
                   </div>
                 )}
                 <div className="p-4">
@@ -467,16 +467,16 @@ export default function SubmitProject() {
                         className="w-5 h-5 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="w-5 h-5 rounded-full bg-purple-600/30 flex items-center justify-center text-[10px] font-bold text-purple-300">
+                      <div className="w-5 h-5 rounded-full bg-purple-600/30 flex items-center justify-center text-[10px] font-bold text-purple-700">
                         {user?.full_name?.[0]?.toUpperCase() || '?'}
                       </div>
                     )}
-                    <span className="text-xs text-gray-500">{user?.full_name || 'You'}</span>
+                    <span className="text-xs text-slate-500">{user?.full_name || 'You'}</span>
                   </div>
-                  <h4 className="font-semibold text-white text-sm mb-1 line-clamp-2">
+                  <h4 className="font-semibold text-[#14102b] text-sm mb-1 line-clamp-2">
                     {title || 'Project Title'}
                   </h4>
-                  <p className="text-xs text-gray-500 line-clamp-2 mb-3">
+                  <p className="text-xs text-slate-500 line-clamp-2 mb-3">
                     {description || 'Project description will appear here...'}
                   </p>
                   <div className="flex flex-wrap gap-1 mb-3">
@@ -484,16 +484,16 @@ export default function SubmitProject() {
                       tags.map((tag) => (
                         <span
                           key={tag}
-                          className="px-2 py-0.5 text-[10px] rounded-full bg-purple-500/10 text-purple-300"
+                          className="px-2 py-0.5 text-[10px] rounded-full bg-purple-500/10 text-purple-700"
                         >
                           {tag}
                         </span>
                       ))
                     ) : (
-                      <span className="text-[10px] text-gray-600">Tags</span>
+                      <span className="text-[10px] text-slate-400">Tags</span>
                     )}
                   </div>
-                  <div className="flex items-center gap-3 text-[10px] text-gray-600">
+                  <div className="flex items-center gap-3 text-[10px] text-slate-400">
                     <span>0 comments</span>
                     <span>0 views</span>
                     <span>0 shares</span>

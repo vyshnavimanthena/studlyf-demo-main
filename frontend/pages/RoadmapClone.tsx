@@ -350,11 +350,11 @@ const RoadmapClone: React.FC = () => {
         </section>
 
         {/* SECTION 3: WHY IT'S DIFFERENT */}
-        <section className="py-24 px-6 bg-[#0B0B0F] text-white">
+        <section className="py-24 px-6 bg-white border-t border-gray-100 text-[#1A1A1A]">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16">
               <span className="text-[#6C2BFF] text-[10px] font-black uppercase tracking-widest mb-4 block">The Problem & The Solution</span>
-              <h2 className="text-3xl md:text-5xl font-black tracking-tight">Why This Roadmap Is Different</h2>
+              <h2 className="text-3xl md:text-5xl font-black text-[#1A1A1A] tracking-tight">Why This Roadmap Is Different</h2>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -364,12 +364,12 @@ const RoadmapClone: React.FC = () => {
                 { title: 'Track Progress Automatically', desc: 'Your progress saves directly on your device using local storage. No accounts, no passwords, zero friction.', icon: <Database className="w-6 h-6" /> },
                 { title: 'Curated Resources Only', desc: 'We provide exactly ONE official or highly trusted documentation link per node. No YouTube tutorial chaos.', icon: <Target className="w-6 h-6" /> }
               ].map((item, i) => (
-                <div key={i} className="bg-white/5 border border-white/10 rounded-3xl p-8 hover:bg-white/10 transition-colors">
-                  <div className="w-12 h-12 bg-[#6C2BFF]/20 rounded-xl flex items-center justify-center text-[#A78BFA] mb-6">
+                <div key={i} className="bg-[#F8F9FC] border border-gray-100 rounded-3xl p-8 hover:bg-white hover:border-[#6C2BFF]/20 hover:shadow-md transition-colors">
+                  <div className="w-12 h-12 bg-[#6C2BFF]/10 rounded-xl flex items-center justify-center text-[#6C2BFF] mb-6">
                     {item.icon}
                   </div>
                   <h3 className="text-xl font-black mb-3">{item.title}</h3>
-                  <p className="text-white/60 font-medium leading-relaxed">{item.desc}</p>
+                  <p className="text-gray-500 font-medium leading-relaxed">{item.desc}</p>
                 </div>
               ))}
             </div>
@@ -434,12 +434,12 @@ const RoadmapClone: React.FC = () => {
             </div>
 
             {/* How This Roadmap Works */}
-            <div className="bg-[#1A1A1A] text-white border border-gray-800 rounded-3xl p-8 shadow-sm relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#EC4899]/20 to-transparent pointer-events-none" />
+            <div className="bg-white text-[#1A1A1A] border border-gray-200 rounded-3xl p-8 shadow-sm relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#EC4899]/10 to-transparent pointer-events-none" />
               <div className="relative z-10">
                 <span className="text-[10px] font-black text-[#EC4899] uppercase tracking-[0.2em] mb-4 block">Usage Guide</span>
                 <h3 className="text-2xl font-black mb-4">How This Roadmap Works</h3>
-                <p className="text-gray-400 font-medium text-sm leading-relaxed mb-6">
+                <p className="text-gray-500 font-medium text-sm leading-relaxed mb-6">
                   This roadmap is designed to remove confusion. You never need to wonder what to learn next. Complete one step at a time, and the next chapter unlocks automatically. Build consistency, not speed.
                 </p>
                 
@@ -455,9 +455,9 @@ const RoadmapClone: React.FC = () => {
                   const isEntireRoadmapComplete = selectedRole ? selectedRole.chapters.every(c => c.nodes.every(n => completedNodes.includes(n.id))) : false;
 
                   return (
-                    <div className="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10">
+                    <div className="bg-[#F8F9FC] rounded-2xl p-4 border border-gray-100">
                       {isEntireRoadmapComplete ? (
-                        <div className="flex items-center justify-center gap-2 text-emerald-400 font-bold text-xs uppercase tracking-wider py-1">
+                        <div className="flex items-center justify-center gap-2 text-emerald-600 font-bold text-xs uppercase tracking-wider py-1">
                           <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
                           <span>ALL PHASES COMPLETED! INDUSTRY READY 🎉</span>
                         </div>
@@ -467,26 +467,26 @@ const RoadmapClone: React.FC = () => {
                           <div className="flex items-center justify-between gap-2">
                             <div className="flex items-center gap-2 min-w-0">
                               <span className="w-2 h-2 rounded-full bg-[#EC4899] animate-pulse flex-shrink-0" />
-                              <span className="text-white font-bold tracking-wider truncate">
+                              <span className="text-[#1A1A1A] font-bold tracking-wider truncate">
                                 PHASE {activeChapterIndex + 1}: {currentChapter?.title}
                               </span>
                             </div>
 
                             {isCurrentChapterComplete ? (
-                              <span className="text-[10px] font-extrabold text-emerald-400 bg-emerald-500/20 px-2.5 py-0.5 rounded-full border border-emerald-500/30 flex-shrink-0 uppercase">
+                              <span className="text-[10px] font-extrabold text-emerald-700 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/30 flex-shrink-0 uppercase">
                                 COMPLETE ✓
                               </span>
                             ) : (
-                              <span className="text-[10px] font-extrabold text-amber-400 bg-amber-500/20 px-2.5 py-0.5 rounded-full border border-amber-500/30 flex-shrink-0 uppercase">
+                              <span className="text-[10px] font-extrabold text-amber-700 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/30 flex-shrink-0 uppercase">
                                 IN PROGRESS ({currentDoneCount}/{totalInCurrent})
                               </span>
                             )}
                           </div>
 
                           {/* Next Step Footer */}
-                          <div className="flex items-center justify-between text-[11px] text-gray-400 pt-2 border-t border-white/10">
+                          <div className="flex items-center justify-between text-[11px] text-gray-500 pt-2 border-t border-gray-200">
                             <span className="font-medium">Up Next:</span>
-                            <span className="font-bold text-gray-300 truncate">
+                            <span className="font-bold text-gray-700 truncate">
                               {nextChapter ? `Phase ${activeChapterIndex + 2}: ${nextChapter.title}` : 'Final Career Mastery'}
                             </span>
                           </div>

@@ -73,17 +73,17 @@ const PaymentManagement: React.FC = () => {
             {/* Header section with Financial Summary */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-6">
                 <div>
-                    <h1 className="text-xl sm:text-3xl font-black text-white tracking-tight uppercase">Payment Ledger</h1>
-                    <p className="text-zinc-400 text-sm mt-1">Institutional transaction monitoring and revenue attribution.</p>
+                    <h1 className="text-xl sm:text-3xl font-black text-[#14102b] tracking-tight uppercase">Payment Ledger</h1>
+                    <p className="text-slate-600 text-sm mt-1">Institutional transaction monitoring and revenue attribution.</p>
                 </div>
                 <div className="flex flex-wrap gap-4">
-                    <div className="bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-3xl flex items-center gap-4">
-                        <div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center text-emerald-400">
+                    <div className="bg-emerald-50 border border-emerald-100 p-4 rounded-3xl flex items-center gap-4">
+                        <div className="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center text-emerald-600">
                             <TrendingUp size={20} />
                         </div>
                         <div>
-                            <div className="text-xl font-bold text-white">${totalRevenue}</div>
-                            <div className="text-[10px] text-emerald-500 uppercase tracking-widest font-black">Gross Revenue</div>
+                            <div className="text-xl font-bold text-[#14102b]">${totalRevenue}</div>
+                            <div className="text-[10px] text-emerald-700 uppercase tracking-widest font-black">Gross Revenue</div>
                         </div>
                     </div>
                 </div>
@@ -92,49 +92,49 @@ const PaymentManagement: React.FC = () => {
             {/* Controls */}
             <div className="flex flex-col md:flex-row gap-4 items-center">
                 <div className="relative flex-grow w-full">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" size={18} />
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                     <input 
                         type="text" 
                         placeholder="Search transactions by user or txn hash..." 
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-zinc-900/50 border border-white/5 rounded-2xl py-3.5 pl-12 pr-4 text-white placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all font-medium"
+                        className="w-full bg-white border border-[#e8e3f5] rounded-2xl py-3.5 pl-12 pr-4 text-[#14102b] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all font-medium"
                     />
                 </div>
-                <button onClick={handleExportData} className="whitespace-nowrap bg-zinc-900 border border-white/5 text-zinc-400 px-6 py-3.5 rounded-2xl font-bold text-sm flex items-center gap-2 hover:text-white transition-all shadow-lg active:scale-95">
+                <button onClick={handleExportData} className="whitespace-nowrap bg-white border border-[#e8e3f5] text-slate-600 px-6 py-3.5 rounded-2xl font-bold text-sm flex items-center gap-2 hover:text-[#14102b] transition-all shadow-sm active:scale-95">
                     <Download size={18} /> Export Data
                 </button>
             </div>
 
             {/* Content Table */}
-            <div className="bg-zinc-900/30 border border-white/5 rounded-[2.5rem] overflow-hidden backdrop-blur-xl">
+            <div className="bg-white shadow-sm border border-[#e8e3f5] rounded-[2.5rem] overflow-hidden backdrop-blur-xl">
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-white/[0.03]">
-                                <th className="px-8 py-6 text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Transaction Trace</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">User Context</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Amount</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Timestamp</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Status</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] text-right">Protocol</th>
+                            <tr className="bg-white">
+                                <th className="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Transaction Trace</th>
+                                <th className="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">User Context</th>
+                                <th className="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Amount</th>
+                                <th className="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Timestamp</th>
+                                <th className="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Status</th>
+                                <th className="px-8 py-6 text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] text-right">Protocol</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/5 font-poppins">
+                        <tbody className="divide-y divide-[#e8e3f5] font-poppins">
                             <AnimatePresence mode='wait'>
                                 {loading ? (
                                     <tr>
-                                        <td colSpan={6} className="px-8 py-32 text-center bg-zinc-900/10">
+                                        <td colSpan={6} className="px-8 py-32 text-center bg-white">
                                             <div className="relative w-12 h-12 mx-auto mb-6">
                                                 <div className="absolute inset-0 border-4 border-emerald-500/10 rounded-full" />
                                                 <div className="absolute inset-0 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
                                             </div>
-                                            <span className="text-zinc-500 text-sm font-bold uppercase tracking-widest italic animate-pulse">Syncing Payments...</span>
+                                            <span className="text-slate-500 text-sm font-bold uppercase tracking-widest italic animate-pulse">Syncing Payments...</span>
                                         </td>
                                     </tr>
                                 ) : filteredPayments.length === 0 ? (
                                     <tr>
-                                        <td colSpan={6} className="px-8 py-24 text-center text-zinc-500 font-medium italic">
+                                        <td colSpan={6} className="px-8 py-24 text-center text-slate-500 font-medium italic">
                                             No financial records found.
                                         </td>
                                     </tr>
@@ -148,25 +148,25 @@ const PaymentManagement: React.FC = () => {
                                             className="group hover:bg-emerald-500/[0.02] transition-all duration-300 border-l-2 border-transparent hover:border-emerald-500"
                                         >
                                             <td className="px-8 py-6">
-                                                <div className="text-sm font-black text-white/90 font-mono tracking-tighter uppercase group-hover:text-emerald-400 transition-colors">
+                                                <div className="text-sm font-black text-slate-700 font-mono tracking-tighter uppercase group-hover:text-emerald-700 transition-colors">
                                                     {p.id}
                                                 </div>
                                             </td>
                                             <td className="px-8 py-6">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-8 h-8 rounded-lg bg-zinc-800 flex items-center justify-center text-[10px] font-bold text-zinc-400 border border-white/5">
+                                                    <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-600 border border-[#e8e3f5]">
                                                         {p.user[0]}
                                                     </div>
-                                                    <span className="text-sm font-bold text-white tracking-tight">{p.user}</span>
+                                                    <span className="text-sm font-bold text-[#14102b] tracking-tight">{p.user}</span>
                                                 </div>
                                             </td>
                                             <td className="px-8 py-6">
-                                                <span className="text-sm font-black text-white bg-zinc-800/50 px-3 py-1 rounded-lg border border-white/5">
+                                                <span className="text-sm font-black text-[#14102b] bg-slate-100 px-3 py-1 rounded-lg border border-[#e8e3f5]">
                                                     {p.amount}
                                                 </span>
                                             </td>
                                             <td className="px-8 py-6">
-                                                <div className="flex items-center gap-2 text-zinc-500">
+                                                <div className="flex items-center gap-2 text-slate-500">
                                                     <Clock size={14} className="opacity-50" />
                                                     <span className="text-xs font-medium tabular-nums">{p.date}</span>
                                                 </div>
@@ -174,15 +174,15 @@ const PaymentManagement: React.FC = () => {
                                             <td className="px-8 py-6">
                                                 <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border ${
                                                     p.status === 'Completed' 
-                                                        ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
-                                                        : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+                                                        ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' 
+                                                        : 'bg-amber-500/10 text-amber-700 border-amber-500/20'
                                                 }`}>
                                                     {p.status === 'Completed' ? <CheckCircle2 size={12} /> : <AlertCircle size={12} />}
                                                     {p.status}
                                                 </span>
                                             </td>
                                             <td className="px-8 py-6 text-right">
-                                                <button className="p-2.5 text-zinc-600 hover:text-white hover:bg-zinc-800 rounded-xl transition-all active:scale-90">
+                                                <button className="p-2.5 text-slate-500 hover:text-[#14102b] hover:bg-slate-100 rounded-xl transition-all active:scale-90">
                                                     <MoreVertical size={16} />
                                                 </button>
                                             </td>

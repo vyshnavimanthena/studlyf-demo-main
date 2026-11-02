@@ -147,9 +147,9 @@ export default function AdsCarousel() {
                                 {/* Background Image */}
                                 <div className="absolute inset-0">
                                     {Array.isArray(currentItem.image) ? (
-                                        <div className="w-full h-full grid grid-cols-2 grid-rows-2 gap-2 p-2 bg-[#0B0F19]">
+                                        <div className="w-full h-full grid grid-cols-2 grid-rows-2 gap-2 p-2 bg-white">
                                             {currentItem.image.map((imgSrc, i) => (
-                                                <div key={i} className="w-full h-full rounded-2xl overflow-hidden relative bg-gray-900">
+                                                <div key={i} className="w-full h-full rounded-2xl overflow-hidden relative bg-gray-100">
                                                     <img
                                                         src={imgSrc}
                                                         alt={`${currentItem.title} ${i + 1}`}
@@ -168,8 +168,8 @@ export default function AdsCarousel() {
                                         />
                                     )}
                                     {/* Cinematic Gradient Overlays */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-[#0B0F19] via-[#0B0F19]/60 to-transparent" />
-                                    <div className="absolute inset-0 bg-gradient-to-r from-[#0B0F19]/90 via-[#0B0F19]/40 to-transparent" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-[#14102b]/85 via-[#14102b]/35 to-transparent" />
+                                    <div className="absolute inset-0 bg-gradient-to-r from-[#14102b]/60 via-[#14102b]/15 to-transparent" />
                                 </div>
 
                                 {/* Content Hierarchy */}
@@ -243,7 +243,7 @@ export default function AdsCarousel() {
                         </AnimatePresence>
 
                         {/* Top Progress Bar */}
-                        <div className="absolute top-0 left-0 right-0 h-1.5 bg-black/20 z-20 overflow-hidden">
+                        <div className="absolute top-0 left-0 right-0 h-1.5 bg-white/30 z-20 overflow-hidden">
                             <motion.div
                                 key={currentIndex + (isHovered ? "-hover" : "-play")}
                                 initial={{ width: "0%" }}

@@ -81,12 +81,12 @@ const DarkCourseCard = ({
   return (
     <motion.div
       whileHover={{ y: -8 }}
-      className="bg-[#1A1135] border border-white/5 rounded-2xl overflow-hidden hover:shadow-[0_0_30px_rgba(108,43,255,0.2)] transition-all flex flex-col cursor-pointer group h-full"
+      className="bg-white border border-[#e8e3f5] rounded-2xl overflow-hidden shadow-[0_1px_3px_rgba(20,16,43,0.05)] hover:shadow-[0_12px_30px_rgba(108,43,255,0.15)] transition-all flex flex-col cursor-pointer group h-full"
       onClick={() => onCardClick({ _id, title, description, role_tag, difficulty, skills, duration, image, standard, rating, price, is_bestseller, is_premium, user_state } as Course)}
     >
       <div className="h-40 relative overflow-hidden flex-shrink-0">
         <WebImage src={displayImage} alt={title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#1A1135] via-transparent to-transparent opacity-90" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-90" />
 
         <div className="absolute top-3 left-3">
           <span className="bg-gradient-to-r from-[#6C2BFF] to-[#8B5CF6] text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg">
@@ -96,15 +96,15 @@ const DarkCourseCard = ({
       </div>
 
       <div className="p-5 flex flex-col flex-grow">
-        <span className="text-[#A78BFA] text-[10px] font-black uppercase tracking-widest mb-2">{role_tag || 'DEVELOPMENT'}</span>
-        <h3 className="text-white font-bold text-lg leading-tight mb-3 line-clamp-2">{title}</h3>
+        <span className="text-[#6C2BFF] text-[10px] font-black uppercase tracking-widest mb-2">{role_tag || 'DEVELOPMENT'}</span>
+        <h3 className="text-[#14102b] font-bold text-lg leading-tight mb-3 line-clamp-2">{title}</h3>
 
-        <div className="flex flex-wrap items-center gap-3 text-xs text-gray-400 mb-4 mt-auto">
+        <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500 mb-4 mt-auto">
           {rating && (
-            <div className="flex items-center gap-1 text-yellow-400">
+            <div className="flex items-center gap-1 text-amber-500">
               <Star className="w-3 h-3 fill-current" />
-              <span className="font-bold text-white">{rating.toFixed(1)}</span>
-              <span className="text-gray-500">({total_reviews >= 1000 ? (total_reviews / 1000).toFixed(1) + 'k' : total_reviews})</span>
+              <span className="font-bold text-[#14102b]">{rating.toFixed(1)}</span>
+              <span className="text-slate-400">({total_reviews >= 1000 ? (total_reviews / 1000).toFixed(1) + 'k' : total_reviews})</span>
             </div>
           )}
           <div className="flex items-center gap-1">
@@ -117,8 +117,8 @@ const DarkCourseCard = ({
           </div>
         </div>
 
-        <div className="pt-4 border-t border-white/5">
-          <button className="w-full py-2.5 rounded-lg bg-[#2D1B69] text-white text-sm font-bold group-hover:bg-[#6C2BFF] transition-colors shadow-lg">
+        <div className="pt-4 border-t border-[#f0ecfa]">
+          <button className="w-full py-2.5 rounded-lg bg-[#6C2BFF] text-white text-sm font-bold group-hover:bg-[#5a1ee6] transition-colors shadow-sm">
             {user_state === 'ENROLLED' ? 'Continue Learning' : 'Start Learning'}
           </button>
         </div>
@@ -533,7 +533,7 @@ const CoursesOverview: React.FC = () => {
       </div>
 
       {/* Scrolling Logo Marquee */}
-      <div className="relative w-full z-30 bg-[#0A0514] shadow-xl flex flex-col -mt-8 md:-mt-16">
+      <div className="relative w-full z-30 bg-white border-y border-[#e8e3f5] shadow-sm flex flex-col -mt-8 md:-mt-16">
         <div className="h-[80px] relative overflow-hidden flex items-center">
           <motion.div
             animate={{ x: ["0%", "-50%"] }}
@@ -555,18 +555,18 @@ const CoursesOverview: React.FC = () => {
       </div>
 
       {/* Recommended Courses Section (Dark Theme) */}
-      <div id="courses-section" className="bg-[#0F0824] py-24 px-3 sm:px-6 relative">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 pointer-events-none" />
+      <div id="courses-section" className="bg-[#fbfaff] py-24 px-3 sm:px-6 relative">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03] pointer-events-none" />
         <div className="max-w-7xl mx-auto relative z-10">
 
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-12 gap-6">
             <div>
               <div className="inline-flex items-center gap-2 bg-[#6C2BFF]/10 px-4 py-2 rounded-full border border-[#6C2BFF]/20 mb-4">
-                <Star className="w-4 h-4 text-[#A78BFA]" />
-                <span className="text-xs font-bold text-[#A78BFA] uppercase tracking-wider">Curated Learning Tracks</span>
+                <Star className="w-4 h-4 text-[#6C2BFF]" />
+                <span className="text-xs font-bold text-[#6C2BFF] uppercase tracking-wider">Curated Learning Tracks</span>
               </div>
-              <h2 className="text-xl sm:text-3xl md:text-4xl font-black text-white uppercase tracking-tight">Explore Courses</h2>
-              <p className="text-gray-400 mt-3 text-base md:text-lg max-w-2xl">
+              <h2 className="text-xl sm:text-3xl md:text-4xl font-black text-[#14102b] uppercase tracking-tight">Explore Courses</h2>
+              <p className="text-[#5b5675] mt-3 text-base md:text-lg max-w-2xl">
                 Industry-ready programs designed for practical outcomes.
               </p>
             </div>
@@ -579,18 +579,18 @@ const CoursesOverview: React.FC = () => {
                   placeholder="Search courses..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white text-sm focus:outline-none focus:border-[#6C2BFF] transition-colors shadow-inner"
+                  className="w-full bg-white border border-[#e8e3f5] rounded-xl py-3 pl-10 pr-4 text-[#14102b] placeholder-slate-400 text-sm focus:outline-none focus:border-[#6C2BFF] transition-colors shadow-sm"
                 />
               </div>
             </div>
           </div>
 
           {filteredCourses.length === 0 ? (
-            <div className="text-center py-20 bg-white/5 rounded-3xl border border-white/10 shadow-xl">
-              <Monitor className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-              <div className="text-xl font-bold text-white mb-2">No Courses Found</div>
-              <p className="text-gray-400 text-sm">Try adjusting your filters or search query.</p>
-              <button onClick={() => { setSearchQuery(''); }} className="mt-6 text-[#A78BFA] hover:text-white font-bold underline transition-colors">
+            <div className="text-center py-20 bg-white rounded-3xl border border-[#e8e3f5] shadow-sm">
+              <Monitor className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+              <div className="text-xl font-bold text-[#14102b] mb-2">No Courses Found</div>
+              <p className="text-slate-500 text-sm">Try adjusting your filters or search query.</p>
+              <button onClick={() => { setSearchQuery(''); }} className="mt-6 text-[#6C2BFF] hover:text-[#5a1ee6] font-bold underline transition-colors">
                 Clear Filters
               </button>
             </div>
@@ -643,21 +643,21 @@ const CoursesOverview: React.FC = () => {
       {/* Quote Section */}
       <div className="bg-white py-12 px-3 sm:px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="bg-[#0F0824] rounded-3xl p-6 sm:p-8 md:p-12 flex flex-col md:flex-row items-center gap-6 sm:gap-10 relative overflow-hidden shadow-2xl">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-[#6C2BFF]/20 rounded-full blur-3xl" />
+          <div className="bg-[#f6f3ff] border border-[#e8e3f5] rounded-3xl p-6 sm:p-8 md:p-12 flex flex-col md:flex-row items-center gap-6 sm:gap-10 relative overflow-hidden shadow-sm">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#6C2BFF]/10 rounded-full blur-3xl" />
             <img
               src="/images/OIP.webp"
               alt="Satya Nadella"
-              className="w-48 h-48 md:w-64 md:h-64 object-cover rounded-2xl z-10 shadow-lg border border-white/5 bg-[#1A1135]"
+              className="w-48 h-48 md:w-64 md:h-64 object-cover rounded-2xl z-10 shadow-lg border border-[#e8e3f5] bg-white"
             />
             <div className="z-10 relative">
               <div className="text-[#6C2BFF] text-6xl font-serif absolute -top-8 -left-4 opacity-30">"</div>
-              <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight mb-6 relative z-10">
+              <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#14102b] leading-tight mb-6 relative z-10">
                 The world is changing faster than ever. The best way to prepare for the future is to keep learning, unlearn and relearn. Build skills, build confidence, and most importantly, build the future.
               </h3>
               <div>
-                <div className="text-white font-bold text-lg">Satya Nadella</div>
-                <div className="text-gray-400 text-sm">CEO, Microsoft</div>
+                <div className="text-[#14102b] font-bold text-lg">Satya Nadella</div>
+                <div className="text-slate-500 text-sm">CEO, Microsoft</div>
               </div>
             </div>
           </div>
@@ -865,27 +865,27 @@ const CoursesOverview: React.FC = () => {
       </div>
 
       {/* Final CTA */}
-      <div className="bg-[#0F0824] py-24 px-3 sm:px-6 text-center relative overflow-hidden mt-10">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20 pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#6C2BFF]/20 rounded-full blur-[100px] pointer-events-none" />
+      <div className="bg-[#f6f3ff] border-t border-[#e8e3f5] py-24 px-3 sm:px-6 text-center relative overflow-hidden mt-10">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.04] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#6C2BFF]/10 rounded-full blur-[100px] pointer-events-none" />
 
         <div className="relative z-10">
-          <div className="inline-block bg-white/10 px-4 py-1.5 rounded-full border border-white/20 mb-6">
-            <span className="text-xs font-bold text-white uppercase tracking-[0.2em]">Ready To Level Up?</span>
+          <div className="inline-block bg-white px-4 py-1.5 rounded-full border border-[#e8e3f5] mb-6">
+            <span className="text-xs font-bold text-[#6C2BFF] uppercase tracking-[0.2em]">Ready To Level Up?</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-6xl font-black uppercase text-white leading-tight mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-6xl font-black uppercase text-[#14102b] leading-tight mb-6">
             Start Building <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6C2BFF] to-[#EC4899]">Your Future</span> Today
           </h2>
-          <p className="text-gray-400 text-lg mb-10">Join ambitious learners building real skills.</p>
+          <p className="text-[#5b5675] text-lg mb-10">Join ambitious learners building real skills.</p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <button onClick={() => {
               const el = document.getElementById('courses-section');
               el?.scrollIntoView({ behavior: 'smooth' });
-            }} className="bg-[#6C2BFF] hover:bg-[#4B1DCC] text-white px-10 py-4 rounded-full font-bold transition-all shadow-[0_0_30px_rgba(108,43,255,0.4)]">
+            }} className="bg-[#6C2BFF] hover:bg-[#4B1DCC] text-white px-10 py-4 rounded-full font-bold transition-all shadow-[0_8px_24px_rgba(108,43,255,0.3)]">
               Explore Courses →
             </button>
-            <Link to="/learn/career-fit" className="bg-white text-[#1A1A1A] hover:bg-gray-100 px-10 py-4 rounded-full font-bold transition-all">
+            <Link to="/learn/career-fit" className="bg-white text-[#14102b] border border-[#e8e3f5] hover:bg-[#f0ecfa] px-10 py-4 rounded-full font-bold transition-all">
               Take Career Assessment
             </Link>
           </div>

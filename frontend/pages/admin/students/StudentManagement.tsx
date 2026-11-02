@@ -126,11 +126,11 @@ const StudentManagement: React.FC = () => {
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">Student Management</h1>
-                    <p className="text-white/50 mt-1">Manage, track, and support the entire student community.</p>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-[#14102b] tracking-tight">Student Management</h1>
+                    <p className="text-slate-500 mt-1">Manage, track, and support the entire student community.</p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <button onClick={handleExportCSV} className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-sm font-medium transition-colors text-white">
+                    <button onClick={handleExportCSV} className="flex items-center gap-2 px-4 py-2 bg-white hover:bg-[#f6f3ff] border border-[#e8e3f5] rounded-xl text-sm font-medium transition-colors text-[#14102b]">
                         <Download size={18} />
                         Export CSV
                     </button>
@@ -142,15 +142,15 @@ const StudentManagement: React.FC = () => {
             </div>
 
             {/* Filters and Search */}
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div className="bg-white shadow-sm border border-[#e8e3f5] rounded-2xl p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div className="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 custom-scrollbar">
                     {tabs.map(tab => (
                         <button
                             key={tab}
                             onClick={() => setActiveTab(tab)}
                             className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${activeTab === tab
-                                ? 'bg-white/10 text-white border border-white/20'
-                                : 'text-white/40 hover:text-white/60'
+                                ? 'bg-[#f6f3ff] text-[#14102b] border border-[#e8e3f5]'
+                                : 'text-slate-500 hover:text-slate-700'
                                 }`}
                         >
                             {tab}
@@ -158,11 +158,11 @@ const StudentManagement: React.FC = () => {
                     ))}
                 </div>
                 <div className="relative flex-grow max-w-md">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" size={18} />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                     <input
                         type="search"
                         placeholder="Search students..."
-                        className="w-full pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/50 transition-all"
+                        className="w-full pl-10 pr-4 py-2 bg-white border border-[#e8e3f5] rounded-xl text-sm text-[#14102b] focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/50 transition-all"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -170,75 +170,75 @@ const StudentManagement: React.FC = () => {
             </div>
 
             {/* Students Table */}
-            <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+            <div className="bg-white shadow-sm border border-[#e8e3f5] rounded-2xl overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-white/[0.02] border-b border-white/10">
-                                <th className="px-3 sm:px-6 py-4 text-xs font-semibold text-white/40 uppercase tracking-wider">Student</th>
-                                <th className="px-3 sm:px-6 py-4 text-xs font-semibold text-white/40 uppercase tracking-wider">Course & College</th>
-                                <th className="px-3 sm:px-6 py-4 text-xs font-semibold text-white/40 uppercase tracking-wider text-center">Skill Score</th>
-                                <th className="px-3 sm:px-6 py-4 text-xs font-semibold text-white/40 uppercase tracking-wider">Status</th>
-                                <th className="px-3 sm:px-6 py-4 text-xs font-semibold text-white/40 uppercase tracking-wider">Joined</th>
-                                <th className="px-3 sm:px-6 py-4 text-xs font-semibold text-white/40 uppercase tracking-wider text-right">Actions</th>
+                            <tr className="bg-white border-b border-[#e8e3f5]">
+                                <th className="px-3 sm:px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Student</th>
+                                <th className="px-3 sm:px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Course & College</th>
+                                <th className="px-3 sm:px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-center">Skill Score</th>
+                                <th className="px-3 sm:px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+                                <th className="px-3 sm:px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Joined</th>
+                                <th className="px-3 sm:px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/5">
+                        <tbody className="divide-y divide-[#e8e3f5]">
                             {filteredStudents.map((student) => (
                                 <motion.tr
                                     key={student.id}
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
-                                    className={`hover:bg-white/[0.02] transition-colors group ${student.restricted ? 'opacity-50 grayscale' : ''}`}
+                                    className={`hover:bg-[#f6f3ff] transition-colors group ${student.restricted ? 'opacity-50 grayscale' : ''}`}
                                 >
                                     <td className="px-3 sm:px-6 py-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-500/20 to-blue-500/20 border border-white/10 flex items-center justify-center font-bold text-white/80">
+                                            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-500/20 to-blue-500/20 border border-[#e8e3f5] flex items-center justify-center font-bold text-slate-700">
                                                 {student.name.charAt(0)}
                                             </div>
                                             <div>
-                                                <div className="text-sm font-semibold text-white flex items-center gap-2">
+                                                <div className="text-sm font-semibold text-[#14102b] flex items-center gap-2">
                                                     {student.name}
                                                     {student.restricted && <ShieldAlert size={12} className="text-red-500" />}
                                                 </div>
-                                                <div className="text-xs text-white/40">{student.email}</div>
+                                                <div className="text-xs text-slate-500">{student.email}</div>
                                             </div>
                                         </div>
                                     </td>
                                     <td className="px-3 sm:px-6 py-4">
-                                        <div className="text-sm text-white/80">{student.course}</div>
-                                        <div className="text-xs text-white/40">{student.college}</div>
+                                        <div className="text-sm text-slate-700">{student.course}</div>
+                                        <div className="text-xs text-slate-500">{student.college}</div>
                                     </td>
                                     <td className="px-3 sm:px-6 py-4 text-center">
-                                        <div className={`text-sm font-bold ${student.score >= 90 ? 'text-green-400' : student.score >= 75 ? 'text-blue-400' : 'text-orange-400'}`}>
+                                        <div className={`text-sm font-bold ${student.score >= 90 ? 'text-green-600' : student.score >= 75 ? 'text-blue-600' : 'text-orange-600'}`}>
                                             {student.score}%
                                         </div>
-                                        <div className="w-20 bg-white/5 h-1 rounded-full mx-auto mt-1 overflow-hidden">
+                                        <div className="w-20 bg-white h-1 rounded-full mx-auto mt-1 overflow-hidden">
                                             <div className={`h-full rounded-full ${student.score >= 90 ? 'bg-green-500' : student.score >= 75 ? 'bg-blue-500' : 'bg-orange-500'}`} style={{ width: `${student.score}%` }} />
                                         </div>
                                     </td>
                                     <td className="px-3 sm:px-6 py-4">
                                         <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide border ${student.status === 'Placed' ? 'bg-green-500/10 text-green-500 border-green-500/20' :
                                             student.status === 'Hiring Ready' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' :
-                                                student.status === 'Interviewing' ? 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20' :
+                                                student.status === 'Interviewing' ? 'bg-yellow-500/10 text-amber-600 border-yellow-500/20' :
                                                     student.status === 'Needs Improvement' ? 'bg-red-500/10 text-red-500 border-red-500/20' :
-                                                        'bg-white/10 text-white/60 border-white/10'
+                                                        'bg-[#f6f3ff] text-slate-600 border-[#e8e3f5]'
                                             }`}>
                                             {student.status}
                                         </span>
                                     </td>
-                                    <td className="px-3 sm:px-6 py-4 text-sm text-white/40 font-mono">
+                                    <td className="px-3 sm:px-6 py-4 text-sm text-slate-500 font-mono">
                                         {student.joined}
                                     </td>
                                     <td className="px-3 sm:px-6 py-4 text-right">
                                         <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <a href={`mailto:${student.email}`} className="p-2 hover:bg-white/10 rounded-lg text-white/60 hover:text-white transition-all shadow-sm" title="Send Email">
+                                            <a href={`mailto:${student.email}`} className="p-2 hover:bg-[#f6f3ff] rounded-lg text-slate-600 hover:text-[#14102b] transition-all shadow-sm" title="Send Email">
                                                 <Mail size={16} />
                                             </a>
-                                            <button onClick={() => toggleRestriction(student.id, student.restricted)} className={`p-2 hover:bg-white/10 rounded-lg ${student.restricted ? 'text-red-500' : 'text-white/60'} hover:text-red-500 transition-all shadow-sm`} title={student.restricted ? "Unrestrict Account" : "Restrict Account"}>
+                                            <button onClick={() => toggleRestriction(student.id, student.restricted)} className={`p-2 hover:bg-[#f6f3ff] rounded-lg ${student.restricted ? 'text-red-500' : 'text-slate-600'} hover:text-red-500 transition-all shadow-sm`} title={student.restricted ? "Unrestrict Account" : "Restrict Account"}>
                                                 <ShieldAlert size={16} />
                                             </button>
-                                            <button className="p-2 hover:bg-white/10 rounded-lg text-white/60 hover:text-white transition-all shadow-sm">
+                                            <button className="p-2 hover:bg-[#f6f3ff] rounded-lg text-slate-600 hover:text-[#14102b] transition-all shadow-sm">
                                                 <MoreVertical size={16} />
                                             </button>
                                         </div>
@@ -249,9 +249,9 @@ const StudentManagement: React.FC = () => {
                     </table>
                     {filteredStudents.length === 0 && (
                         <div className="py-20 text-center">
-                            <div className="text-white/20 mb-2 flex justify-center"><Search size={48} /></div>
-                            <h3 className="text-white/60 font-medium">{loading ? 'Scanning ecosystem...' : 'No students found'}</h3>
-                            <p className="text-white/30 text-sm">Try adjusting your search or filters.</p>
+                            <div className="text-slate-400 mb-2 flex justify-center"><Search size={48} /></div>
+                            <h3 className="text-slate-600 font-medium">{loading ? 'Scanning ecosystem...' : 'No students found'}</h3>
+                            <p className="text-slate-500 text-sm">Try adjusting your search or filters.</p>
                         </div>
                     )}
                 </div>
@@ -259,8 +259,8 @@ const StudentManagement: React.FC = () => {
 
             {/* Pagination Controls */}
             <div className="flex items-center justify-between px-4">
-                <div className="text-sm text-white/40">
-                    Showing <span className="text-white font-medium">{filteredStudents.length}</span> of <span className="text-white font-medium">{students.length}</span> recorded students
+                <div className="text-sm text-slate-500">
+                    Showing <span className="text-[#14102b] font-medium">{filteredStudents.length}</span> of <span className="text-[#14102b] font-medium">{students.length}</span> recorded students
                 </div>
             </div>
 
@@ -268,53 +268,53 @@ const StudentManagement: React.FC = () => {
             <AnimatePresence>
                 {isRegisterModalOpen && (
                     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsRegisterModalOpen(false)} className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+                        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsRegisterModalOpen(false)} className="absolute inset-0 bg-[#14102b]/40 backdrop-blur-sm" />
                         <motion.div 
                             initial={{ scale: 0.9, opacity: 0, y: 20 }} 
                             animate={{ scale: 1, opacity: 1, y: 0 }} 
                             exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                            className="relative bg-[#1A1A1A] border border-white/10 w-full max-w-md rounded-[2rem] p-8 shadow-2xl overflow-hidden"
+                            className="relative bg-white border border-[#e8e3f5] w-full max-w-md rounded-[2rem] p-8 shadow-2xl overflow-hidden"
                         >
                             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-blue-500 to-purple-500" />
-                            <h2 className="text-2xl font-bold text-white mb-2">Register New Student</h2>
-                            <p className="text-white/40 text-sm mb-6 uppercase tracking-widest font-black">Direct Portal Entry</p>
+                            <h2 className="text-2xl font-bold text-[#14102b] mb-2">Register New Student</h2>
+                            <p className="text-slate-500 text-sm mb-6 uppercase tracking-widest font-black">Direct Portal Entry</p>
 
                             <form onSubmit={handleRegister} className="space-y-4">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Full Name</label>
+                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Full Name</label>
                                     <input 
                                         required
                                         type="text" 
                                         placeholder="Enter name"
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/50 transition-all"
+                                        className="w-full bg-white border border-[#e8e3f5] rounded-xl px-4 py-3 text-[#14102b] focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/50 transition-all"
                                         value={newStudent.name}
                                         onChange={e => setNewStudent({...newStudent, name: e.target.value})}
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Email Address</label>
+                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Email Address</label>
                                     <input 
                                         required
                                         type="email" 
                                         placeholder="student@example.com"
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/50 transition-all"
+                                        className="w-full bg-white border border-[#e8e3f5] rounded-xl px-4 py-3 text-[#14102b] focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/50 transition-all"
                                         value={newStudent.email}
                                         onChange={e => setNewStudent({...newStudent, email: e.target.value})}
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">College/Institution</label>
+                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">College/Institution</label>
                                     <input 
                                         type="text" 
                                         placeholder="Partner College"
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/50 transition-all"
+                                        className="w-full bg-white border border-[#e8e3f5] rounded-xl px-4 py-3 text-[#14102b] focus:outline-none focus:ring-2 focus:ring-[#7C3AED]/50 transition-all"
                                         value={newStudent.college}
                                         onChange={e => setNewStudent({...newStudent, college: e.target.value})}
                                     />
                                 </div>
                                 
                                 <div className="pt-4 flex gap-3">
-                                    <button type="button" onClick={() => setIsRegisterModalOpen(false)} className="flex-1 py-4 bg-white/5 hover:bg-white/10 text-white rounded-xl text-xs font-black uppercase tracking-[0.2em] transition-all">Cancel</button>
+                                    <button type="button" onClick={() => setIsRegisterModalOpen(false)} className="flex-1 py-4 bg-white hover:bg-[#f6f3ff] text-[#14102b] rounded-xl text-xs font-black uppercase tracking-[0.2em] transition-all">Cancel</button>
                                     <button 
                                         type="submit" 
                                         disabled={registering}

@@ -10,14 +10,14 @@ const AdminLayout: React.FC = () => {
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
-    if (loading) return <div className="h-screen w-full bg-[#09090B] flex items-center justify-center text-purple-500 font-bold">Initializing Admin Space...</div>;
+    if (loading) return <div className="h-screen w-full bg-[#f8f7fc] flex items-center justify-center text-purple-500 font-bold">Initializing Admin Space...</div>;
 
     if (!user || !['super_admin', 'admin', 'institution'].includes(user.role)) {
         return <Navigate to="/login" replace />;
     }
 
     return (
-        <div className="flex min-h-screen bg-[#09090B] text-[#F4F4F5] font-sans overflow-hidden">
+        <div className="flex min-h-screen bg-[#f8f7fc] text-[#14102b] font-sans overflow-hidden">
             <style>
                 {`
                     .custom-scrollbar::-webkit-scrollbar {
@@ -39,7 +39,7 @@ const AdminLayout: React.FC = () => {
             {/* Mobile Hamburger */}
             <button
                 onClick={() => setIsMobileSidebarOpen(true)}
-                className="fixed top-4 left-4 z-[60] md:hidden p-2 bg-[#1E1B4B] border border-white/10 rounded-xl text-white shadow-lg"
+                className="fixed top-4 left-4 z-[60] md:hidden p-2 bg-white border border-[#e8e3f5] rounded-xl text-[#14102b] shadow-lg"
             >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="3" y1="12" x2="21" y2="12" />
@@ -51,7 +51,7 @@ const AdminLayout: React.FC = () => {
             {/* Mobile Overlay */}
             {isMobileSidebarOpen && (
                 <div
-                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[55] md:hidden"
+                    className="fixed inset-0 bg-[#14102b]/40 backdrop-blur-sm z-[55] md:hidden"
                     onClick={() => setIsMobileSidebarOpen(false)}
                 />
             )}
@@ -106,8 +106,8 @@ class AdminContentWrapper extends React.Component<{ children: React.ReactNode },
         if (this.state.hasError) {
             return (
                 <div className="flex flex-col items-center justify-center py-20 text-center">
-                    <h2 className="text-xl font-bold text-white mb-2">Page crashed</h2>
-                    <p className="text-gray-400 text-sm mb-4">This section encountered an error.</p>
+                    <h2 className="text-xl font-bold text-[#14102b] mb-2">Page crashed</h2>
+                    <p className="text-slate-600 text-sm mb-4">This section encountered an error.</p>
                     <button
                         onClick={() => {
                             this.setState({ hasError: false, errorKey: this.state.errorKey + 1 });

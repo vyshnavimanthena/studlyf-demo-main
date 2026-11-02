@@ -45,17 +45,17 @@ const AuditLogs: React.FC = () => {
             {/* Header section with Stats */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-6">
                 <div>
-                    <h1 className="text-xl sm:text-3xl font-black text-white tracking-tight uppercase">System Audit Logs</h1>
-                    <p className="text-zinc-400 text-sm mt-1">Immutable trace of institutional administrative actions and system modifications.</p>
+                    <h1 className="text-xl sm:text-3xl font-black text-[#14102b] tracking-tight uppercase">System Audit Logs</h1>
+                    <p className="text-slate-600 text-sm mt-1">Immutable trace of institutional administrative actions and system modifications.</p>
                 </div>
                 <div className="flex flex-wrap gap-4">
-                    <div className="bg-blue-500/10 border border-blue-500/20 p-4 rounded-3xl flex items-center gap-4 group">
-                        <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center text-blue-400 group-hover:bg-blue-400 group-hover:text-black transition-all">
+                    <div className="bg-blue-50 border border-blue-100 p-4 rounded-3xl flex items-center gap-4 group">
+                        <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center text-blue-600 group-hover:bg-blue-500 group-hover:text-white transition-all">
                             <History size={20} />
                         </div>
                         <div>
-                            <div className="text-xl font-bold text-white tabular-nums">{logs.length}</div>
-                            <div className="text-[10px] text-blue-500 uppercase tracking-widest font-black">Captured Logs</div>
+                            <div className="text-xl font-bold text-[#14102b] tabular-nums">{logs.length}</div>
+                            <div className="text-[10px] text-blue-700 uppercase tracking-widest font-black">Captured Logs</div>
                         </div>
                     </div>
                 </div>
@@ -64,45 +64,45 @@ const AuditLogs: React.FC = () => {
             {/* Controls */}
             <div className="flex flex-col md:flex-row gap-4">
                 <div className="relative flex-grow">
-                    <Terminal className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-600" size={18} />
+                    <Terminal className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
                     <input 
                         type="text" 
                         placeholder="Search system actions or user emails..." 
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-zinc-900 border border-white/5 rounded-2xl py-3.5 pl-12 pr-4 text-white placeholder:text-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-mono text-sm tracking-tight"
+                        className="w-full bg-white border border-[#e8e3f5] rounded-2xl py-3.5 pl-12 pr-4 text-[#14102b] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-mono text-sm tracking-tight"
                     />
                 </div>
-                <button className="bg-zinc-900 border border-white/5 text-zinc-500 px-6 py-3.5 rounded-2xl font-bold text-sm flex items-center gap-2 hover:text-white transition-all shadow-xl active:scale-95">
+                <button className="bg-white border border-[#e8e3f5] text-slate-500 px-6 py-3.5 rounded-2xl font-bold text-sm flex items-center gap-2 hover:text-[#14102b] transition-all shadow-sm active:scale-95">
                     <Filter size={18} /> Filter Logs
                 </button>
             </div>
 
             {/* Content Table */}
-            <div className="bg-zinc-900/30 border border-white/5 rounded-[2.5rem] overflow-hidden backdrop-blur-sm border-t-2 border-t-blue-500/20">
+            <div className="bg-white shadow-sm border border-[#e8e3f5] rounded-[2.5rem] overflow-hidden backdrop-blur-sm border-t-2 border-t-blue-500/20">
                 <div className="overflow-x-auto overflow-y-hidden">
                     <table className="w-full text-left">
                         <thead>
-                            <tr className="border-b border-white/5 bg-white/[0.01]">
-                                <th className="px-8 py-5 text-[10px] font-black text-zinc-600 uppercase tracking-widest">Entry ID</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-zinc-600 uppercase tracking-widest">System Action</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-zinc-600 uppercase tracking-widest">Authentication Level</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-zinc-600 uppercase tracking-widest">Temporal Signature</th>
-                                <th className="px-8 py-5 text-[10px] font-black text-zinc-600 uppercase tracking-widest text-right">Audit Metadata</th>
+                            <tr className="border-b border-[#e8e3f5] bg-white">
+                                <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">Entry ID</th>
+                                <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">System Action</th>
+                                <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">Authentication Level</th>
+                                <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest">Temporal Signature</th>
+                                <th className="px-8 py-5 text-[10px] font-black text-slate-500 uppercase tracking-widest text-right">Audit Metadata</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/5">
+                        <tbody className="divide-y divide-[#e8e3f5]">
                             <AnimatePresence mode='popLayout'>
                                 {loading ? (
                                     <tr>
                                         <td colSpan={5} className="px-8 py-24 text-center">
                                             <div className="w-10 h-10 border-2 border-blue-500/20 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
-                                            <span className="text-zinc-600 text-sm font-black uppercase tracking-tighter">Initializing Audit Trace...</span>
+                                            <span className="text-slate-500 text-sm font-black uppercase tracking-tighter">Initializing Audit Trace...</span>
                                         </td>
                                     </tr>
                                 ) : filteredLogs.length === 0 ? (
                                     <tr>
-                                        <td colSpan={5} className="px-8 py-20 text-center text-zinc-600">
+                                        <td colSpan={5} className="px-8 py-20 text-center text-slate-500">
                                             No audit trails found matching the current search parameters.
                                         </td>
                                     </tr>
@@ -118,28 +118,28 @@ const AuditLogs: React.FC = () => {
                                             <td className="px-8 py-5">
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_8px_#3B82F6] opacity-60" />
-                                                    <span className="text-xs font-black text-zinc-500 font-mono tracking-wider tabular-nums">{log.id}</span>
+                                                    <span className="text-xs font-black text-slate-500 font-mono tracking-wider tabular-nums">{log.id}</span>
                                                 </div>
                                             </td>
                                             <td className="px-8 py-5">
-                                                <div className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors uppercase tracking-tight">
+                                                <div className="text-sm font-bold text-[#14102b] group-hover:text-blue-700 transition-colors uppercase tracking-tight">
                                                     {log.action}
                                                 </div>
                                             </td>
                                             <td className="px-8 py-5">
                                                 <div className="flex items-center gap-2">
-                                                    <User size={14} className="text-zinc-600 group-hover:text-blue-500 transition-colors" />
-                                                    <span className="text-xs font-semibold text-zinc-400">{log.user}</span>
+                                                    <User size={14} className="text-slate-500 group-hover:text-blue-500 transition-colors" />
+                                                    <span className="text-xs font-semibold text-slate-600">{log.user}</span>
                                                 </div>
                                             </td>
                                             <td className="px-8 py-5">
-                                                <div className="flex items-center gap-2 text-zinc-500 font-mono">
+                                                <div className="flex items-center gap-2 text-slate-500 font-mono">
                                                     <Clock size={13} className="opacity-40" />
                                                     <span className="text-[11px] font-medium tracking-tighter italic">{log.timestamp}</span>
                                                 </div>
                                             </td>
                                             <td className="px-8 py-5 text-right">
-                                                <button className="p-2 text-zinc-700 hover:text-white hover:bg-zinc-800 rounded-xl transition-all shadow-md">
+                                                <button className="p-2 text-slate-500 hover:text-[#14102b] hover:bg-slate-100 rounded-xl transition-all shadow-md">
                                                     <Database size={15} />
                                                 </button>
                                             </td>

@@ -95,31 +95,31 @@ function timeAgo(dateString: string): string {
 
 function SkeletonCard() {
   return (
-    <div className="bg-white/5 border border-white/10 rounded-xl p-4 animate-pulse">
+    <div className="bg-white border border-[#e8e3f5] rounded-xl shadow-[0_1px_3px_rgba(20,16,43,0.05)] p-4 animate-pulse">
       <div className="flex gap-4">
         <div className="flex flex-col items-center gap-1 w-10">
-          <div className="w-6 h-6 bg-white/10 rounded" />
-          <div className="w-8 h-4 bg-white/10 rounded" />
-          <div className="w-6 h-6 bg-white/10 rounded" />
+          <div className="w-6 h-6 bg-[#f0ecfa] rounded" />
+          <div className="w-8 h-4 bg-[#f0ecfa] rounded" />
+          <div className="w-6 h-6 bg-[#f0ecfa] rounded" />
         </div>
         <div className="flex-1 space-y-3">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-white/10 rounded-full" />
-            <div className="w-24 h-3 bg-white/10 rounded" />
-            <div className="w-12 h-3 bg-white/10 rounded" />
+            <div className="w-8 h-8 bg-[#f0ecfa] rounded-full" />
+            <div className="w-24 h-3 bg-[#f0ecfa] rounded" />
+            <div className="w-12 h-3 bg-[#f0ecfa] rounded" />
           </div>
-          <div className="w-3/4 h-5 bg-white/10 rounded" />
-          <div className="w-full h-3 bg-white/10 rounded" />
-          <div className="w-2/3 h-3 bg-white/10 rounded" />
+          <div className="w-3/4 h-5 bg-[#f0ecfa] rounded" />
+          <div className="w-full h-3 bg-[#f0ecfa] rounded" />
+          <div className="w-2/3 h-3 bg-[#f0ecfa] rounded" />
           <div className="flex gap-2">
-            <div className="w-12 h-5 bg-white/10 rounded-full" />
-            <div className="w-16 h-5 bg-white/10 rounded-full" />
-            <div className="w-10 h-5 bg-white/10 rounded-full" />
+            <div className="w-12 h-5 bg-[#f0ecfa] rounded-full" />
+            <div className="w-16 h-5 bg-[#f0ecfa] rounded-full" />
+            <div className="w-10 h-5 bg-[#f0ecfa] rounded-full" />
           </div>
           <div className="flex gap-4">
-            <div className="w-16 h-3 bg-white/10 rounded" />
-            <div className="w-12 h-3 bg-white/10 rounded" />
-            <div className="w-12 h-3 bg-white/10 rounded" />
+            <div className="w-16 h-3 bg-[#f0ecfa] rounded" />
+            <div className="w-12 h-3 bg-[#f0ecfa] rounded" />
+            <div className="w-12 h-3 bg-[#f0ecfa] rounded" />
           </div>
         </div>
       </div>
@@ -332,9 +332,9 @@ export default function CommunityFeed() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a1a] text-white pt-24">
+    <div className="min-h-screen bg-[#fbfaff] text-[#14102b] pt-24">
       {/* Top Nav */}
-      <div className="sticky top-24 z-40 bg-[#0a0a1a]/80 backdrop-blur-xl border-b border-white/10">
+      <div className="sticky top-24 z-40 bg-white/90 backdrop-blur-xl border-b border-[#e8e3f5]">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Community</h1>
           <Link
@@ -359,7 +359,7 @@ export default function CommunityFeed() {
                 className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all ${
                   sortBy === opt.value
                     ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/25'
-                    : 'bg-white/5 text-gray-400 hover:bg-white/10'
+                    : 'bg-white text-slate-600 hover:bg-[#f0ecfa]'
                 }`}
               >
                 <Icon size={16} />
@@ -377,8 +377,8 @@ export default function CommunityFeed() {
               onClick={() => setSelectedCategory(cat.value)}
               className={`px-3 py-1.5 rounded-full text-sm whitespace-nowrap transition-all ${
                 selectedCategory === cat.value
-                  ? 'bg-purple-600/20 text-purple-300 border border-purple-500/50'
-                  : 'bg-white/5 text-gray-400 border border-transparent hover:bg-white/10'
+                  ? 'bg-purple-600/20 text-purple-700 border border-purple-500/50'
+                  : 'bg-white text-slate-600 border border-transparent hover:bg-[#f0ecfa]'
               }`}
             >
               {cat.label}
@@ -391,18 +391,18 @@ export default function CommunityFeed() {
 
         {/* Search */}
         <div className="relative mb-6">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search projects..."
-            className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-10 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors"
+            className="w-full bg-white border border-[#e8e3f5] rounded-xl pl-10 pr-10 py-3 text-[#14102b] placeholder-slate-400 focus:outline-none focus:border-purple-500 transition-colors"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-[#14102b] transition-colors"
             >
               <X size={16} />
             </button>
@@ -424,9 +424,9 @@ export default function CommunityFeed() {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center py-20"
               >
-                <Flame className="mx-auto mb-4 text-gray-600" size={48} />
-                <p className="text-gray-400 text-lg mb-2">No projects yet</p>
-                <p className="text-gray-500 text-sm">Be the first to share!</p>
+                <Flame className="mx-auto mb-4 text-slate-400" size={48} />
+                <p className="text-slate-600 text-lg mb-2">No projects yet</p>
+                <p className="text-slate-500 text-sm">Be the first to share!</p>
                 <Link
                   to="/community/submit"
                   className="inline-flex items-center gap-2 mt-6 px-6 py-3 bg-purple-600 hover:bg-purple-700 rounded-lg font-medium transition-colors"
@@ -445,7 +445,7 @@ export default function CommunityFeed() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.95 }}
                       transition={{ delay: idx * 0.03 }}
-                      className="bg-white/5 border border-white/10 rounded-xl hover:border-purple-500/30 transition-all group"
+                      className="bg-white border border-[#e8e3f5] rounded-xl shadow-[0_1px_3px_rgba(20,16,43,0.05)] hover:border-purple-500/30 transition-all group"
                     >
                       <div className="flex p-4 gap-4">
                         {/* Vote Column */}
@@ -454,8 +454,8 @@ export default function CommunityFeed() {
                             onClick={() => handleVote(post.id, 'up')}
                             className={`p-1 rounded transition-colors ${
                               post.user_vote === 'up'
-                                ? 'text-green-400 bg-green-400/10'
-                                : 'text-gray-500 hover:text-green-400 hover:bg-green-400/10'
+                                ? 'text-green-600 bg-green-400/10'
+                                : 'text-slate-500 hover:text-green-600 hover:bg-green-400/10'
                             }`}
                           >
                             <ArrowUp size={20} />
@@ -463,10 +463,10 @@ export default function CommunityFeed() {
                           <span
                             className={`text-sm font-semibold ${
                               post.user_vote === 'up'
-                                ? 'text-green-400'
+                                ? 'text-green-600'
                                 : post.user_vote === 'down'
-                                ? 'text-red-400'
-                                : 'text-gray-400'
+                                ? 'text-red-600'
+                                : 'text-slate-600'
                             }`}
                           >
                             {post.upvotes - post.downvotes}
@@ -475,8 +475,8 @@ export default function CommunityFeed() {
                             onClick={() => handleVote(post.id, 'down')}
                             className={`p-1 rounded transition-colors ${
                               post.user_vote === 'down'
-                                ? 'text-red-400 bg-red-400/10'
-                                : 'text-gray-500 hover:text-red-400 hover:bg-red-400/10'
+                                ? 'text-red-600 bg-red-400/10'
+                                : 'text-slate-500 hover:text-red-600 hover:bg-red-400/10'
                             }`}
                           >
                             <ArrowDown size={20} />
@@ -493,25 +493,25 @@ export default function CommunityFeed() {
                                 className="w-6 h-6 rounded-full object-cover"
                               />
                             ) : (
-                              <div className="w-6 h-6 rounded-full bg-purple-600/30 flex items-center justify-center text-xs font-bold text-purple-300">
+                              <div className="w-6 h-6 rounded-full bg-purple-600/30 flex items-center justify-center text-xs font-bold text-purple-700">
                                 {post.author_name?.[0]?.toUpperCase()}
                               </div>
                             )}
-                            <span className="text-sm text-gray-400">{post.author_name}</span>
-                            <span className="text-xs text-gray-600">·</span>
-                            <span className="text-xs text-gray-500">{timeAgo(post.created_at)}</span>
+                            <span className="text-sm text-slate-600">{post.author_name}</span>
+                            <span className="text-xs text-slate-400">·</span>
+                            <span className="text-xs text-slate-500">{timeAgo(post.created_at)}</span>
                           </div>
 
                           <Link
                             to={`/community/${post.id}`}
                             className="block group/title"
                           >
-                            <h3 className="text-base font-semibold text-white group-hover/title:text-purple-300 transition-colors mb-1 break-words line-clamp-2">
+                            <h3 className="text-base font-semibold text-[#14102b] group-hover/title:text-purple-700 transition-colors mb-1 break-words line-clamp-2">
                               {post.title}
                             </h3>
                           </Link>
 
-                          <p className="text-sm text-gray-400 line-clamp-2 mb-2 break-words">
+                          <p className="text-sm text-slate-600 line-clamp-2 mb-2 break-words">
                             {post.description}
                           </p>
 
@@ -520,23 +520,23 @@ export default function CommunityFeed() {
                             {post.tags.slice(0, 4).map((tag) => (
                               <span
                                 key={tag}
-                                className="px-2 py-0.5 text-xs rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20"
+                                className="px-2 py-0.5 text-xs rounded-full bg-purple-500/10 text-purple-700 border border-purple-500/20"
                               >
                                 {tag}
                               </span>
                             ))}
                             {post.tags.length > 4 && (
-                              <span className="px-2 py-0.5 text-xs rounded-full bg-white/5 text-gray-500">
+                              <span className="px-2 py-0.5 text-xs rounded-full bg-white text-slate-500">
                                 +{post.tags.length - 4}
                               </span>
                             )}
                           </div>
 
                           {/* Bottom Row */}
-                          <div className="flex items-center gap-4 text-gray-500">
+                          <div className="flex items-center gap-4 text-slate-500">
                             <Link
                               to={`/community/${post.id}`}
-                              className="flex items-center gap-1 text-xs hover:text-gray-300 transition-colors"
+                              className="flex items-center gap-1 text-xs hover:text-[#14102b] transition-colors"
                             >
                               <MessageCircle size={14} />
                               {post.comment_count}
@@ -547,7 +547,7 @@ export default function CommunityFeed() {
                             </span>
                             <button
                               onClick={() => handleShare(post.id)}
-                              className="flex items-center gap-1 text-xs hover:text-gray-300 transition-colors"
+                              className="flex items-center gap-1 text-xs hover:text-[#14102b] transition-colors"
                             >
                               <Share2 size={14} />
                               {post.share_count}
@@ -555,7 +555,7 @@ export default function CommunityFeed() {
                             <button
                               onClick={() => handleSave(post.id)}
                               className={`flex items-center gap-1 text-xs transition-colors ${
-                                post.is_saved ? 'text-yellow-400' : 'hover:text-gray-300'
+                                post.is_saved ? 'text-yellow-600' : 'hover:text-[#14102b]'
                               }`}
                             >
                               <Bookmark size={14} fill={post.is_saved ? 'currentColor' : 'none'} />
@@ -566,7 +566,7 @@ export default function CommunityFeed() {
                                 href={post.github_link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-1 text-xs hover:text-gray-300 transition-colors"
+                                className="flex items-center gap-1 text-xs hover:text-[#14102b] transition-colors"
                                 onClick={(e) => e.stopPropagation()}
                               >
                                 <Github size={14} />
@@ -577,7 +577,7 @@ export default function CommunityFeed() {
                                 href={post.website_link}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-1 text-xs hover:text-gray-300 transition-colors"
+                                className="flex items-center gap-1 text-xs hover:text-[#14102b] transition-colors"
                                 onClick={(e) => e.stopPropagation()}
                               >
                                 <ExternalLink size={14} />
@@ -590,7 +590,7 @@ export default function CommunityFeed() {
                         {post.cover_image && (
                           <Link
                             to={`/community/${post.id}`}
-                            className="hidden sm:block flex-shrink-0 w-32 h-24 rounded-lg overflow-hidden bg-white/5"
+                            className="hidden sm:block flex-shrink-0 w-32 h-24 rounded-lg overflow-hidden bg-white"
                           >
                             <img
                               src={post.cover_image}
@@ -610,7 +610,7 @@ export default function CommunityFeed() {
                     <button
                       onClick={loadMore}
                       disabled={loadingMore}
-                      className="flex items-center gap-2 px-6 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                      className="flex items-center gap-2 px-6 py-2.5 bg-white hover:bg-[#f0ecfa] border border-[#e8e3f5] rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
                     >
                       {loadingMore ? (
                         <>
@@ -630,13 +630,13 @@ export default function CommunityFeed() {
           {/* Right Sidebar */}
           <aside className="hidden lg:block w-72 flex-shrink-0 space-y-6">
             {/* Top Builders */}
-            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-              <h3 className="font-semibold text-white mb-3 flex items-center gap-2">
-                <Trophy size={18} className="text-yellow-400" />
+            <div className="bg-white border border-[#e8e3f5] rounded-xl shadow-[0_1px_3px_rgba(20,16,43,0.05)] p-4">
+              <h3 className="font-semibold text-[#14102b] mb-3 flex items-center gap-2">
+                <Trophy size={18} className="text-yellow-600" />
                 Top Builders
               </h3>
               {topBuilders.length === 0 ? (
-                <p className="text-sm text-gray-500">No builders yet</p>
+                <p className="text-sm text-slate-500">No builders yet</p>
               ) : (
                 <div className="space-y-3">
                   {topBuilders.slice(0, 5).map((builder, idx) => (
@@ -648,12 +648,12 @@ export default function CommunityFeed() {
                       <span
                         className={`text-sm font-bold w-5 ${
                           idx === 0
-                            ? 'text-yellow-400'
+                            ? 'text-yellow-600'
                             : idx === 1
-                            ? 'text-gray-300'
+                            ? 'text-slate-700'
                             : idx === 2
-                            ? 'text-orange-400'
-                            : 'text-gray-500'
+                            ? 'text-orange-600'
+                            : 'text-slate-500'
                         }`}
                       >
                         #{idx + 1}
@@ -665,15 +665,15 @@ export default function CommunityFeed() {
                           className="w-8 h-8 rounded-full object-cover"
                         />
                       ) : (
-                        <div className="w-8 h-8 rounded-full bg-purple-600/30 flex items-center justify-center text-xs font-bold text-purple-300">
+                        <div className="w-8 h-8 rounded-full bg-purple-600/30 flex items-center justify-center text-xs font-bold text-purple-700">
                           {builder.author_name?.[0]?.toUpperCase()}
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors truncate">
+                        <p className="text-sm font-medium text-slate-700 group-hover:text-purple-700 transition-colors truncate">
                           {builder.author_name}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-slate-500">
                           {builder.total_upvotes} upvotes · {builder.post_count} projects
                         </p>
                       </div>
@@ -684,9 +684,9 @@ export default function CommunityFeed() {
             </div>
 
             {/* Popular Tags */}
-            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-              <h3 className="font-semibold text-white mb-3 flex items-center gap-2">
-                <Tag size={18} className="text-purple-400" />
+            <div className="bg-white border border-[#e8e3f5] rounded-xl shadow-[0_1px_3px_rgba(20,16,43,0.05)] p-4">
+              <h3 className="font-semibold text-[#14102b] mb-3 flex items-center gap-2">
+                <Tag size={18} className="text-purple-600" />
                 Popular Tags
               </h3>
               <div className="flex flex-wrap gap-2">
@@ -696,21 +696,21 @@ export default function CommunityFeed() {
                     onClick={() => {
                       setSearchQuery(t.tag);
                     }}
-                    className="px-2.5 py-1 text-xs rounded-full bg-white/5 text-gray-400 hover:bg-purple-500/20 hover:text-purple-300 transition-colors"
+                    className="px-2.5 py-1 text-xs rounded-full bg-white text-slate-600 hover:bg-purple-500/20 hover:text-purple-700 transition-colors"
                   >
                     {t.tag}
                     <span className="ml-1 opacity-50">{t.count}</span>
                   </button>
                 ))}
                 {popularTags.length === 0 && (
-                  <p className="text-sm text-gray-500">No tags yet</p>
+                  <p className="text-sm text-slate-500">No tags yet</p>
                 )}
               </div>
             </div>
 
             {/* Categories */}
-            <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-              <h3 className="font-semibold text-white mb-3">Categories</h3>
+            <div className="bg-white border border-[#e8e3f5] rounded-xl shadow-[0_1px_3px_rgba(20,16,43,0.05)] p-4">
+              <h3 className="font-semibold text-[#14102b] mb-3">Categories</h3>
               <div className="space-y-1">
                 {CATEGORIES.filter((c) => c.value !== 'all').map((cat) => (
                   <button
@@ -718,8 +718,8 @@ export default function CommunityFeed() {
                     onClick={() => setSelectedCategory(cat.value)}
                     className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
                       selectedCategory === cat.value
-                        ? 'bg-purple-600/20 text-purple-300'
-                        : 'text-gray-400 hover:bg-white/5'
+                        ? 'bg-purple-600/20 text-purple-700'
+                        : 'text-slate-600 hover:bg-[#f6f3ff]'
                     }`}
                   >
                     <span>{cat.label}</span>

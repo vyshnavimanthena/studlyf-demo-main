@@ -89,15 +89,15 @@ const Analytics: React.FC = () => {
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">Intelligence & Analytics</h1>
-                    <p className="text-white/50 mt-1">Deep dive into the health and growth metrics of StudLyf.</p>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-[#14102b] tracking-tight">Intelligence & Analytics</h1>
+                    <p className="text-slate-500 mt-1">Deep dive into the health and growth metrics of StudLyf.</p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <button className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-bold text-white/70 flex items-center gap-2">
+                    <button className="px-4 py-2 bg-white hover:bg-[#f6f3ff] border border-[#e8e3f5] rounded-xl text-xs font-bold text-slate-600 flex items-center gap-2">
                         <Calendar size={14} />
                         Q1 2026
                     </button>
-                    <button onClick={handleExportReport} className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-xs font-bold text-white/70 flex items-center gap-2 active:scale-95 transition-all">
+                    <button onClick={handleExportReport} className="px-4 py-2 bg-white hover:bg-[#f6f3ff] border border-[#e8e3f5] rounded-xl text-xs font-bold text-slate-600 flex items-center gap-2 active:scale-95 transition-all">
                         <Download size={14} />
                         Export Report
                     </button>
@@ -106,14 +106,14 @@ const Analytics: React.FC = () => {
 
             {/* Performance Overview Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-                <div className="bg-[#111111] border border-white/10 rounded-3xl p-4 sm:p-8 flex flex-col justify-between h-64 relative overflow-hidden group">
+                <div className="bg-white border border-[#e8e3f5] rounded-3xl p-4 sm:p-8 flex flex-col justify-between h-64 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-4 sm:p-8 opacity-5 group-hover:opacity-10 transition-opacity">
                         <Users size={80} />
                     </div>
                     <div>
-                        <div className="text-xs font-bold text-white/30 uppercase tracking-[0.2em] mb-4">Community Growth</div>
-                        <div className="text-3xl sm:text-5xl font-bold text-white tracking-tighter">{communityGrowth}</div>
-                        <div className="flex items-center gap-2 mt-4 text-green-400 font-bold">
+                        <div className="text-xs font-bold text-slate-500 uppercase tracking-[0.2em] mb-4">Community Growth</div>
+                        <div className="text-3xl sm:text-5xl font-bold text-[#14102b] tracking-tighter">{communityGrowth}</div>
+                        <div className="flex items-center gap-2 mt-4 text-green-600 font-bold">
                             <TrendingUp size={18} />
                             <span>{stats?.studentGrowth || '+18.4%'} this month</span>
                         </div>
@@ -125,21 +125,21 @@ const Analytics: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="bg-[#111111] border border-white/10 rounded-3xl p-4 sm:p-8 flex flex-col justify-between h-64 relative overflow-hidden group">
+                <div className="bg-white border border-[#e8e3f5] rounded-3xl p-4 sm:p-8 flex flex-col justify-between h-64 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-4 sm:p-8 opacity-5 group-hover:opacity-10 transition-opacity">
                         <Activity size={80} />
                     </div>
                     <div>
-                        <div className="text-xs font-bold text-white/30 uppercase tracking-[0.2em] mb-4">Course Progress Avg</div>
-                        <div className="text-3xl sm:text-5xl font-bold text-white tracking-tighter">{stats?.courseCompletion || '84%'}</div>
-                        <div className="flex items-center gap-2 mt-4 text-blue-400 font-bold">
+                        <div className="text-xs font-bold text-slate-500 uppercase tracking-[0.2em] mb-4">Course Progress Avg</div>
+                        <div className="text-3xl sm:text-5xl font-bold text-[#14102b] tracking-tighter">{stats?.courseCompletion || '84%'}</div>
+                        <div className="flex items-center gap-2 mt-4 text-blue-600 font-bold">
                             <TrendingUp size={18} />
                             <span>System optimal</span>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-[#7C3AED] to-[#5B21B6] rounded-3xl p-4 sm:p-8 flex flex-col justify-between h-64 shadow-2xl shadow-purple-900/40 border border-white/20">
+                <div className="bg-gradient-to-br from-[#7C3AED] to-[#5B21B6] rounded-3xl p-4 sm:p-8 flex flex-col justify-between h-64 shadow-lg shadow-purple-500/20">
                     <div>
                         <div className="text-xs font-bold text-white/50 uppercase tracking-[0.2em] mb-4">Total Revenue Generated</div>
                         <div className="text-3xl sm:text-5xl font-bold text-white tracking-tighter">{revenueValue}</div>
@@ -154,61 +154,61 @@ const Analytics: React.FC = () => {
             {/* In-depth Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8">
                 {/* Placement funnel */}
-                <div className="bg-white/5 border border-white/10 rounded-3xl p-4 sm:p-8 h-[500px] flex flex-col">
+                <div className="bg-white shadow-sm border border-[#e8e3f5] rounded-3xl p-4 sm:p-8 h-[500px] flex flex-col">
                     <div className="flex items-center justify-between mb-10">
-                        <h3 className="text-xl font-bold text-white flex items-center gap-3">
+                        <h3 className="text-xl font-bold text-[#14102b] flex items-center gap-3">
                             <BarChart3 className="text-[#7C3AED]" /> Placement Velocity
                         </h3>
                         <div className="flex items-center gap-2">
-                            <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-[#7C3AED]" /><span className="text-[10px] text-white/40 font-bold uppercase">Target</span></div>
-                            <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-white/10" /><span className="text-[10px] text-white/40 font-bold uppercase">Actual</span></div>
+                            <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-[#7C3AED]" /><span className="text-[10px] text-slate-500 font-bold uppercase">Target</span></div>
+                            <div className="flex items-center gap-1.5"><div className="w-2 h-2 rounded-full bg-[#7C3AED]/25" /><span className="text-[10px] text-slate-500 font-bold uppercase">Actual</span></div>
                         </div>
                     </div>
-                    <div className="flex-grow flex items-end gap-4 px-4 pb-4 border-b border-white/5">
+                    <div className="flex-grow flex items-end gap-4 px-4 pb-4 border-b border-[#e8e3f5]">
                         {[60, 40, 80, 50, 90, 65, 100].map((h, i) => (
                             <div key={i} className="flex-grow relative h-full flex flex-col justify-end gap-2 group">
                                 <motion.div initial={{ height: 0 }} animate={{ height: `${h}%` }} transition={{ delay: i * 0.1 }} className="w-full bg-[#7C3AED]/20 rounded-t-lg group-hover:bg-[#7C3AED]/40 transition-all" />
                                 <motion.div initial={{ height: 0 }} animate={{ height: `${h * 0.7}%` }} transition={{ delay: i * 0.15 }} className="absolute bottom-0 w-full bg-[#7C3AED] rounded-t-lg opacity-80" />
-                                <div className="text-center text-[10px] text-white/30 font-bold mt-2 uppercase">{['M', 'T', 'W', 'T', 'F', 'S', 'S'][i]}</div>
+                                <div className="text-center text-[10px] text-white/80 font-bold mt-2 uppercase">{['M', 'T', 'W', 'T', 'F', 'S', 'S'][i]}</div>
                             </div>
                         ))}
                     </div>
                     <div className="grid grid-cols-4 gap-4 mt-8">
                         <div className="text-center">
-                            <div className="text-[10px] font-bold text-white/30 uppercase mb-1">New Leads</div>
-                            <div className="text-xl font-bold text-white">+1,240</div>
+                            <div className="text-[10px] font-bold text-slate-500 uppercase mb-1">New Leads</div>
+                            <div className="text-xl font-bold text-[#14102b]">+1,240</div>
                         </div>
                         <div className="text-center">
-                            <div className="text-[10px] font-bold text-white/30 uppercase mb-1">Capped</div>
-                            <div className="text-xl font-bold text-white">412</div>
+                            <div className="text-[10px] font-bold text-slate-500 uppercase mb-1">Capped</div>
+                            <div className="text-xl font-bold text-[#14102b]">412</div>
                         </div>
                         <div className="text-center">
-                            <div className="text-[10px] font-bold text-white/30 uppercase mb-1">Offered</div>
-                            <div className="text-xl font-bold text-white">188</div>
+                            <div className="text-[10px] font-bold text-slate-500 uppercase mb-1">Offered</div>
+                            <div className="text-xl font-bold text-[#14102b]">188</div>
                         </div>
                         <div className="text-center">
-                            <div className="text-[10px] font-bold text-white/30 uppercase mb-1">Drop-off</div>
-                            <div className="text-xl font-bold text-red-400">12%</div>
+                            <div className="text-[10px] font-bold text-slate-500 uppercase mb-1">Drop-off</div>
+                            <div className="text-xl font-bold text-red-600">12%</div>
                         </div>
                     </div>
                 </div>
 
                 {/* Skill Distribution */}
-                <div className="bg-white/5 border border-white/10 rounded-3xl p-4 sm:p-8 h-[500px] flex flex-col">
+                <div className="bg-white shadow-sm border border-[#e8e3f5] rounded-3xl p-4 sm:p-8 h-[500px] flex flex-col">
                     <div className="flex items-center justify-between mb-10">
-                        <h3 className="text-xl font-bold text-white flex items-center gap-3">
+                        <h3 className="text-xl font-bold text-[#14102b] flex items-center gap-3">
                             <PieChart className="text-blue-500" /> Skill Distribution
                         </h3>
-                        <div className="px-3 py-1 bg-white/5 rounded-full text-[10px] font-bold text-white/40 uppercase">All Tracks</div>
+                        <div className="px-3 py-1 bg-[#f6f3ff] rounded-full text-[10px] font-bold text-slate-500 uppercase">All Tracks</div>
                     </div>
                     <div className="flex-grow flex items-center justify-center relative">
-                        <div className="w-64 h-64 rounded-full border-[1.5rem] border-white/5 relative flex items-center justify-center">
+                        <div className="w-64 h-64 rounded-full border-[1.5rem] border-[#e8e3f5] relative flex items-center justify-center">
                             {/* Simplified radial breakdown */}
                             <div className="absolute inset-0 rounded-full border-[1.5rem] border-blue-500 border-l-transparent border-b-transparent rotate-45" />
                             <div className="absolute inset-0 rounded-full border-[1.5rem] border-[#7C3AED] border-r-transparent border-t-transparent shadow-[0_0_20px_#7C3AED66]" />
                             <div className="flex flex-col items-center">
-                                <div className="text-4xl font-bold text-white tracking-tighter">8 Tracks</div>
-                                <div className="text-[10px] font-bold text-white/30 uppercase tracking-[0.3em]">Analyzed</div>
+                                <div className="text-4xl font-bold text-[#14102b] tracking-tighter">8 Tracks</div>
+                                <div className="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em]">Analyzed</div>
                             </div>
                         </div>
                     </div>
@@ -216,24 +216,24 @@ const Analytics: React.FC = () => {
                         {stats?.trackDistribution ? Object.entries(stats.trackDistribution).map(([name, count]: [string, any], i) => (
                             <div key={name} className="flex items-center justify-between text-xs">
                                 <div className="flex items-center gap-2">
-                                    <div className={`w-3 h-3 rounded-full ${i === 0 ? 'bg-[#7C3AED]' : i === 1 ? 'bg-blue-500' : 'bg-white/10'}`} />
-                                    <span className="text-white/70">{name}</span>
+                                    <div className={`w-3 h-3 rounded-full ${i === 0 ? 'bg-[#7C3AED]' : i === 1 ? 'bg-blue-500' : 'bg-slate-300'}`} />
+                                    <span className="text-slate-600">{name}</span>
                                 </div>
-                                <span className="text-white/40 font-bold">{((count / stats.totalStudents) * 100).toFixed(0)}%</span>
+                                <span className="text-slate-500 font-bold">{((count / stats.totalStudents) * 100).toFixed(0)}%</span>
                             </div>
                         )) : (
                             <>
                                 <div className="flex items-center justify-between text-xs">
-                                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-[#7C3AED]" /><span className="text-white/70">Frontend Engineeering</span></div>
-                                    <span className="text-white/40 font-bold">42%</span>
+                                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-[#7C3AED]" /><span className="text-slate-600">Frontend Engineeering</span></div>
+                                    <span className="text-slate-500 font-bold">42%</span>
                                 </div>
                                 <div className="flex items-center justify-between text-xs">
-                                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-blue-500" /><span className="text-white/70">Data Science & ML</span></div>
-                                    <span className="text-white/40 font-bold">28%</span>
+                                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-blue-500" /><span className="text-slate-600">Data Science & ML</span></div>
+                                    <span className="text-slate-500 font-bold">28%</span>
                                 </div>
                                 <div className="flex items-center justify-between text-xs">
-                                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-white/10" /><span className="text-white/70">Other (DevOps, UI, etc)</span></div>
-                                    <span className="text-white/40 font-bold">30%</span>
+                                    <div className="flex items-center gap-2"><div className="w-3 h-3 rounded-full bg-slate-300" /><span className="text-slate-600">Other (DevOps, UI, etc)</span></div>
+                                    <span className="text-slate-500 font-bold">30%</span>
                                 </div>
                             </>
                         )}
@@ -242,13 +242,13 @@ const Analytics: React.FC = () => {
             </div>
 
             {/* AI Insight Highlight */}
-            <div className="bg-gradient-to-r from-[#1A0B2E] to-[#111] border border-white/10 rounded-3xl p-6 sm:p-10 flex flex-col md:flex-row items-center gap-6 sm:gap-10">
+            <div className="bg-gradient-to-r from-[#f6f3ff] to-white border border-[#e8e3f5] rounded-3xl p-6 sm:p-10 flex flex-col md:flex-row items-center gap-6 sm:gap-10">
                 <div className="w-24 h-24 rounded-full bg-[#7C3AED]/20 flex items-center justify-center flex-shrink-0 animate-pulse">
                     <TrendingUp size={48} className="text-[#7C3AED]" />
                 </div>
                 <div>
-                    <h3 className="text-2xl font-bold text-white mb-2">Predictive Growth Curve</h3>
-                    <p className="text-white/50 text-sm leading-relaxed max-w-xl">
+                    <h3 className="text-2xl font-bold text-[#14102b] mb-2">Predictive Growth Curve</h3>
+                    <p className="text-slate-500 text-sm leading-relaxed max-w-xl">
                         Based on current enrollment velocity and course satisfaction scores, we project a <strong>140% increase</strong> in "Hire-Ready" candidates by August 2026. Suggesting proactive outreach to 12 new partner companies.
                     </p>
                 </div>

@@ -221,7 +221,7 @@ const EventsManagement: React.FC<EventsManagementProps> = ({ institutionId, onVi
                             key={tab}
                             onClick={() => { setTypeTab(tab); setSearchQuery(''); }}
                             className={`px-6 py-2 rounded-full text-xs font-bold transition-all ${
-                                typeTab === tab ? 'bg-[#0A2E5C] text-white shadow-lg shadow-blue-900/20' : 'bg-white text-slate-500 border border-slate-200 hover:border-slate-300'
+                                typeTab === tab ? 'bg-[#6C3BFF] text-white shadow-lg shadow-[#6C3BFF]/20' : 'bg-white text-slate-500 border border-slate-200 hover:border-slate-300'
                             }`}
                         >
                             {tab}

@@ -25,11 +25,11 @@ const QUOTES_DATABASE: QuoteItem[] = [
     title: "Author & Strategist",
     category: "Mastery",
     theme: {
-      gradient: "from-[#0F172A] via-[#1E1B4B] to-[#311042]",
+      gradient: "from-[#f6f3ff] via-[#f3edff] to-[#fdf2f8]",
       accent: "#6C2BFF",
-      badgeBg: "bg-purple-500/20",
-      badgeText: "text-purple-300 border-purple-500/30",
-      glow: "from-purple-600/30 to-pink-600/30"
+      badgeBg: "bg-purple-500/10",
+      badgeText: "text-purple-700 border-purple-500/30",
+      glow: "from-purple-400/25 to-pink-400/25"
     }
   },
   {
@@ -39,11 +39,11 @@ const QUOTES_DATABASE: QuoteItem[] = [
     title: "Co-Founder, Apple",
     category: "Innovation",
     theme: {
-      gradient: "from-[#090D16] via-[#0F172A] to-[#1E293B]",
+      gradient: "from-[#eff6ff] via-[#f5f8ff] to-[#eef2ff]",
       accent: "#3B82F6",
-      badgeBg: "bg-blue-500/20",
-      badgeText: "text-blue-300 border-blue-500/30",
-      glow: "from-blue-600/30 to-indigo-600/30"
+      badgeBg: "bg-blue-500/10",
+      badgeText: "text-blue-700 border-blue-500/30",
+      glow: "from-blue-400/25 to-indigo-400/25"
     }
   },
   {
@@ -53,11 +53,11 @@ const QUOTES_DATABASE: QuoteItem[] = [
     title: "Visionary & Leader",
     category: "Mindset",
     theme: {
-      gradient: "from-[#14532D] via-[#064E3B] to-[#022C22]",
+      gradient: "from-[#ecfdf5] via-[#f3fbf7] to-[#f0fdfa]",
       accent: "#10B981",
-      badgeBg: "bg-emerald-500/20",
-      badgeText: "text-emerald-300 border-emerald-500/30",
-      glow: "from-emerald-600/30 to-teal-600/30"
+      badgeBg: "bg-emerald-500/10",
+      badgeText: "text-emerald-700 border-emerald-500/30",
+      glow: "from-emerald-400/25 to-teal-400/25"
     }
   },
   {
@@ -67,11 +67,11 @@ const QUOTES_DATABASE: QuoteItem[] = [
     title: "Acclaimed Artist",
     category: "Perseverance",
     theme: {
-      gradient: "from-[#4C0519] via-[#831843] to-[#500724]",
+      gradient: "from-[#fdf2f8] via-[#fff1f5] to-[#fff5f7]",
       accent: "#EC4899",
-      badgeBg: "bg-pink-500/20",
-      badgeText: "text-pink-300 border-pink-500/30",
-      glow: "from-pink-600/30 to-rose-600/30"
+      badgeBg: "bg-pink-500/10",
+      badgeText: "text-pink-700 border-pink-500/30",
+      glow: "from-pink-400/25 to-rose-400/25"
     }
   },
   {
@@ -81,11 +81,11 @@ const QUOTES_DATABASE: QuoteItem[] = [
     title: "Software Architect",
     category: "Mastery",
     theme: {
-      gradient: "from-[#1E1B4B] via-[#312E81] to-[#1E1B4B]",
+      gradient: "from-[#eef2ff] via-[#f3f2ff] to-[#f5f3ff]",
       accent: "#8B5CF6",
-      badgeBg: "bg-indigo-500/20",
-      badgeText: "text-indigo-300 border-indigo-500/30",
-      glow: "from-indigo-600/30 to-purple-600/30"
+      badgeBg: "bg-indigo-500/10",
+      badgeText: "text-indigo-700 border-indigo-500/30",
+      glow: "from-indigo-400/25 to-purple-400/25"
     }
   },
   {
@@ -95,11 +95,11 @@ const QUOTES_DATABASE: QuoteItem[] = [
     title: "Theoretical Physicist",
     category: "Perseverance",
     theme: {
-      gradient: "from-[#1E293B] via-[#0F172A] to-[#020617]",
+      gradient: "from-[#fffbeb] via-[#fff8ee] to-[#fff7ed]",
       accent: "#F59E0B",
-      badgeBg: "bg-amber-500/20",
-      badgeText: "text-amber-300 border-amber-500/30",
-      glow: "from-amber-600/30 to-orange-600/30"
+      badgeBg: "bg-amber-500/10",
+      badgeText: "text-amber-700 border-amber-500/30",
+      glow: "from-amber-400/25 to-orange-400/25"
     }
   },
   {
@@ -109,11 +109,11 @@ const QUOTES_DATABASE: QuoteItem[] = [
     title: "32nd U.S. President",
     category: "Mindset",
     theme: {
-      gradient: "from-[#0F172A] via-[#164E63] to-[#083344]",
+      gradient: "from-[#ecfeff] via-[#f0fbff] to-[#eff6ff]",
       accent: "#06B6D4",
-      badgeBg: "bg-cyan-500/20",
-      badgeText: "text-cyan-300 border-cyan-500/30",
-      glow: "from-cyan-600/30 to-blue-600/30"
+      badgeBg: "bg-cyan-500/10",
+      badgeText: "text-cyan-700 border-cyan-500/30",
+      glow: "from-cyan-400/25 to-blue-400/25"
     }
   },
   {
@@ -123,11 +123,11 @@ const QUOTES_DATABASE: QuoteItem[] = [
     title: "Theoretical Physicist",
     category: "Creativity",
     theme: {
-      gradient: "from-[#311042] via-[#5B21B6] to-[#2E1065]",
+      gradient: "from-[#f5f3ff] via-[#faf5ff] to-[#fdf4ff]",
       accent: "#A855F7",
-      badgeBg: "bg-purple-500/20",
-      badgeText: "text-purple-300 border-purple-500/30",
-      glow: "from-purple-600/30 to-fuchsia-600/30"
+      badgeBg: "bg-purple-500/10",
+      badgeText: "text-purple-700 border-purple-500/30",
+      glow: "from-purple-400/25 to-fuchsia-400/25"
     }
   },
   {
@@ -137,11 +137,11 @@ const QUOTES_DATABASE: QuoteItem[] = [
     title: "26th U.S. President",
     category: "Leadership",
     theme: {
-      gradient: "from-[#451A03] via-[#78350F] to-[#292524]",
+      gradient: "from-[#fff7ed] via-[#fffaf3] to-[#fffbeb]",
       accent: "#F97316",
-      badgeBg: "bg-orange-500/20",
-      badgeText: "text-orange-300 border-orange-500/30",
-      glow: "from-orange-600/30 to-amber-600/30"
+      badgeBg: "bg-orange-500/10",
+      badgeText: "text-orange-700 border-orange-500/30",
+      glow: "from-orange-400/25 to-amber-400/25"
     }
   },
   {
@@ -151,11 +151,11 @@ const QUOTES_DATABASE: QuoteItem[] = [
     title: "Leadership Specialist",
     category: "Mastery",
     theme: {
-      gradient: "from-[#111827] via-[#1F2937] to-[#1E1B4B]",
+      gradient: "from-[#f8fafc] via-[#f5f3ff] to-[#eef2ff]",
       accent: "#6366F1",
-      badgeBg: "bg-indigo-500/20",
-      badgeText: "text-indigo-300 border-indigo-500/30",
-      glow: "from-indigo-600/30 to-violet-600/30"
+      badgeBg: "bg-indigo-500/10",
+      badgeText: "text-indigo-700 border-indigo-500/30",
+      glow: "from-indigo-400/25 to-violet-400/25"
     }
   }
 ];
@@ -198,13 +198,13 @@ export const DailyQuoteCard: React.FC = () => {
   };
 
   return (
-    <div className="w-full relative group rounded-3xl overflow-hidden shadow-2xl border border-white/10 transition-all duration-500">
+    <div className="w-full relative group rounded-3xl overflow-hidden shadow-[0_1px_3px_rgba(20,16,43,0.05)] border border-[#e8e3f5] transition-all duration-500">
       {/* Dynamic Animated Background */}
       <div className={`absolute inset-0 bg-gradient-to-br ${currentQuote.theme.gradient} transition-all duration-700`} />
       
       {/* Ambient Radial Glow Effect */}
       <div className={`absolute -top-24 -right-24 w-80 h-80 bg-gradient-to-br ${currentQuote.theme.glow} rounded-full blur-[80px] opacity-70 pointer-events-none transition-all duration-700`} />
-      <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-white/5 rounded-full blur-[60px] pointer-events-none" />
+      <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-white/60 rounded-full blur-[60px] pointer-events-none" />
 
       {/* Decorative Grid Pattern Overlay */}
       <div 
@@ -222,25 +222,25 @@ export const DailyQuoteCard: React.FC = () => {
               <Sparkles className="w-3.5 h-3.5" />
               {currentQuote.category}
             </span>
-            <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold text-white/50 bg-white/5 border border-white/10">
-              <Flame className="w-3 h-3 text-amber-400" /> Daily Insight
+            <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-semibold text-slate-500 bg-white/70 border border-[#e8e3f5]">
+              <Flame className="w-3 h-3 text-amber-500" /> Daily Insight
             </span>
           </div>
 
           {/* Clean Controls: Copy & Shuffle only */}
-          <div className="flex items-center gap-1.5 sm:gap-2 bg-black/30 backdrop-blur-xl p-1.5 rounded-2xl border border-white/10">
+          <div className="flex items-center gap-1.5 sm:gap-2 bg-white/70 backdrop-blur-xl p-1.5 rounded-2xl border border-[#e8e3f5]">
             <button
               onClick={handleCopy}
               title="Copy Quote"
-              className="p-2 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-colors relative"
+              className="p-2 rounded-xl text-slate-500 hover:text-[#14102b] hover:bg-[#f0ecfa] transition-colors relative"
             >
-              {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+              {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
             </button>
 
             <button
               onClick={handleNextQuote}
               title="Next Quote"
-              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all hover:rotate-180 duration-500 active:scale-95"
+              className="p-2 rounded-xl bg-[#6C2BFF] hover:bg-[#5a1ee6] text-white transition-all hover:rotate-180 duration-500 active:scale-95"
             >
               <RefreshCw className="w-4 h-4" />
             </button>
@@ -259,9 +259,9 @@ export const DailyQuoteCard: React.FC = () => {
               className="relative"
             >
               {/* Giant Stylized Decorative Quote Mark */}
-              <Quote className="absolute -top-5 -left-3 w-12 h-12 text-white/10 pointer-events-none select-none" />
+              <Quote className="absolute -top-5 -left-3 w-12 h-12 text-[#14102b]/[0.06] pointer-events-none select-none" />
               
-              <blockquote className="text-lg sm:text-2xl font-bold text-white leading-relaxed tracking-tight pl-4 sm:pl-6 border-l-2 border-white/20 my-2">
+              <blockquote className="text-lg sm:text-2xl font-bold text-[#14102b] leading-relaxed tracking-tight pl-4 sm:pl-6 border-l-2 border-[#6C2BFF]/30 my-2">
                 "{currentQuote.text}"
               </blockquote>
             </motion.div>
@@ -269,7 +269,7 @@ export const DailyQuoteCard: React.FC = () => {
         </div>
 
         {/* Footer: Author Info & Date Badge */}
-        <div className="pt-4 border-t border-white/10 flex items-center justify-between gap-4">
+        <div className="pt-4 border-t border-[#e8e3f5] flex items-center justify-between gap-4">
           <AnimatePresence mode="wait">
             <motion.div 
               key={currentQuote.id + '-author'}
@@ -280,26 +280,26 @@ export const DailyQuoteCard: React.FC = () => {
               className="flex items-center gap-3"
             >
               <div 
-                className="w-10 h-10 rounded-full flex items-center justify-center font-black text-sm text-white shadow-lg border border-white/20"
+                className="w-10 h-10 rounded-full flex items-center justify-center font-black text-sm text-white shadow-sm border border-white"
                 style={{ backgroundColor: currentQuote.theme.accent }}
               >
                 {getInitials(currentQuote.author)}
               </div>
               <div>
-                <h4 className="text-sm font-black text-white leading-tight flex items-center gap-1.5">
+                <h4 className="text-sm font-black text-[#14102b] leading-tight flex items-center gap-1.5">
                   {currentQuote.author}
-                  <Star className="w-3 h-3 text-amber-400 fill-amber-400 inline" />
+                  <Star className="w-3 h-3 text-amber-500 fill-amber-500 inline" />
                 </h4>
-                <p className="text-xs font-medium text-white/60">{currentQuote.title}</p>
+                <p className="text-xs font-medium text-slate-500">{currentQuote.title}</p>
               </div>
             </motion.div>
           </AnimatePresence>
 
           <div className="text-right">
-            <span className="text-[11px] font-semibold text-white/40 uppercase tracking-widest block">
+            <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest block">
               StudLyf Daily
             </span>
-            <span className="text-xs font-bold text-white/80">
+            <span className="text-xs font-bold text-slate-700">
               {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
             </span>
           </div>
@@ -314,7 +314,7 @@ export const DailyQuoteCard: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-xl border border-white/20 text-white text-xs font-bold px-4 py-2 rounded-full shadow-2xl z-20 flex items-center gap-2"
+            className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-[#14102b] backdrop-blur-xl border border-[#14102b] text-white text-xs font-bold px-4 py-2 rounded-full shadow-2xl z-20 flex items-center gap-2"
           >
             <Check className="w-3.5 h-3.5 text-emerald-400" />
             Quote copied to clipboard!

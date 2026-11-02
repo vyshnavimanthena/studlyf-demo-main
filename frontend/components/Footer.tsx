@@ -58,25 +58,25 @@ const contactLinks = [
 ];
 
 const linkClass =
-    'rounded-ds-control text-sm text-white/75 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
+    'rounded-ds-control text-sm text-[#5b5675] transition-colors hover:text-[#6d3ff0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6d3ff0]';
 
 const Footer: React.FC = () => {
     return (
-        <footer className="studlyf-ds w-full bg-ds-ink pt-10 pb-5 text-white">
+        <footer className="studlyf-ds w-full border-t border-[#e8e3f5] bg-[#f6f3ff] pt-10 pb-5 text-[#14102b]">
             <div className="ds-container">
                 <div className="grid grid-cols-2 gap-8 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
                     <div className="col-span-2 flex flex-col gap-3 md:col-span-1">
-                        <Link to="/" className="flex w-fit items-center gap-2 rounded-ds-control focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+                        <Link to="/" className="flex w-fit items-center gap-2 rounded-ds-control focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#6d3ff0]">
                             <img src="/stud.png" alt="" width={28} height={28} className="size-7" />
                             <span className="text-lg font-bold tracking-tight">STUDLYF</span>
                         </Link>
-                        <p className="max-w-[280px] text-sm leading-relaxed text-white/70">
+                        <p className="max-w-[280px] text-sm leading-relaxed text-[#5b5675]">
                             Empowering the next generation of engineers with AI-driven career tools and resources.
                         </p>
                         {/* Founder and the three ways to reach us */}
                         <div className="flex items-center gap-2">
                             {/* The source photo is a wide shot, so zoom in on the founder */}
-                            <span className="mr-1 size-9 shrink-0 overflow-hidden rounded-full ring-1 ring-white/20">
+                            <span className="mr-1 size-9 shrink-0 overflow-hidden rounded-full ring-1 ring-[#e8e3f5]">
                                 <img
                                     src="/images-optimized/Eshwar.webp"
                                     onError={(e) => { (e.target as HTMLImageElement).src = '/images/Eshwar.jpg'; }}
@@ -94,7 +94,7 @@ const Footer: React.FC = () => {
                                     aria-label={c.label}
                                     title={c.label}
                                     {...(c.external ? { target: '_blank', rel: 'noreferrer' } : {})}
-                                    className="flex size-9 items-center justify-center rounded-full border border-white/20 text-white/80 transition-colors hover:border-white/50 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                                    className="flex size-9 items-center justify-center rounded-full border border-[#e8e3f5] bg-white text-[#5b5675] transition-colors hover:border-[#6d3ff0] hover:text-[#6d3ff0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6d3ff0]"
                                 >
                                     {c.icon}
                                 </a>
@@ -104,7 +104,7 @@ const Footer: React.FC = () => {
 
                     {columns.map((col) => (
                         <nav key={col.heading} aria-labelledby={`footer-${col.heading.toLowerCase()}`}>
-                            <h3 id={`footer-${col.heading.toLowerCase()}`} className="mb-2.5 text-sm font-semibold text-white">
+                            <h3 id={`footer-${col.heading.toLowerCase()}`} className="mb-2.5 text-sm font-semibold text-[#14102b]">
                                 {col.heading}
                             </h3>
                             <ul className="flex flex-col gap-1.5">
@@ -122,9 +122,9 @@ const Footer: React.FC = () => {
                     ))}
                 </div>
 
-                <Separator className="mt-7 bg-white/10" />
+                <Separator className="mt-7 bg-[#e8e3f5]" />
                 <div className="flex flex-col items-center justify-between gap-2 pt-4 sm:flex-row">
-                    <p className="text-[13px] text-white/60">
+                    <p className="text-[13px] text-[#5b5675]">
                         &copy; {new Date().getFullYear()} STUDLYF. All rights reserved.
                     </p>
                     <ul className="flex items-center gap-5">
