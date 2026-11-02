@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
@@ -29,6 +29,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToSignup, transparent = f
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showTerms, setShowTerms] = useState(false);
+    const [waking, setWaking] = useState(false);
+
+    // The hosted backend sleeps when idle; start waking it as soon as the form opens
+    useEffect(() => {
+        fetch(`${API_BASE_URL}/backend-health`).catch(() => {});
+    }, []);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -45,11 +51,26 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToSignup, transparent = f
         }
         setLoading(true);
         try {
-            const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: emailClean, password: passwordClean })
-            });
+            // While a sleeping backend wakes, the proxy fails or answers 502–504; keep retrying for up to 90s
+            const startedAt = Date.now();
+            let response: Response | null = null;
+            while (true) {
+                try {
+                    response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: emailClean, password: passwordClean })
+                    });
+                    if (![502, 503, 504].includes(response.status)) break;
+                } catch {
+                    response = null;
+                }
+                if (Date.now() - startedAt > 90000) break;
+                setWaking(true);
+                await new Promise((r) => setTimeout(r, 4000));
+            }
+            setWaking(false);
+            if (!response || [502, 503, 504].includes(response.status)) throw new Error('unreachable');
 
             const data = await response.json();
 
@@ -83,6 +104,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToSignup, transparent = f
             setError('We couldn’t reach the server. Please try again in a minute.');
         } finally {
             setLoading(false);
+            setWaking(false);
         }
     };
 
@@ -207,6 +229,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToSignup, transparent = f
                 >
                     {loading ? 'Signing in…' : 'Sign in'}
                 </button>
+                {waking && (
+                    <p role="status" className="mt-2 text-center text-[13px] text-gray-500">
+                        Waking up the server. The first sign-in after a quiet spell can take up to a minute.
+                    </p>
+                )}
                 </form>
             </div>
 
