@@ -85,7 +85,8 @@ class DatabaseManager:
     async def connect(self):
         """Verify connectivity and run health checks."""
         await self._ensure_connected()
-        if self.db is not None:
+        # On Vercel every cold start runs this; the indexes already exist, so skip the slow round trips
+        if self.db is not None and not os.environ.get("VERCEL"):
             try:
                 # Initialize core indexes
                 await self.ensure_indexes()

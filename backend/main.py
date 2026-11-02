@@ -229,7 +229,12 @@ async def startup_event():
     # Attempt database connection; allow failures to propagate so the
     # process fails fast when no real MongoDB is available.
     await db.connect()
-    
+
+    # Vercel runs no long-lived process: skip background workers, schedulers and the diagnostics dump
+    if os.environ.get("VERCEL"):
+        logger.info("Application startup completed (serverless mode)")
+        return
+
     # Spawn background stage email queue worker
     try:
         from services.email_queue_service import start_email_queue_worker

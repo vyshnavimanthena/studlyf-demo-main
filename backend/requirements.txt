@@ -17,33 +17,21 @@ passlib
 cryptography
 
 # Firebase
-firebase-admin
-google-auth
-google-auth-oauthlib
-google-auth-httplib2
-google-cloud-core
-google-cloud-firestore
-google-cloud-storage
-google-api-core
 
 # File Processing
 python-multipart
 pdfminer.six
-PyPDF2
 python-docx
 Pillow
 pdfplumber
 reportlab
-weasyprint
 python-magic
 groq
 
 # Email
-aiosmtplib
 
 # Data Processing
 beautifulsoup4
-lxml
 cssselect2
 
 # Async & Concurrency
@@ -75,21 +63,11 @@ sentry-sdk
 python-json-logger
 
 # Testing
-pytest
-pytest-asyncio
-pytest-cov
 httpx
 
 # Production Server
-gunicorn
 
 # Code Quality (optional, for development)
-black
-flake8
-mypy
-isort
 
 # Development
-ipython
-razorpay
 jinja2
