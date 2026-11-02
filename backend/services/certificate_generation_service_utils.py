@@ -7,7 +7,10 @@ import os
 from io import BytesIO
 from db import db
 from datetime import datetime
-from weasyprint import HTML
+try:
+    from weasyprint import HTML
+except Exception:  # needs system Pango/Cairo libraries, which some hosts (e.g. Vercel) lack
+    HTML = None
 
 # Utils for ID/QR Generation
 async def generate_certificate_id(cert_type: str) -> str:

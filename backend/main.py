@@ -1,5 +1,17 @@
 from __future__ import annotations
 import os
+
+# Vercel's filesystem is read-only outside /tmp; folders this app creates at import must not crash it there
+if os.environ.get("VERCEL"):
+    _makedirs = os.makedirs
+
+    def _makedirs_if_writable(path, *args, **kwargs):
+        try:
+            _makedirs(path, *args, **kwargs)
+        except OSError:
+            pass
+
+    os.makedirs = _makedirs_if_writable
 import subprocess
 import inspect
 from dotenv import load_dotenv
