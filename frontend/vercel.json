@@ -4,6 +4,45 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/((?!assets/|api/).*)", "destination": "/index.html" }
+    {
+      "source": "/api/:path*",
+      "destination": "https://studlyf-demo-main-api.onrender.com/api/:path*"
+    },
+    {
+      "source": "/generate-portfolio",
+      "destination": "https://studlyf-demo-main-api.onrender.com/generate-portfolio"
+    },
+    {
+      "source": "/generate-resume",
+      "destination": "https://studlyf-demo-main-api.onrender.com/generate-resume"
+    },
+    {
+      "source": "/update-portfolio",
+      "destination": "https://studlyf-demo-main-api.onrender.com/update-portfolio"
+    },
+    {
+      "source": "/generate-summary",
+      "destination": "https://studlyf-demo-main-api.onrender.com/generate-summary"
+    },
+    {
+      "source": "/generate-portfolio/:path*",
+      "destination": "https://studlyf-demo-main-api.onrender.com/generate-portfolio/:path*"
+    },
+    {
+      "source": "/generate-resume/:path*",
+      "destination": "https://studlyf-demo-main-api.onrender.com/generate-resume/:path*"
+    },
+    {
+      "source": "/update-portfolio/:path*",
+      "destination": "https://studlyf-demo-main-api.onrender.com/update-portfolio/:path*"
+    },
+    {
+      "source": "/generate-summary/:path*",
+      "destination": "https://studlyf-demo-main-api.onrender.com/generate-summary/:path*"
+    },
+    {
+      "source": "/((?!assets/|api/).*)",
+      "destination": "/index.html"
+    }
   ]
 }
