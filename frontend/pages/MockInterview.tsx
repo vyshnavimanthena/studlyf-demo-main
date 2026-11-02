@@ -421,11 +421,14 @@ export default function MockInterview() {
             setSessionId(data._id);
             setStep('INTERVIEW');
             
-            const startIdx = data.current_round_index !== undefined ? data.current_round_index : (setup.interviewType === 'Behavioral Interview' ? 1 : setup.interviewType === 'HR Interview' ? 2 : 0);
+            const startIdx = setup.interviewType === 'Behavioral Interview' ? 1 : setup.interviewType === 'HR Interview' ? 2 : (data.current_round_index ?? 0);
             setRoundIndex(startIdx as RoundIndex);
             roundQuestionIndexRef.current = { 0: 0, 1: 0, 2: 0 };
 
-            const firstQ = data.first_question || `Hello! I'm conducting your interview today. Let's begin.`;
+            // The server's opening question is for the technical round; single-round sessions open from their own bank
+            const firstQ = startIdx === (data.current_round_index ?? 0)
+                ? (data.first_question || `Hello! I'm conducting your interview today. Let's begin.`)
+                : `Hello! I'm conducting your ${setup.interviewType} today. ${QUESTION_BANKS[startIdx][0]}`;
 
             setMessages([{ role: 'interviewer', content: firstQ, timestamp: new Date().toLocaleTimeString() }]);
             speak(firstQ, startIdx);
@@ -1352,19 +1355,7 @@ export default function MockInterview() {
                                     `}</style>
                                     <button 
                                         onClick={async () => {
-                                                if (!apiKey.trim()) return;
-                                                // Reject keys that were used previously by this UI
-                                                try {
-                                                    const usedRaw = localStorage.getItem('used_api_keys') || '[]';
-                                                    const usedKeys = Array.isArray(JSON.parse(usedRaw)) ? JSON.parse(usedRaw) : [];
-                                                    if (usedKeys.includes(apiKey)) {
-                                                        alert('This API key has already been used here. Please provide a fresh API key.');
-                                                        return;
-                                                    }
-                                                } catch (e) {
-                                                    // ignore parse errors and proceed
-                                                }
-
+                                                if (!apiKey.trim() || !setup.company.trim()) return;
                                                 setLoading(true);
                                                 setError('');
                                                 try {
@@ -1394,21 +1385,13 @@ export default function MockInterview() {
                                                     // Valid key — persist and proceed to setup
                                                     localStorage.setItem('groq_api_key', apiKey);
 
-                                                    // Mark this key as used so it cannot be reused later
-                                                    try {
-                                                        const prev = JSON.parse(localStorage.getItem('used_api_keys') || '[]');
-                                                        const arr = Array.isArray(prev) ? prev : [];
-                                                        arr.push(apiKey);
-                                                        localStorage.setItem('used_api_keys', JSON.stringify(arr.slice(-50)));
-                                                    } catch (e) { /* ignore */ }
-
                                                     setStep('SETUP');
                                                 } catch (e) {
                                                     console.error('Key validation error', e);
                                                     alert('Network error while validating API key. Ensure backend is reachable.');
                                                 } finally { setLoading(false); }
                                         }} 
-                                        disabled={!apiKey.trim()} 
+                                        disabled={!apiKey.trim() || !setup.company.trim()} 
                                         className="auth-btn"
                                     >
                                         <span className="auth-orb auth-orb1" />
@@ -1416,6 +1399,9 @@ export default function MockInterview() {
                                         <span className="auth-orb auth-orb3" />
                                         <span className="auth-label">Authorize & Continue <ArrowRight className="w-4 h-4" /></span>
                                     </button>
+                                    {!setup.company.trim() && (
+                                        <p className="mt-3 text-center text-xs font-semibold text-gray-500">Enter a target company to continue.</p>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -1509,6 +1495,12 @@ export default function MockInterview() {
                                             {loading ? <Loader2 className="animate-spin" /> : <>Generate Protocol <ArrowRight className="w-4 h-4" /></>}
                                         </span>
                                     </button>
+                                    {!setup.company.trim() && (
+                                        <p className="mt-3 text-center text-xs font-semibold text-gray-500">
+                                            Add a target company first.{' '}
+                                            <button type="button" onClick={() => setStep('API_KEY')} className="text-[#7C3AED] underline underline-offset-2">Go back</button>
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                         </div>
