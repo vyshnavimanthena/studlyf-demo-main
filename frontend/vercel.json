@@ -6,43 +6,43 @@
   "rewrites": [
     {
       "source": "/backend-health",
-      "destination": "https://studlyf-demo-main-api.onrender.com/health"
+      "destination": "https://studlyf-demo-main-api.vercel.app/health"
     },
     {
       "source": "/api/:path*",
-      "destination": "https://studlyf-demo-main-api.onrender.com/api/:path*"
+      "destination": "https://studlyf-demo-main-api.vercel.app/api/:path*"
     },
     {
       "source": "/generate-portfolio",
-      "destination": "https://studlyf-demo-main-api.onrender.com/generate-portfolio"
+      "destination": "https://studlyf-demo-main-api.vercel.app/generate-portfolio"
     },
     {
       "source": "/generate-resume",
-      "destination": "https://studlyf-demo-main-api.onrender.com/generate-resume"
+      "destination": "https://studlyf-demo-main-api.vercel.app/generate-resume"
     },
     {
       "source": "/update-portfolio",
-      "destination": "https://studlyf-demo-main-api.onrender.com/update-portfolio"
+      "destination": "https://studlyf-demo-main-api.vercel.app/update-portfolio"
     },
     {
       "source": "/generate-summary",
-      "destination": "https://studlyf-demo-main-api.onrender.com/generate-summary"
+      "destination": "https://studlyf-demo-main-api.vercel.app/generate-summary"
     },
     {
       "source": "/generate-portfolio/:path*",
-      "destination": "https://studlyf-demo-main-api.onrender.com/generate-portfolio/:path*"
+      "destination": "https://studlyf-demo-main-api.vercel.app/generate-portfolio/:path*"
     },
     {
       "source": "/generate-resume/:path*",
-      "destination": "https://studlyf-demo-main-api.onrender.com/generate-resume/:path*"
+      "destination": "https://studlyf-demo-main-api.vercel.app/generate-resume/:path*"
     },
     {
       "source": "/update-portfolio/:path*",
-      "destination": "https://studlyf-demo-main-api.onrender.com/update-portfolio/:path*"
+      "destination": "https://studlyf-demo-main-api.vercel.app/update-portfolio/:path*"
     },
     {
       "source": "/generate-summary/:path*",
-      "destination": "https://studlyf-demo-main-api.onrender.com/generate-summary/:path*"
+      "destination": "https://studlyf-demo-main-api.vercel.app/generate-summary/:path*"
     },
     {
       "source": "/((?!assets/|api/).*)",
