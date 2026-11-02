@@ -45,10 +45,10 @@ const UnifiedAuth: React.FC = () => {
                     {/* 
                         The Stage: Fixed Height to fit 100% zoom (Reduced)
                     */}
-                    <div className="w-full min-h-[620px] max-h-[700px] h-[75vh] relative bg-white/5 border border-white/10 rounded-[40px] overflow-hidden shadow-2xl backdrop-blur-3xl flex flex-col lg:flex-row">
+                    <div className="w-full min-h-[620px] max-h-[700px] h-[75vh] relative overflow-hidden rounded-[32px] border border-[#e8e3f5] bg-[#f6f3ff] shadow-[0_20px_60px_rgba(20,16,43,0.08)] flex flex-col">
 
                         {/* Background Layers (Fixed Content) */}
-                        <div className="flex-1 flex flex-col lg:flex-row w-full h-full relative z-10">
+                        <div className="hidden lg:flex flex-1 flex-row w-full h-full relative z-10">
                             <div className="w-full lg:w-1/2 h-full flex items-center justify-center p-6 lg:p-10">
                                 {isLogin ? (
                                     <Suspense fallback={<div className="w-full h-40" />}>
@@ -85,7 +85,7 @@ const UnifiedAuth: React.FC = () => {
                                 className="absolute top-0 left-0 w-1/2 h-full z-50 p-4 pointer-events-none items-center justify-center flex"
                             >
                                 {/* The High-End Box */}
-                                <div className="w-full h-full bg-white rounded-[32px] shadow-[-10px_0_50px_rgba(0,0,0,0.2)] pointer-events-auto flex items-center justify-center p-6 lg:p-10 overflow-hidden">
+                                <div className="w-full h-full bg-white rounded-[32px] shadow-[-6px_0_30px_rgba(20,16,43,0.06)] pointer-events-auto flex items-center justify-center p-6 lg:p-10 overflow-hidden">
                                     <AnimatePresence mode="wait">
                                         <motion.div
                                             key={isLogin ? 'login' : 'signup'}
@@ -109,9 +109,9 @@ const UnifiedAuth: React.FC = () => {
                                 <div className="w-full max-w-[calc(100vw-2rem)] max-w-md bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl">
                                     <AnimatePresence mode="wait">
                                         {isLogin ? (
-                                            <LoginForm onSwitchToSignup={handleToggle} />
+                                            <LoginForm onSwitchToSignup={handleToggle} transparent={true} />
                                         ) : (
-                                            <SignupForm onSwitchToLogin={handleToggle} />
+                                            <SignupForm onSwitchToLogin={handleToggle} transparent={true} />
                                         )}
                                     </AnimatePresence>
                                 </div>

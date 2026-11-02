@@ -22,7 +22,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
     title = (
         <>
             Own Your <br className="hidden lg:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-indigo-300">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-500">
                 Capability.
             </span>
         </>
@@ -43,10 +43,10 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
 
     const tagColor =
         creatureVariant === 'emerald'
-            ? 'text-emerald-300/80'
+            ? 'text-emerald-700'
             : creatureVariant === 'indigo'
-            ? 'text-indigo-300/80'
-            : 'text-purple-300/80';
+            ? 'text-indigo-700'
+            : 'text-purple-700';
 
     const creatureGlow =
         creatureVariant === 'emerald'
@@ -56,13 +56,13 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
             : 'bg-purple-500/20';
 
     return (
-        <div className="min-h-screen relative flex items-center justify-center bg-[radial-gradient(circle_at_center,_#1e1b4b_0%,_#09090b_100%)] overflow-x-hidden py-10 px-4 sm:px-6">
+        <div className="min-h-screen relative flex items-center justify-center bg-[#fbfaff] overflow-x-hidden py-10 px-4 sm:px-6">
             {/* Top Logo */}
             <Link
                 to="/"
                 className="absolute top-6 left-6 z-50 group transition-transform active:scale-95"
             >
-                <div className="flex items-center bg-white border border-white/20 px-3 py-1.5 rounded-2xl shadow-lg backdrop-blur-md">
+                <div className="flex items-center px-1 py-1">
                     <img
                         src="/images-optimized/studlyf_secondary.webp"
                         alt="STUDLYF Logo"
@@ -96,7 +96,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
                                 initial={{ scale: 0.8, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
                                 transition={{ duration: 0.8, ease: 'easeOut' }}
-                                className="flex justify-center"
+                                className="flex justify-center pb-10"
                             >
                                 <div className="relative">
                                     <InteractiveCreature
@@ -116,7 +116,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
                                 className="space-y-4"
                             >
                                 <h2
-                                    className={`font-black text-white leading-[1.1] tracking-tight ${
+                                    className={`font-black text-[#14102b] leading-[1.1] tracking-tight ${
                                         wideForm
                                             ? 'text-3xl sm:text-4xl lg:text-5xl'
                                             : 'text-4xl sm:text-5xl lg:text-6xl'
@@ -124,7 +124,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
                                 >
                                     {title}
                                 </h2>
-                                <p className="text-gray-400 text-base lg:text-lg max-w-xs mx-auto font-medium leading-relaxed">
+                                <p className="text-gray-600 text-base lg:text-lg max-w-xs mx-auto font-medium leading-relaxed">
                                     {subtitle}
                                 </p>
                             </motion.div>
@@ -138,7 +138,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
                                 {tags.map((tag) => (
                                     <span
                                         key={tag}
-                                        className={`px-3 py-1.5 bg-white/5 border border-white/10 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em] backdrop-blur-sm ${tagColor}`}
+                                        className={`px-3 py-1.5 bg-white border border-gray-200 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.15em] backdrop-blur-sm ${tagColor}`}
                                     >
                                         {tag}
                                     </span>

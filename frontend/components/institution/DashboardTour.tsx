@@ -84,35 +84,36 @@ const DashboardTour: React.FC<DashboardTourProps> = ({ isOpen, onClose }) => {
                         filter: 'drop-shadow(0 25px 50px -12px rgba(0, 0, 0, 0.5))'
                     }}
                 >
-                    <div className="bg-[#0A1A2F] text-white p-8 rounded-[2.5rem] relative border border-slate-700/50 shadow-2xl">
+                    <div className="bg-white text-[#14102b] p-6 rounded-2xl relative border border-[#e8e3f5] shadow-2xl">
                         {/* INDICATOR ARROW pointing to the target */}
-                        <div className={`absolute w-6 h-6 bg-[#0A1A2F] border-l border-t border-slate-700/50 rotate-45 ${step.position === 'left' ? '-left-3 top-10 rotate-[-45deg]' :
+                        <div className={`absolute w-6 h-6 bg-white border-l border-t border-[#e8e3f5] rotate-45 ${step.position === 'left' ? '-left-3 top-10 rotate-[-45deg]' :
                                 step.position === 'bottom' ? '-top-3 left-1/2 -translate-x-1/2 rotate-[45deg]' :
                                     step.position === 'right' ? '-right-3 top-10 rotate-[135deg]' :
                                         '-bottom-3 left-1/2 -translate-x-1/2 rotate-[225deg]'
                             }`} />
 
-                        <h3 className="text-xl font-black mb-3 tracking-tight">{step.title}</h3>
-                        <p className="text-sm text-slate-300 leading-relaxed mb-10 font-bold opacity-80">
+                        <p className="mb-1 text-xs font-semibold text-[#6d3ff0]">Step {currentStep + 1} of {steps.length}</p>
+                        <h3 className="text-lg font-bold mb-2 tracking-tight">{step.title}</h3>
+                        <p className="text-sm text-gray-600 leading-relaxed mb-6">
                             {step.content}
                         </p>
 
-                        <div className="flex items-center justify-between gap-8">
-                            <button onClick={onClose} className="text-xs font-black text-slate-500 hover:text-white transition-all uppercase tracking-widest">
+                        <div className="flex items-center justify-between gap-4">
+                            <button onClick={onClose} className="text-sm font-medium text-gray-500 hover:text-[#14102b] transition-colors">
                                 Close
                             </button>
                             <div className="flex items-center gap-3">
                                 {currentStep > 0 && (
                                     <button
                                         onClick={handleBack}
-                                        className="px-8 py-3 bg-white text-[#0A1A2F] rounded-2xl text-xs font-black hover:bg-slate-100 transition-all uppercase tracking-widest"
+                                        className="px-4 py-2 border border-[#e8e3f5] rounded-xl text-sm font-semibold hover:bg-[#f6f3ff] transition-colors"
                                     >
                                         Back
                                     </button>
                                 )}
                                 <button
                                     onClick={handleNext}
-                                    className="px-10 py-3 bg-blue-600 text-white rounded-2xl text-xs font-black hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 uppercase tracking-widest"
+                                    className="px-5 py-2 bg-[#6d3ff0] text-white rounded-xl text-sm font-semibold hover:bg-[#5b30d6] transition-colors"
                                 >
                                     {currentStep === steps.length - 1 ? 'Got it' : 'Next'}
                                 </button>

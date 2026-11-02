@@ -132,7 +132,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, transparent = 
     const inputBase =
         'w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-100 focus:bg-white focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 transition-all duration-200 outline-none text-gray-900 placeholder-gray-400 text-sm';
     const labelClasses =
-        'block text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-1.5 ml-1';
+        "block text-sm font-medium text-gray-800 mb-1.5";
 
     // Institution layout: two-column grid on md+
     const fieldGrid = isInstitution ? 'grid grid-cols-1 md:grid-cols-2 gap-4' : 'space-y-4';
@@ -142,7 +142,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, transparent = 
 
     return (
         <AuthCard
-            title={step === 3 ? 'Welcome Aboard' : 'Create Account'}
+            title={step === 3 ? 'Welcome Aboard' : 'Create account'}
             maxWidth={cardMaxWidth}
             transparent={transparent}
         >
@@ -235,7 +235,7 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, transparent = 
                                  </div>
 
                                  <div className={isInstitution ? 'md:col-span-2' : ''}>
-                                    <label className={labelClasses}>Secure Password</label>
+                                    <label className={labelClasses}>Password</label>
                                     <div className="relative">
                                         <Lock className="absolute left-3 top-3.5 text-gray-300" size={18} />
                                         <input
@@ -305,9 +305,9 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, transparent = 
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full mt-4 py-4 bg-purple-600 text-white rounded-xl font-bold uppercase tracking-widest text-[11px] hover:bg-purple-700 transition-all shadow-lg shadow-purple-200 flex items-center justify-center gap-2"
+                                className="w-full mt-4 py-4 bg-[#6d3ff0] text-white rounded-xl font-bold text-[15px] text-[11px] hover:bg-purple-700 transition-all shadow-lg shadow-purple-200 flex items-center justify-center gap-2"
                             >
-                                {loading ? 'Creating Account...' : 'Sign Up Now'}
+                                {loading ? 'Creating account…' : 'Create account'}
                                 <ArrowRight size={16} />
                             </button>
                         </motion.form>
@@ -337,13 +337,13 @@ const SignupForm: React.FC<SignupFormProps> = ({ onSwitchToLogin, transparent = 
 
             {step < 3 && (
                  <div className="mt-1 pt-1 text-center">
-                    <p className="text-gray-400 text-[10px] uppercase font-bold tracking-widest">
+                    <p className="text-sm text-gray-500">
                         Already have an account?{' '}
                         <button
                             onClick={onSwitchToLogin}
-                            className="text-purple-600 hover:text-purple-700 transition-colors ml-1"
+                            className="ml-1 font-semibold text-purple-600 hover:text-purple-700 transition-colors"
                         >
-                            Sign In
+                            Sign in
                         </button>
                     </p>
                 </div>

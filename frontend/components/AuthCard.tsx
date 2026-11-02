@@ -35,7 +35,7 @@ const AuthCard: React.FC<AuthCardProps> = ({
             ].join(' ')}
         >
             <div className="mb-8 text-center">
-                <h1 className="text-2xl lg:text-3xl font-black text-purple-600 tracking-tighter uppercase">
+                <h1 className="text-2xl lg:text-3xl font-bold text-[#14102b] tracking-tight">
                     {title}
                 </h1>
                 {subtitle && (

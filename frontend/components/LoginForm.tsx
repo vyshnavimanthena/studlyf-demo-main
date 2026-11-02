@@ -80,7 +80,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToSignup, transparent = f
                 }
             }
         } catch (err: any) {
-            setError('Connection error. Is the backend running?');
+            setError('We couldn’t reach the server. Please try again in a minute.');
         } finally {
             setLoading(false);
         }
@@ -116,10 +116,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToSignup, transparent = f
     };
 
     const inputClasses = "w-full px-4 py-2.5 rounded-xl bg-gray-50 border border-gray-100 focus:bg-white focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 transition-all duration-200 outline-none text-gray-900 placeholder-gray-400 text-sm mb-1";
-    const labelClasses = "block text-[10px] font-extrabold text-gray-400 uppercase tracking-widest mb-1.5 ml-1";
+    const labelClasses = "block text-sm font-medium text-gray-800 mb-1.5";
 
     return (
-        <AuthCard title="Welcome Back" maxWidth="max-w-[450px]" transparent={transparent}>
+        <AuthCard title="Welcome back" maxWidth="max-w-[450px]" transparent={transparent}>
             <div className="relative overflow-visible">
                 <AnimatePresence>
                     {showTerms && <TermsOverlay onClose={() => setShowTerms(false)} />}
@@ -158,7 +158,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToSignup, transparent = f
                          type="email"
                          name="email"
                          autoComplete="email"
-                         placeholder={selectedRole === 'institution' ? "admin@institution.com" : "shiva@gmail.com"}
+                         placeholder={selectedRole === 'institution' ? "admin@institution.com" : "you@example.com"}
                          className={inputClasses}
                          value={email}
                          onChange={(e) => setEmail(e.target.value)}
@@ -193,85 +193,31 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSwitchToSignup, transparent = f
                         <button
                             type="button"
                             onClick={() => navigate('/forgot-password')}
-                            className="text-[9px] font-black uppercase tracking-widest text-gray-400 hover:text-purple-600 transition-colors"
+                            className="mt-1 text-[13px] font-medium text-gray-500 hover:text-purple-600 transition-colors"
                         >
-                            Forgot Password?
+                            Forgot password?
                         </button>
                     </div>
                 </div>
 
-                <style>{`
-                    @keyframes login-shimmer {
-                        0%   { transform: translateX(-180%) skewX(-20deg); }
-                        100% { transform: translateX(300%) skewX(-20deg); }
-                    }
-                    .login-btn {
-                        position: relative;
-                        width: 100%;
-                        padding: 14px 0;
-                        background: linear-gradient(to right, #7C3AED, #6D28D9);
-                        color: #fff;
-                        border: none;
-                        border-radius: 16px;
-                        font-weight: 800;
-                        font-size: 11px;
-                        letter-spacing: 0.2em;
-                        text-transform: uppercase;
-                        cursor: pointer;
-                        overflow: hidden;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        transition: all 0.3s ease;
-                        box-shadow: 0 10px 20px -10px rgba(124,58,237,0.5);
-                    }
-                    .login-btn::after {
-                        content: '';
-                        position: absolute;
-                        top: 0; left: 0;
-                        width: 40%; height: 100%;
-                        background: linear-gradient(110deg, transparent 20%, rgba(255,255,255,0.2) 50%, transparent 80%);
-                        animation: login-shimmer 2.5s infinite;
-                    }
-                    .login-btn:hover {
-                        transform: translateY(-2px);
-                        box-shadow: 0 15px 30px -10px rgba(124,58,237,0.6);
-                    }
-                    .login-btn:active { transform: scale(0.98); }
-                `}</style>
-
                 <button
                     type="submit"
                     disabled={loading}
-                    className="login-btn mt-4"
+                    className="mt-4 flex h-12 w-full items-center justify-center rounded-xl bg-[#6d3ff0] text-[15px] font-semibold text-white transition-colors hover:bg-[#5b30d6] disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6d3ff0]"
                 >
-                    <span className="relative z-10">{loading ? 'Verifying...' : 'Access Dashboard'}</span>
+                    {loading ? 'Signing in…' : 'Sign in'}
                 </button>
-
-                <div className="mt-2 text-center">
-                    <p className="text-[11px] text-gray-500">
-                        Didn’t receive a verification email?
-                        <button
-                            type="button"
-                            onClick={handleResendVerification}
-                            disabled={resendLoading}
-                            className="ml-2 text-purple-600 font-black uppercase tracking-widest text-[10px] hover:underline disabled:opacity-60"
-                        >
-                            {resendLoading ? 'Sending...' : 'Resend Verification Link'}
-                        </button>
-                    </p>
-                </div>
                 </form>
             </div>
 
-            <div className="mt-8 text-center pt-6 border-t border-gray-50">
-                <p className="text-gray-400 text-[10px] uppercase font-bold tracking-widest">
-                    New to Studlyf?{' '}
+            <div className="mt-6 text-center">
+                <p className="text-sm text-gray-500">
+                    New to STUDLYF?{' '}
                     <button
                         onClick={onSwitchToSignup}
-                        className="text-purple-600 hover:text-purple-700 transition-colors ml-1"
+                        className="ml-1 font-semibold text-purple-600 hover:text-purple-700 transition-colors"
                     >
-                        Create Account
+                        Create account
                     </button>
                 </p>
             </div>
