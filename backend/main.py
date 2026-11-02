@@ -1002,7 +1002,7 @@ ADS_UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads", "ads")
 os.makedirs(ADS_UPLOAD_DIR, exist_ok=True)
 
 # Serve uploaded files as static
-app.mount("/uploads", StaticFiles(directory=os.path.join(os.path.dirname(__file__), "uploads")), name="uploads")
+app.mount("/uploads", StaticFiles(directory=os.path.join(os.path.dirname(__file__), "uploads"), check_dir=not os.environ.get("VERCEL")), name="uploads")
 
 def _ad_fix(doc: dict) -> dict:
     if doc and "_id" in doc:
