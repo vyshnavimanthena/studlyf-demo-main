@@ -1,10 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useReducedMotion } from 'framer-motion';
 import { Instagram, Mail } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import InteractiveCreature from './InteractiveCreature';
 
 const WhatsAppIcon = ({ size = 22 }: { size?: number }) => (
     <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -55,88 +52,62 @@ const columns: { heading: string; links: FooterLink[] }[] = [
 ];
 
 const contactLinks = [
-    { label: 'Email', href: 'mailto:support@studlyf.com', icon: <Mail className="size-5" aria-hidden="true" />, external: false },
-    { label: 'WhatsApp', href: 'https://whatsapp.com/channel/0029VbCHsjAHVvTRqLfOau24/113', icon: <WhatsAppIcon size={20} />, external: true },
-    { label: 'Instagram', href: 'https://www.instagram.com/studlyf.in/', icon: <Instagram className="size-5" aria-hidden="true" />, external: true },
+    { label: 'Email', href: 'mailto:support@studlyf.com', icon: <Mail className="size-4" aria-hidden="true" />, external: false },
+    { label: 'WhatsApp', href: 'https://whatsapp.com/channel/0029VbCHsjAHVvTRqLfOau24/113', icon: <WhatsAppIcon size={16} />, external: true },
+    { label: 'Instagram', href: 'https://www.instagram.com/studlyf.in/', icon: <Instagram className="size-4" aria-hidden="true" />, external: true },
 ];
 
 const linkClass =
-    'rounded-ds-control text-[15px] text-white/75 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
+    'rounded-ds-control text-sm text-white/75 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white';
 
 const Footer: React.FC = () => {
-    const reduce = !!useReducedMotion();
-
     return (
-        <footer className="studlyf-ds w-full overflow-hidden bg-ds-ink pt-16 text-white md:pt-20">
-            <div className="ds-container flex flex-col gap-12">
-                {/* Slim contact band: founder photo, one line, three ways to reach us */}
-                <section aria-labelledby="footer-contact-heading" className="flex flex-col gap-6 rounded-ds-card border border-white/10 bg-white/[0.04] p-5 md:flex-row md:items-center md:justify-between md:px-6">
-                    <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
-                        {/* The source photo is a wide shot, so zoom in on the founder */}
-                        <span className="size-[72px] shrink-0 overflow-hidden rounded-full ring-2 ring-white/20">
-                            <img
-                                src="/images-optimized/Eshwar.webp"
-                                onError={(e) => { (e.target as HTMLImageElement).src = '/images/Eshwar.jpg'; }}
-                                alt={FOUNDER.name ? `${FOUNDER.name}, founder of STUDLYF` : 'Founder of STUDLYF'}
-                                width={72}
-                                height={72}
-                                loading="lazy"
-                                className="size-full origin-[50%_42%] scale-[2.4] object-cover"
-                            />
-                        </span>
-                        <div>
-                            <h2 id="footer-contact-heading" className="text-xl font-bold tracking-tight">Contact us</h2>
-                            <p className="mt-1 text-[15px] text-white/75">Connect with our founder. We&rsquo;re here to help, anytime.</p>
-                            {FOUNDER.name && (
-                                <p className="mt-3 text-[15px] text-white">
-                                    {FOUNDER.link ? (
-                                        <a href={FOUNDER.link} target="_blank" rel="noreferrer" className="font-semibold underline-offset-4 hover:underline">
-                                            {FOUNDER.name}
-                                        </a>
-                                    ) : (
-                                        <span className="font-semibold">{FOUNDER.name}</span>
-                                    )}
-                                    {FOUNDER.title && <span className="text-white/70">, {FOUNDER.title}</span>}
-                                </p>
-                            )}
-                        </div>
-                    </div>
-
-                    <ul className="flex flex-wrap items-center justify-center gap-3">
-                        {contactLinks.map((c) => (
-                            <li key={c.label}>
-                                <Button
-                                    asChild
-                                    variant="outline"
-                                    className="border-white/20 bg-white/5 text-white hover:border-white/40 hover:bg-white/10 focus-visible:ring-white/40"
-                                >
-                                    <a href={c.href} {...(c.external ? { target: '_blank', rel: 'noreferrer' } : {})}>
-                                        {c.icon}
-                                        {c.label}
-                                    </a>
-                                </Button>
-                            </li>
-                        ))}
-                    </ul>
-                </section>
-
-                <div className="grid grid-cols-2 gap-10 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
-                    <div className="col-span-2 flex flex-col gap-4 md:col-span-1">
-                        <Link to="/" className="flex w-fit items-center gap-2.5 rounded-ds-control focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
-                            <img src="/stud.png" alt="" width={40} height={40} className="size-10" />
-                            <span className="text-xl font-bold tracking-tight">STUDLYF</span>
+        <footer className="studlyf-ds w-full bg-ds-ink pt-10 pb-5 text-white">
+            <div className="ds-container">
+                <div className="grid grid-cols-2 gap-8 md:grid-cols-[1.5fr_1fr_1fr_1fr]">
+                    <div className="col-span-2 flex flex-col gap-3 md:col-span-1">
+                        <Link to="/" className="flex w-fit items-center gap-2 rounded-ds-control focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">
+                            <img src="/stud.png" alt="" width={28} height={28} className="size-7" />
+                            <span className="text-lg font-bold tracking-tight">STUDLYF</span>
                         </Link>
-                        <p className="max-w-xs text-[15px] leading-relaxed text-white/70">
+                        <p className="max-w-[280px] text-sm leading-relaxed text-white/70">
                             Empowering the next generation of engineers with AI-driven career tools and resources.
                         </p>
+                        {/* Founder and the three ways to reach us */}
+                        <div className="flex items-center gap-2">
+                            {/* The source photo is a wide shot, so zoom in on the founder */}
+                            <span className="mr-1 size-9 shrink-0 overflow-hidden rounded-full ring-1 ring-white/20">
+                                <img
+                                    src="/images-optimized/Eshwar.webp"
+                                    onError={(e) => { (e.target as HTMLImageElement).src = '/images/Eshwar.jpg'; }}
+                                    alt={FOUNDER.name ? `${FOUNDER.name}, founder of STUDLYF` : 'Founder of STUDLYF'}
+                                    width={36}
+                                    height={36}
+                                    loading="lazy"
+                                    className="size-full origin-[50%_42%] scale-[2.4] object-cover"
+                                />
+                            </span>
+                            {contactLinks.map((c) => (
+                                <a
+                                    key={c.label}
+                                    href={c.href}
+                                    aria-label={c.label}
+                                    title={c.label}
+                                    {...(c.external ? { target: '_blank', rel: 'noreferrer' } : {})}
+                                    className="flex size-9 items-center justify-center rounded-full border border-white/20 text-white/80 transition-colors hover:border-white/50 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                                >
+                                    {c.icon}
+                                </a>
+                            ))}
+                        </div>
                     </div>
 
                     {columns.map((col) => (
                         <nav key={col.heading} aria-labelledby={`footer-${col.heading.toLowerCase()}`}>
-                            <h3 id={`footer-${col.heading.toLowerCase()}`} className="mb-4 text-[15px] font-semibold text-white">
+                            <h3 id={`footer-${col.heading.toLowerCase()}`} className="mb-2.5 text-sm font-semibold text-white">
                                 {col.heading}
                             </h3>
-                            <ul className="flex flex-col gap-3">
+                            <ul className="flex flex-col gap-1.5">
                                 {col.links.map((l) => (
                                     <li key={l.label}>
                                         {l.to ? (
@@ -151,37 +122,15 @@ const Footer: React.FC = () => {
                     ))}
                 </div>
 
-                <div>
-                    <Separator className="bg-white/10" />
-                    <div className="flex flex-col items-center justify-between gap-4 pt-8 sm:flex-row">
-                        <p className="text-sm text-white/60">
-                            &copy; {new Date().getFullYear()} STUDLYF. All rights reserved.
-                        </p>
-                        <ul className="flex items-center gap-6">
-                            <li><Link to="/privacy" className={linkClass}>Privacy policy</Link></li>
-                            <li><Link to="/terms" className={linkClass}>Terms &amp; conditions</Link></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            {/* Closing wordmark, cropped by the page edge, with the mascot strolling along its top */}
-            <div aria-hidden="true" className="relative mt-14 select-none sm:mt-10" style={{ fontSize: 'clamp(72px, 20vw, 340px)' }}>
-                <p className="-mb-[0.2em] text-center leading-none font-bold tracking-tight whitespace-nowrap">
-                    <span className="bg-gradient-to-b from-white/20 to-white/[0.02] bg-clip-text text-transparent">STUDLYF</span>
-                </p>
-                <div className="pointer-events-none absolute inset-x-0 top-[0.14em] mx-auto w-[min(80%,1000px)]">
-                    <motion.div
-                        className="absolute bottom-0 left-0"
-                        animate={reduce ? undefined : { left: ['0%', '92%', '0%'] }}
-                        transition={{ duration: 28, repeat: Infinity, ease: 'easeInOut' }}
-                    >
-                        <div className="flex size-9 items-center justify-center sm:size-14">
-                            <div className="scale-[0.35] sm:scale-[0.55]">
-                                <InteractiveCreature className="![transform:none]" />
-                            </div>
-                        </div>
-                    </motion.div>
+                <Separator className="mt-7 bg-white/10" />
+                <div className="flex flex-col items-center justify-between gap-2 pt-4 sm:flex-row">
+                    <p className="text-[13px] text-white/60">
+                        &copy; {new Date().getFullYear()} STUDLYF. All rights reserved.
+                    </p>
+                    <ul className="flex items-center gap-5">
+                        <li><Link to="/privacy" className={linkClass}>Privacy policy</Link></li>
+                        <li><Link to="/terms" className={linkClass}>Terms &amp; conditions</Link></li>
+                    </ul>
                 </div>
             </div>
         </footer>

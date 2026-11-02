@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Send, Loader2, ShieldCheck, GraduationCap, Briefcase, Handshake, Sparkles } from 'lucide-react';
+import { Send, Loader2 } from 'lucide-react';
 import InteractiveCreature from './InteractiveCreature';
 import emailjs from '@emailjs/browser';
 import { Button } from '@/components/ui/button';
@@ -11,13 +11,13 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
 
 const roles = [
-    { value: 'learner', label: 'Student', icon: GraduationCap },
-    { value: 'professional', label: 'Professional', icon: Briefcase },
-    { value: 'partner', label: 'Partner', icon: Handshake },
-    { value: 'other', label: 'Other', icon: Sparkles },
+    { value: 'learner', label: 'Student' },
+    { value: 'professional', label: 'Professional' },
+    { value: 'partner', label: 'Partner' },
+    { value: 'other', label: 'Other' },
 ];
 
-const fieldClass = 'mt-2 h-12 bg-white';
+const fieldClass = 'h-11 bg-white';
 
 const EnquiryForm: React.FC = () => {
     const [formData, setFormData] = useState({
@@ -111,53 +111,51 @@ const EnquiryForm: React.FC = () => {
     return (
         <section id="enquiry-form" aria-labelledby="enquiry-heading" className="studlyf-ds bg-ds-background pb-[72px] md:pb-[96px] lg:pb-[120px]">
             <div className="ds-container">
-                <div className="relative mx-auto grid max-w-[1120px] overflow-hidden rounded-ds-panel bg-white ring-1 ring-ds-border shadow-ds-md lg:grid-cols-[2fr_3fr]">
-                    {/* Left: the invitation, with the mascot waiting for your message */}
-                    <div className="relative flex flex-col overflow-hidden bg-ds-lavender p-8 sm:p-10">
-                        <div aria-hidden="true" className="absolute -right-24 -bottom-24 size-80 rounded-full bg-ds-lavender-strong" />
-                        <header className="relative">
-                            <p className="ds-eyebrow mb-4">Contact</p>
-                            <h2 id="enquiry-heading" className="ds-h2 text-ds-foreground lg:!text-[38px]">
-                                Let&rsquo;s get to know <br className="hidden lg:block" /><span className="ds-gradient-text">each other</span>
+                <div className="relative mx-auto max-w-[720px] overflow-hidden rounded-ds-panel bg-white p-6 ring-1 ring-ds-border shadow-ds-md sm:p-8">
+                    <header className="mb-6 flex items-center justify-between gap-4">
+                        <div>
+                            <h2 id="enquiry-heading" className="text-2xl font-bold tracking-tight text-ds-foreground sm:text-[28px]">
+                                Let&rsquo;s get to know <span className="ds-gradient-text">each other</span>
                             </h2>
-                            <p className="ds-subline mt-4">Whether you&rsquo;re learning, hiring or hosting, tell us what you have in mind.</p>
-                        </header>
-                        <div aria-hidden="true" className="pointer-events-none relative mt-10 hidden flex-1 items-end justify-center lg:flex">
-                            <InteractiveCreature targetButtonText="Submit inquiry" />
+                            <p className="mt-1 text-[15px] text-ds-muted-foreground">Tell us what you have in mind.</p>
                         </div>
-                    </div>
+                        <div aria-hidden="true" className="pointer-events-none flex size-12 shrink-0 items-center justify-center">
+                            <div className="scale-[0.48]">
+                                <InteractiveCreature className="![transform:none]" />
+                            </div>
+                        </div>
+                    </header>
 
-                    {/* Right: the form */}
-                    <form onSubmit={handleSubmit} className="flex flex-col gap-5 p-6 sm:p-10 lg:p-12">
-                        <div className="grid gap-5 md:grid-cols-2">
+                    <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+                        <div className="grid gap-3 sm:grid-cols-2">
                             <div>
-                                <Label htmlFor="enquiry-name">Full name <span className="text-ds-primary">*</span></Label>
-                                <Input id="enquiry-name" name="name" type="text" autoComplete="name" placeholder="Your name" value={formData.name} onChange={handleChange} required className={fieldClass} />
+                                <Label htmlFor="enquiry-name" className="sr-only">Full name (required)</Label>
+                                <Input id="enquiry-name" name="name" type="text" autoComplete="name" placeholder="Full name *" value={formData.name} onChange={handleChange} required className={fieldClass} />
                             </div>
                             <div>
-                                <Label htmlFor="enquiry-email">Email address <span className="text-ds-primary">*</span></Label>
-                                <Input id="enquiry-email" name="email" type="email" autoComplete="email" placeholder="you@example.com" value={formData.email} onChange={handleChange} required className={fieldClass} />
+                                <Label htmlFor="enquiry-email" className="sr-only">Email address (required)</Label>
+                                <Input id="enquiry-email" name="email" type="email" autoComplete="email" placeholder="Email address *" value={formData.email} onChange={handleChange} required className={fieldClass} />
                             </div>
                             <div>
-                                <Label htmlFor="enquiry-country">Country <span className="text-ds-primary">*</span></Label>
-                                <Input id="enquiry-country" name="country" type="text" autoComplete="country-name" placeholder="India" value={formData.country} onChange={handleChange} required className={fieldClass} />
+                                <Label htmlFor="enquiry-country" className="sr-only">Country (required)</Label>
+                                <Input id="enquiry-country" name="country" type="text" autoComplete="country-name" placeholder="Country *" value={formData.country} onChange={handleChange} required className={fieldClass} />
                             </div>
                             <div>
-                                <Label htmlFor="enquiry-phone">Phone number</Label>
-                                <Input id="enquiry-phone" name="phone" type="tel" autoComplete="tel" placeholder="Optional" value={formData.phone} onChange={handleChange} className={fieldClass} />
+                                <Label htmlFor="enquiry-phone" className="sr-only">Phone number</Label>
+                                <Input id="enquiry-phone" name="phone" type="tel" autoComplete="tel" placeholder="Phone number" value={formData.phone} onChange={handleChange} className={fieldClass} />
                             </div>
                         </div>
 
                         <fieldset>
-                            <legend className="text-sm font-medium text-ds-foreground">What describes you best? <span className="text-ds-primary">*</span></legend>
-                            <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                            <legend className="sr-only">What describes you best? (required)</legend>
+                            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                                 {roles.map((r) => {
                                     const on = formData.description === r.value;
                                     return (
                                         <label
                                             key={r.value}
                                             className={cn(
-                                                'flex h-12 cursor-pointer items-center justify-center gap-2 rounded-ds-control border text-sm font-semibold transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ds-ring',
+                                                'flex h-10 cursor-pointer items-center justify-center rounded-full border text-sm font-medium transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ds-ring',
                                                 on ? 'border-ds-primary bg-ds-primary text-white' : 'border-ds-border bg-white text-ds-muted-foreground hover:border-ds-primary/50 hover:text-ds-foreground',
                                             )}
                                         >
@@ -169,7 +167,6 @@ const EnquiryForm: React.FC = () => {
                                                 onChange={() => { setFormData({ ...formData, description: r.value }); setError(''); }}
                                                 className="sr-only"
                                             />
-                                            <r.icon className="size-4" aria-hidden="true" />
                                             {r.label}
                                         </label>
                                     );
@@ -178,17 +175,16 @@ const EnquiryForm: React.FC = () => {
                         </fieldset>
 
                         <div>
-                            <Label htmlFor="enquiry-questions">Any questions for us?</Label>
-                            <Textarea id="enquiry-questions" name="questions" rows={3} placeholder="Tell us a little more" value={formData.questions} onChange={handleChange} className="mt-2 min-h-24 resize-none bg-white" />
+                            <Label htmlFor="enquiry-questions" className="sr-only">Any questions for us?</Label>
+                            <Textarea id="enquiry-questions" name="questions" rows={2} placeholder="Any questions for us?" value={formData.questions} onChange={handleChange} className="min-h-[72px] resize-none bg-white" />
                         </div>
 
-                        <div className="flex flex-col gap-4 pt-1 sm:flex-row sm:items-center sm:justify-between">
-                            <div className="flex items-center gap-2.5">
+                        <div className="flex items-center justify-between gap-4 pt-1">
+                            <div className="flex items-center gap-2">
                                 <Checkbox id="enquiry-verify" checked={isVerified} onCheckedChange={(v) => { setIsVerified(v === true); setError(''); }} />
                                 <Label htmlFor="enquiry-verify" className="cursor-pointer text-sm font-normal text-ds-muted-foreground">I&rsquo;m a human</Label>
-                                <ShieldCheck className="size-4 text-ds-primary" aria-hidden="true" />
                             </div>
-                            <Button type="submit" size="lg" disabled={isSubmitting} className="group">
+                            <Button type="submit" disabled={isSubmitting} className="group">
                                 {isSubmitting ? (
                                     <>
                                         <Loader2 className="animate-spin" aria-hidden="true" />
